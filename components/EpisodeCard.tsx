@@ -1,5 +1,19 @@
+'use client'
 
-export default function EpisodeCard() {
+type EpisodeCardProps = {
+    data: {
+        title?: string;
+        description?: string;
+        image?: string;
+        link?: string;
+        channelName?: string;
+        authorName?: string;
+        pubDate?: string;
+        rssLink?: string;
+    }
+}
+
+export default function EpisodeCard(props: EpisodeCardProps) {
 
     return (
         <div className="card bg-base-100 shadow-xl rounded-box">
