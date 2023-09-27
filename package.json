@@ -11,12 +11,14 @@
   "dependencies": {
     "next": "latest",
     "react": "latest",
-    "react-dom": "latest"
+    "react-dom": "latest",
+    "react-helmet": "^6.1.0"
   },
   "devDependencies": {
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/react-helmet": "^6.1.7",
     "autoprefixer": "latest",
     "daisyui": "^3.8.1",
     "eslint": "latest",
