@@ -26,6 +26,14 @@ export default function Header(props: HeaderProps) {
     }
 
     useEffect(() => {
+        // listen keybordevent, when enter is pressed, redirect to search page
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Enter') {
+                onSearchButtonClicked()
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown)
+
         if (props.keyword && props.keyword.length > 0) {
             setSearchPlaceholderVal(props.keyword)
         } else {
@@ -58,8 +66,8 @@ export default function Header(props: HeaderProps) {
                 <div className="flex-none gap-2">
                     <div className="form-control">
                         <div className="relative">
-                            <input type="text" placeholder={inputPlaceholderVal} className="w-48 md:w-96 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:border-transparent" onChange={onSearchInputChanged} />
-                            <button type="submit" className="absolute right-0 top-0 mt-1 mr-4" onClick={onSearchButtonClicked}>
+                            <input type="text" placeholder={inputPlaceholderVal} className="w-48 md:w-96 px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
+                            <button type="submit" className="absolute right-0 top-0 mt-2 mr-4" onClick={onSearchButtonClicked}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.873-4.873"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.618 10.382a5.5 5.5 0 11-7.778 0 5.5 5.5 0 017.778 0z"></path></svg>
                             </button>
                         </div>
