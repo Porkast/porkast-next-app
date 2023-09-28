@@ -43,7 +43,7 @@ export default function Header(props: HeaderProps) {
 
     return (
         <div className="w-full bg-transparent p-9 pt-2 fixed z-50">
-            <div className="navbar bg-base-100 mb-40 shadow-xl rounded-box">
+            <div className="navbar bg-base-100 shadow-xl rounded-box">
                 <div className="dropdown dropdown-bottom">
                     <label tabIndex={0}>
                         <button className="btn btn-square btn-ghost">
