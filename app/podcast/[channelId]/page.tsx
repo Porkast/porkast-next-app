@@ -4,8 +4,8 @@ import { cache } from 'react';
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
 
-export default async function Page({ params }: { params: { id: string } }) {
-    const podcastId = params.id;
+export default async function Page({ params }: { params: { channelId: string } }) {
+    const podcastId = params.channelId;
     const data = await getChannelInfoById(podcastId)
 
     return (
@@ -89,10 +89,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 }
 
 export async function generateMetadata(
-    { params }: { params: { id: string } },
+    { params }: { params: { channelId: string } },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-    const id = params.id
+    const id = params.channelId
     const data = await getChannelInfoById(id)
     const title = data.Title + "- Porkast"
 

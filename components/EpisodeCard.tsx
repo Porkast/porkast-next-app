@@ -21,7 +21,7 @@ type EpisodeCardProps = {
 export default function EpisodeCard(props: EpisodeCardProps) {
 
     const { data } = props
-    const podcastEpisodeLink = "/podcast/episode/" + data.channelId + "/" + data.itemId
+    const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + data.itemId
     const podcastChannelLink = "/podcast/" + data.channelId
     data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
 
