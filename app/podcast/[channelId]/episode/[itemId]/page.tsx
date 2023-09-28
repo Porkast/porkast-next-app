@@ -2,7 +2,7 @@ import { Metadata, ResolvingMetadata } from "next"
 import { cache } from "react"
 
 
-export default async function Page({ params }: { params: { hannelId: string, itemId: string } }) {
+export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
 
     console.log("Episode Page")
     console.log(params.itemId)
