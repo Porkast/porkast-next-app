@@ -69,7 +69,7 @@ export default function SearchPage() {
             return
         }
 
-        if (page == "1") {
+        if (page == "1" && scope == "item") {
             searchFeedChannel()
             setShowSearchChannelResult(true)
         } else {
