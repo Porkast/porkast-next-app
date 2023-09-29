@@ -24,9 +24,12 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + data.itemId
     const podcastChannelLink = "/podcast/" + data.channelId
     data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
+    data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
+    data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
+    data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
 
     return (
-        <div className="bg-base-100 shadow-xl rounded-box mb-12">
+        <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
             <div className="ml-6 mr-6">
                 {/* Header information */}
                 <a href={podcastEpisodeLink} className="text-2xl font-medium mt-9">{parse(data.title)}</a>
@@ -38,7 +41,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                     </a>
                     <div className="ml-3">
                         <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
-                        <div className="text-sm font-medium text-gray-500 mt-2">{parse(data.authorName)}</div>
+                        <div className="text-sm font-medium text-gray-500 mt-2">By {parse(data.authorName)}</div>
                         <div className="flex justify-start mt-4">
                             <div className="tooltip" data-tip="RSS Feed">
                                 <a href={data.rssLink} target="_blank">
@@ -56,7 +59,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                     </div>
                 </div>
                 {/* description */}
-                <a href="">
+                <a href={podcastEpisodeLink}>
                     <div className="max-h-24 flex overflow-clip mt-6">
                         <p>{parse(data.description)}</p>
                     </div>
