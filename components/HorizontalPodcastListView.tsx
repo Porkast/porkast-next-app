@@ -19,6 +19,9 @@ export default function HorizontalPodcastListView(props: ScrollPodcastListViewPr
     const [channelInfoList, setChannelInfoList] = useState<PodcastChannelInfo[]>([])
 
     useEffect(() => {
+        if (!podcastChannelInfoList || podcastChannelInfoList.length == 0) {
+            return
+        }
         const updatedList = podcastChannelInfoList.map((podcastChannelInfo) => {
             return {
                 ...podcastChannelInfo,

@@ -65,6 +65,10 @@ export default function SearchPage() {
             setSearchChannelResultData(channelResultList)
         }
 
+        if (!q || q.length == 0) {
+            return
+        }
+
         if (page == "1") {
             searchFeedChannel()
             setShowSearchChannelResult(true)

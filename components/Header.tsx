@@ -18,6 +18,9 @@ export default function Header(props: HeaderProps) {
     }
 
     const onSearchButtonClicked = () => {
+        if (searchInputVal.length == 0) {
+            return
+        }
         if (searchInputVal.length == 0 && inputPlaceholderVal != "Search") {
             router.push('/search?q=' + inputPlaceholderVal)
         } else if (searchInputVal.length > 0) {
@@ -26,7 +29,6 @@ export default function Header(props: HeaderProps) {
     }
 
     useEffect(() => {
-        // listen keybordevent, when enter is pressed, redirect to search page
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Enter') {
                 onSearchButtonClicked()
@@ -35,11 +37,12 @@ export default function Header(props: HeaderProps) {
         window.addEventListener('keydown', handleKeyDown)
 
         if (props.keyword && props.keyword.length > 0) {
-            setSearchPlaceholderVal(props.keyword)
+            console.log(props.keyword)
+            setSearchInputVal(props.keyword)
         } else {
             setSearchPlaceholderVal("Search")
         }
-    })
+    }, [])
 
     return (
         <div className="w-full bg-transparent p-9 pt-2 fixed z-50">
@@ -66,7 +69,7 @@ export default function Header(props: HeaderProps) {
                 <div className="flex-none gap-2">
                     <div className="form-control">
                         <div className="relative">
-                            <input type="text" placeholder={inputPlaceholderVal} className="w-48 md:w-96 px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
+                            <input type="text" placeholder={inputPlaceholderVal} value={searchInputVal} className="w-48 md:w-96 px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
                             <button type="submit" className="absolute right-0 top-0 mt-2 mr-4" onClick={onSearchButtonClicked}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.873-4.873"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.618 10.382a5.5 5.5 0 11-7.778 0 5.5 5.5 0 017.778 0z"></path></svg>
                             </button>
