@@ -1,6 +1,7 @@
 'use client'
 
 import parse from 'html-react-parser'
+import { useAudioPlayer } from './AudioPlayerContext'
 
 type EpisodeCardProps = {
     data: {
@@ -15,6 +16,7 @@ type EpisodeCardProps = {
         authorName: string;
         pubDate: string;
         audioLength: string;
+        audioSrc: string
     }
 }
 
@@ -27,6 +29,18 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
     data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
     data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
+
+    const { updateAudio, play, pause } = useAudioPlayer()
+
+    const playBtnClick = () => {
+        updateAudio({
+            title: data.title,
+            artist: data.authorName,
+            cover: data.image,
+            src: data.audioSrc
+        })
+        play()
+    }
 
     return (
         <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
@@ -67,7 +81,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <div className="text-gray-500 mt-4">{data.pubDate}</div>
                 <div className="flex justify-start items-center mt-3 pb-6">
                     {/* play icon */}
-                    <button className="btn btn-circle btn-outline btn-sm">
+                    <button className="btn btn-circle btn-outline btn-sm" onClick={playBtnClick}>
                         <svg className="fill-current rounded-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
                     </button>
                     <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}</div>

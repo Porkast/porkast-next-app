@@ -2,7 +2,7 @@
 
 import 'shikwasa/dist/style.css'
 import { Player } from 'shikwasa'
-import { Ref, forwardRef, useEffect } from 'react';
+import { Ref, forwardRef, useEffect, useState } from 'react';
 
 export type AudioPlayerProps = {
     data?: {
@@ -21,6 +21,7 @@ export type AudioPlayerRef = {
 
 const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Ref<AudioPlayerRef>) => {
     const { data } = props;
+    const [showAudioPlayer, setShowAudioPlayer] = useState(false);
     const { title, artist, cover, src } = data ?? { title: '', artist: '', cover: '', src: '' };
 
     useEffect(() => {
@@ -39,9 +40,6 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                 autoplay: true,
             });
 
-            player.on('canplay', () => {
-                player.play()
-            });
             player.on('playing', () => {
                 // when audio is playing translate the player to the right with 688px
                 playerElement.classList.add('md:translate-x-610', 'transition', 'duration-300', 'delay-150');
@@ -49,6 +47,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
             if (ref) {
                 (ref as any).current = {
                     play: () => {
+                        setShowAudioPlayer(true);
                         player.play();
                     },
                     pause: () => {
@@ -56,10 +55,10 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                     },
                     updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => {
                         player.update({
-                            title,
-                            artist,
-                            cover,
-                            src,
+                            title: title,
+                            artist: artist,
+                            cover: cover,
+                            src: src
                         })
                     },
                 }
@@ -68,10 +67,10 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
     }, [src]);
 
     return (
-        <div className='w-full flex justify-end'>
-            <div className="shikwasa-player-element fixed bottom-0 w-md md:bottom-36 hover:translate-x-0">
-            </div>
-        </div>
+        <div className='w-full flex justify-end' style={{ visibility: showAudioPlayer ? 'visible' : 'hidden' }}>
+            < div className="shikwasa-player-element fixed bottom-0 w-md md:bottom-36 md:hover:translate-x-0" >
+            </div >
+        </div >
     );
 })
 

@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import AudioPlayer from '@/components/AudioPlayer';
+import { AudioPlayerProvider } from '@/components/AudioPlayerContext';
 
 export default function SearchPage() {
 
@@ -81,56 +81,53 @@ export default function SearchPage() {
     }, [q, page, scope, sortByDate])
 
     return (
-        <div className="w-full">
-            <Helmet>
-                <title>Porkast-{q}</title>
-            </Helmet>
-            <Header keyword={q ? q : ""} />
-            <div className="w-full flex justify-center pt-24 pl-6 pr-6">
-                <div className="w-full max-w-2xl">
-                    <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results ({searchResultTime} seconds)</div>
-                    {
-                        showSearchChannelResult ?
-                            <div className='w-full mt-4 mb-9'>
-                                <HorizontalPodcastListView podcastChannelInfoList={searchChannelResultData} />
-                            </div>
-                            : null
-                    }
-                    {
-                        searchResultData.map((item: any) => {
-                            return (
-                                <EpisodeCard key={item.Id} data={{
-                                    itemId: item.Id,
-                                    channelId: item.ChannelId,
-                                    title: item.HighlightTitle,
-                                    description: item.TextDescription,
-                                    image: item.ImageUrl,
-                                    link: item.Link,
-                                    rssLink: item.FeedLink,
-                                    channelName: item.HighlightChannelTitle,
-                                    authorName: item.Author,
-                                    pubDate: item.PubDate,
-                                    audioLength: item.Duration
-                                }} />
-                            )
-                        })
-                    }
+        <AudioPlayerProvider>
+            <div className="w-full">
+                <Helmet>
+                    <title>Porkast-{q}</title>
+                </Helmet>
+                <Header keyword={q ? q : ""} />
+                <div className="w-full flex justify-center pt-24 pl-6 pr-6">
+                    <div className="w-full max-w-2xl">
+                        <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results ({searchResultTime} seconds)</div>
+                        {
+                            showSearchChannelResult ?
+                                <div className='w-full mt-4 mb-9'>
+                                    <HorizontalPodcastListView podcastChannelInfoList={searchChannelResultData} />
+                                </div>
+                                : null
+                        }
+                        {
+                            searchResultData.map((item: any) => {
+                                return (
+                                    <EpisodeCard key={item.Id} data={{
+                                        itemId: item.Id,
+                                        channelId: item.ChannelId,
+                                        title: item.HighlightTitle,
+                                        description: item.TextDescription,
+                                        image: item.ImageUrl,
+                                        link: item.Link,
+                                        rssLink: item.FeedLink,
+                                        channelName: item.HighlightChannelTitle,
+                                        authorName: item.Author,
+                                        pubDate: item.PubDate,
+                                        audioLength: item.Duration,
+                                        audioSrc: item.EnclosureUrl
+                                    }} />
+                                )
+                            })
+                        }
+                    </div>
                 </div>
-            </div>
-            <div className="w-full flex justify-center pt-6 pb-9">
-                <div className="join">
-                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
-                    <button className="join-item btn btn-neutral">Page {page}</button>
-                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                <div className="w-full flex justify-center pt-6 pb-9">
+                    <div className="join">
+                        <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                        <button className="join-item btn btn-neutral">Page {page}</button>
+                        <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                    </div>
                 </div>
+                <Footer />
             </div>
-            <AudioPlayer data={{
-                title: '潮音乐 Vol.304 VLOG音乐指南',
-                artist: '潮音乐',
-                cover: 'https://fdfs.xmcdn.com/group11/M0A/94/01/wKgDbVdVRx3xGtnnAAHpPx5-seg355.jpg',
-                src: 'https://jt.ximalaya.com//wKgMcF05YVixUngUAP11wU9IpJs091.m4a?channel=rss&album_id=225568&track_id=201013105&uid=4788395&jt=https://audio.xmcdn.com/group61/M05/F3/76/wKgMcF05YVixUngUAP11wU9IpJs091.m4a'
-            }} />
-            <Footer />
-        </div>
+        </AudioPlayerProvider>
     )
 }

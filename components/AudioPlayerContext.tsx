@@ -1,7 +1,7 @@
 'use client'
 
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import AudioPlayer, { AudioPlayerProps, AudioPlayerRef } from './AudioPlayer';
+import { createContext, useContext, useRef, } from 'react';
+import AudioPlayer, { AudioPlayerRef } from './AudioPlayer';
 
 type AudioPlayerContextType = {
     updateAudio: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => void;
@@ -25,12 +25,6 @@ type AudioPlayerProviderProps = {
 
 export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({ children }) => {
     const audioRef = useRef<AudioPlayerRef>(null);
-
-    useEffect(() => {
-        if (audioRef.current) {
-        }
-    }, []);
-
     const audioPlayerContextValue: AudioPlayerContextType = {
         play: () => {
             if (audioRef.current) {
@@ -52,7 +46,7 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({ childr
     return (
         <AudioPlayerContext.Provider value={audioPlayerContextValue}>
             {children}
-            <AudioPlayer ref={audioRef} />
+            <AudioPlayer ref={audioRef} data={{ title: 'porkast', artist: 'porkast', cover: 'https://shikwasa.js.org/assets/logo.png', src: 'https://shikwasa.js.org/assets/STS-133_FD11_Mission_Status_Briefing.mp3' }} />
         </AudioPlayerContext.Provider>
     );
 };
