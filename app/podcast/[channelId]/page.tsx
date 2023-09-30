@@ -4,7 +4,6 @@ import { cache } from 'react';
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import AudioPlayer from '@/components/AudioPlayer';
 
 export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
@@ -101,7 +100,8 @@ export default async function Page({ params, searchParams }: { params: { channel
                                             channelName: item.ChannelTitle,
                                             authorName: item.Author,
                                             pubDate: item.PubDate,
-                                            audioLength: item.Duration
+                                            audioLength: item.Duration,
+                                            audioSrc: item.EnclosureUrl
                                         }} />
                                     )
                                 })
