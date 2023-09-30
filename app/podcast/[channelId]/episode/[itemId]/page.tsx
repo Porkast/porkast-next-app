@@ -84,7 +84,6 @@ export async function generateMetadata(
     { params }: { params: { channelId: string, itemId: string } },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-    console.log("generateMetadata")
     const data = await getFeedItemInfoById(params.channelId, params.itemId)
     const itemInfo = data.itemInfo
     const title = itemInfo.Title + "- Porkast"
