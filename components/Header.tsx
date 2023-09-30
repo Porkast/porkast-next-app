@@ -37,7 +37,6 @@ export default function Header(props: HeaderProps) {
         window.addEventListener('keydown', handleKeyDown)
 
         if (props.keyword && props.keyword.length > 0) {
-            console.log(props.keyword)
             setSearchInputVal(props.keyword)
         } else {
             setSearchPlaceholderVal("Search")
