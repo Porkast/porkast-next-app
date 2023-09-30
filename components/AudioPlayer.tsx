@@ -23,8 +23,12 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
     const { data } = props;
     const [showAudioPlayer, setShowAudioPlayer] = useState(false);
     const { title, artist, cover, src } = data ?? { title: '', artist: '', cover: '', src: '' };
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    var systemTheme = mediaQuery.matches ? 'dark' : 'light';
+    var themeColor = systemTheme === 'dark' ? 'white' : 'black';
 
     useEffect(() => {
+
         const playerElement = document.querySelector('.shikwasa-player-element') as HTMLElement;
         if (playerElement !== null) {
             const player = new Player({
@@ -35,8 +39,8 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                     cover,
                     src,
                 },
-                themeColor: 'black',
-                theme: 'light',
+                theme: 'auto',
+                themeColor: themeColor,
                 autoplay: true,
             });
 
