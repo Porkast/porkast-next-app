@@ -11,6 +11,7 @@ export default async function Page({ params }: { params: { channelId: string, it
     const itemInfo = data.itemInfo
     const channelInfo = data.channelInfo
     const podcastChannelLink = "/podcast/" + itemInfo.ChannelId
+    const formatDescription = itemInfo.Description.replace(/color:[^;]*;/g, '');
 
     return (
         <div>
@@ -65,7 +66,9 @@ export default async function Page({ params }: { params: { channelId: string, it
                         <div className="card w-full min-h-screen bg-base-100 shadow-xl overflow-auto mt-9">
                             <div className="card-body">
                                 <h2 className="card-title mb-9">Show Notes</h2>
-                                {parse(itemInfo.Description)}
+                                <div className="text-base-content">
+                                    {parse(formatDescription)}
+                                </div>
                             </div>
                         </div>
                         <p className="mt-4 text-xs">{data.Copyright}</p>
