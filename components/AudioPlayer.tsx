@@ -2,10 +2,10 @@
 
 import 'shikwasa/dist/style.css'
 import { Player } from 'shikwasa'
-import { useEffect } from 'react';
+import { Ref, forwardRef, useEffect } from 'react';
 
-type AudioPlayerProps = {
-    data: {
+export type AudioPlayerProps = {
+    data?: {
         title: string;
         artist: string;
         cover: string;
@@ -13,8 +13,15 @@ type AudioPlayerProps = {
     };
 };
 
-export default function AudioPlayer(props: AudioPlayerProps) {
-    const { title, artist, cover, src } = props.data;
+export type AudioPlayerRef = {
+    play: () => void;
+    pause: () => void;
+    updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => void;
+};
+
+const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Ref<AudioPlayerRef>) => {
+    const { data } = props;
+    const { title, artist, cover, src } = data ?? { title: '', artist: '', cover: '', src: '' };
 
     useEffect(() => {
         const playerElement = document.querySelector('.shikwasa-player-element') as HTMLElement;
@@ -37,9 +44,26 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             });
             player.on('playing', () => {
                 // when audio is playing translate the player to the right with 688px
-                playerElement.classList.add('md:translate-x-3/4', 'transition', 'duration-300','delay-150');
-
+                playerElement.classList.add('md:translate-x-610', 'transition', 'duration-300', 'delay-150');
             });
+            if (ref) {
+                (ref as any).current = {
+                    play: () => {
+                        player.play();
+                    },
+                    pause: () => {
+                        player.pause();
+                    },
+                    updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => {
+                        player.updateAudio({
+                            title,
+                            artist,
+                            cover,
+                            src,
+                        })
+                    },
+                }
+            }
         }
     }, [src]);
 
@@ -49,4 +73,6 @@ export default function AudioPlayer(props: AudioPlayerProps) {
             </div>
         </div>
     );
-}
+})
+
+export default AudioPlayer;

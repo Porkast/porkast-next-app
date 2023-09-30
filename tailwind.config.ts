@@ -11,8 +11,8 @@ const config: Config = {
       width: {
         'md': '768px',
       },
-      translate: {
-        'md': '688px',
+      spacing: {
+        '610': '41rem',
       },
     }
   },
