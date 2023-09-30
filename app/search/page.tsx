@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import AudioPlayer from '@/components/AudioPlayer';
 
 export default function SearchPage() {
 
@@ -123,6 +124,12 @@ export default function SearchPage() {
                     <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
                 </div>
             </div>
+            <AudioPlayer data={{
+                title: '潮音乐 Vol.304 VLOG音乐指南',
+                artist: '潮音乐',
+                cover: 'https://fdfs.xmcdn.com/group11/M0A/94/01/wKgDbVdVRx3xGtnnAAHpPx5-seg355.jpg',
+                src: 'https://jt.ximalaya.com//wKgMcF05YVixUngUAP11wU9IpJs091.m4a?channel=rss&album_id=225568&track_id=201013105&uid=4788395&jt=https://audio.xmcdn.com/group61/M05/F3/76/wKgMcF05YVixUngUAP11wU9IpJs091.m4a'
+            }} />
             <Footer />
         </div>
     )

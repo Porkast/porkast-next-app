@@ -7,10 +7,18 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    extend: {
+      width: {
+        'md': '768px',
+      },
+      translate: {
+        'md': '688px',
+      },
+    }
   },
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["light",""],
+    themes: ["light", ""],
   },
 }
 export default config
