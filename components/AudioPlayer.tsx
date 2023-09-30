@@ -30,6 +30,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
     useEffect(() => {
 
         const playerElement = document.querySelector('.shikwasa-player-element') as HTMLElement;
+        const playerTitleElemet = document.querySelector('.shk-title') as HTMLElement;
         if (playerElement !== null) {
             const player = new Player({
                 container: () => playerElement,
@@ -47,6 +48,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
             player.on('playing', () => {
                 // when audio is playing translate the player to the right with 688px
                 playerElement.classList.add('md:translate-x-610', 'transition', 'duration-300', 'delay-150');
+                playerTitleElemet.classList.add('overflow-x-auto', 'whitespace-nowrap', 'overflow-hidden','overflow-ellipsis');
             });
             if (ref) {
                 (ref as any).current = {

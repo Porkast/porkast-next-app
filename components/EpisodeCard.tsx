@@ -32,10 +32,20 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 
     const { updateAudio, play, pause } = useAudioPlayer()
 
+
+    const parseHtmlStrinText = (htmlString: string): string => {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlString, 'text/html');
+        const textContent = doc.body.textContent;
+        return textContent ?? '';
+    }
+
     const playBtnClick = () => {
+        var textTitle = parseHtmlStrinText(data.title)
+        var textAuthorName = parseHtmlStrinText(data.authorName)
         updateAudio({
-            title: data.title,
-            artist: data.authorName,
+            title: textTitle,
+            artist: textAuthorName,
             cover: data.image,
             src: data.audioSrc
         })
