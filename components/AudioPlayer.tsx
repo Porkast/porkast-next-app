@@ -55,7 +55,7 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                         player.pause();
                     },
                     updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => {
-                        player.updateAudio({
+                        player.update({
                             title,
                             artist,
                             cover,
