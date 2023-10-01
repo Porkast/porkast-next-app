@@ -41,12 +41,13 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     const playBtnClick = () => {
         var textTitle = parseHtmlStrinText(data.title)
         var textAuthorName = parseHtmlStrinText(data.authorName)
-        updateAudio({
+        var playerParams: AudioPlayerParams = {
             title: textTitle,
             artist: textAuthorName,
             cover: data.image,
             src: data.audioSrc
-        })
+        }
+        updateAudio(playerParams)
         play()
     }
 

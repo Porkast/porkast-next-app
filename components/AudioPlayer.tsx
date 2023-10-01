@@ -5,18 +5,13 @@ import { Player } from 'shikwasa'
 import { Ref, forwardRef, useEffect, useState } from 'react';
 
 export type AudioPlayerProps = {
-    data?: {
-        title: string;
-        artist: string;
-        cover: string;
-        src: string;
-    };
+    data?: AudioPlayerParams;
 };
 
 export type AudioPlayerRef = {
     play: () => void;
     pause: () => void;
-    updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => void;
+    updateAudioData: ({ params }: { params: AudioPlayerParams }) => void;
 };
 
 const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Ref<AudioPlayerRef>) => {
@@ -47,8 +42,9 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
 
             player.on('playing', () => {
                 // when audio is playing translate the player to the right with 688px
+                setShowAudioPlayer(true);
                 playerElement.classList.add('md:translate-x-610', 'transition', 'duration-300', 'delay-150');
-                playerTitleElemet.classList.add('overflow-x-auto', 'whitespace-nowrap', 'overflow-hidden','overflow-ellipsis');
+                playerTitleElemet.classList.add('overflow-x-auto', 'whitespace-nowrap', 'overflow-hidden', 'overflow-ellipsis');
             });
             if (ref) {
                 (ref as any).current = {
@@ -59,12 +55,12 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                     pause: () => {
                         player.pause();
                     },
-                    updateAudioData: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => {
+                    updateAudioData: ({ params }: { params: AudioPlayerParams }) => {
                         player.update({
-                            title: title,
-                            artist: artist,
-                            cover: cover,
-                            src: src
+                            title: params.title,
+                            artist: params.artist,
+                            cover: params.cover,
+                            src: params.src
                         })
                     },
                 }
