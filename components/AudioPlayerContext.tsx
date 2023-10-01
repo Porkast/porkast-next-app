@@ -4,7 +4,7 @@ import { createContext, useContext, useRef, } from 'react';
 import AudioPlayer, { AudioPlayerRef } from './AudioPlayer';
 
 type AudioPlayerContextType = {
-    updateAudio: ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }) => void;
+    updateAudio: (params: AudioPlayerParams) => void;
     play: () => void;
     pause: () => void;
 };
@@ -12,7 +12,7 @@ type AudioPlayerContextType = {
 const AudioPlayerContext = createContext<AudioPlayerContextType>({
     play: () => { },
     pause: () => { },
-    updateAudio: function ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }): void {
+    updateAudio: function (params: AudioPlayerParams): void {
         throw new Error('Function not implemented.');
     }
 });
@@ -36,9 +36,9 @@ export const AudioPlayerProvider: React.FC<AudioPlayerProviderProps> = ({ childr
                 audioRef.current.pause();
             }
         },
-        updateAudio: function ({ title, artist, cover, src }: { title: string; artist: string; cover: string; src: string; }): void {
+        updateAudio: function (params: AudioPlayerParams): void {
             if (audioRef.current) {
-                audioRef.current.updateAudioData({ title, artist, cover, src });
+                audioRef.current.updateAudioData({ params });
             }
         }
     };
