@@ -3,6 +3,8 @@ import Header from "@/components/Header"
 import { Metadata, ResolvingMetadata } from "next"
 import { cache } from "react"
 import parse from 'html-react-parser'
+import AudioPlayButton from "@/components/AudioPlayButton"
+import { AudioPlayerProvider } from "@/components/AudioPlayerContext"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
@@ -13,10 +15,17 @@ export default async function Page({ params }: { params: { channelId: string, it
     const podcastChannelLink = "/podcast/" + itemInfo.ChannelId
     const formatDescription = itemInfo.Description.replace(/color:[^;]*;/g, '');
 
+    const playerParams: AudioPlayerParams = {
+        title: itemInfo.Title,
+        artist: itemInfo.Author,
+        cover: itemInfo.ImageUrl,
+        src: itemInfo.EnclosureUrl
+    }
+
     return (
-        <div>
+        <AudioPlayerProvider>
             <Header />
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-center mb-9">
                 <div className='w-full max-w-2xl pt-28 pl-6 pr-6'>
                     {/* item header info block */}
                     <div className='w-full'>
@@ -47,9 +56,7 @@ export default async function Page({ params }: { params: { channelId: string, it
                         <div className="mt-3 text-gray-500">{itemInfo.PubDate}</div>
                         <div className="flex justify-start items-center mt-3 pb-6">
                             {/* play icon */}
-                            <button className="btn btn-circle btn-outline btn-sm">
-                                <svg className="fill-current rounded-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
-                            </button>
+                            <AudioPlayButton data={playerParams} />
                             <div className="text-base text-gray-500 w-20 ml-4">{itemInfo.Duration}</div>
                             <button className="btn btn-neutral btn-sm flex items-center rounded-lg">
                                 <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -63,6 +70,7 @@ export default async function Page({ params }: { params: { channelId: string, it
                                 <span className="font-bold text-xs md:display">Add</span>
                             </button>
                         </div>
+                        <p className="mt-4 text-xs">{channelInfo.Copyright}</p>
                         <div className="card w-full min-h-screen bg-base-100 shadow-xl overflow-auto mt-9">
                             <div className="card-body">
                                 <h2 className="card-title mb-9">Show Notes</h2>
@@ -71,12 +79,11 @@ export default async function Page({ params }: { params: { channelId: string, it
                                 </div>
                             </div>
                         </div>
-                        <p className="mt-4 text-xs">{data.Copyright}</p>
                     </div>
                 </div>
             </div>
             <Footer />
-        </div>
+        </AudioPlayerProvider>
     )
 }
 

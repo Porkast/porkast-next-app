@@ -1,7 +1,7 @@
 'use client'
 
 import parse from 'html-react-parser'
-import { useAudioPlayer } from './AudioPlayerContext'
+import AudioPlayButton from './AudioPlayButton';
 
 type EpisodeCardProps = {
     data: {
@@ -30,25 +30,11 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
     data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
 
-    const { updateAudio, play, pause } = useAudioPlayer()
-    const parseHtmlStrinText = (htmlString: string): string => {
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(htmlString, 'text/html');
-        const textContent = doc.body.textContent;
-        return textContent ?? '';
-    }
-
-    const playBtnClick = () => {
-        var textTitle = parseHtmlStrinText(data.title)
-        var textAuthorName = parseHtmlStrinText(data.authorName)
-        var playerParams: AudioPlayerParams = {
-            title: textTitle,
-            artist: textAuthorName,
-            cover: data.image,
-            src: data.audioSrc
-        }
-        updateAudio(playerParams)
-        play()
+    const audioPlayerParams: AudioPlayerParams = {
+        title: data.title,
+        artist: data.authorName,
+        cover: data.image,
+        src: data.audioSrc
     }
 
     return (
@@ -90,10 +76,8 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <div className="text-gray-500 mt-4">{data.pubDate}</div>
                 <div className="flex justify-start items-center mt-3 pb-6">
                     {/* play icon */}
-                    <button className="btn btn-circle btn-outline btn-sm" onClick={playBtnClick}>
-                        <svg className="fill-base-content rounded-full" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z" /></svg>
-                    </button>
-                    <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}</div>
+                    <AudioPlayButton data={audioPlayerParams} />
+                    <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}A</div>
                     <button className="btn btn-neutral btn-sm flex items-center rounded-lg">
                         <svg className="w-4 h-4 fill-accent-content" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
