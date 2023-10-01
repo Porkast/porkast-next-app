@@ -2,6 +2,8 @@
 
 import parse from 'html-react-parser'
 import AudioPlayButton from './AudioPlayButton';
+import AddListenLaterButton from './AddListenLaterButton';
+import AddToPlaylistButton from './AddToPlaylistButton';
 
 type EpisodeCardProps = {
     data: {
@@ -77,18 +79,9 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <div className="flex justify-start items-center mt-3 pb-6">
                     {/* play icon */}
                     <AudioPlayButton data={audioPlayerParams} />
-                    <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}A</div>
-                    <button className="btn btn-neutral btn-sm flex items-center rounded-lg">
-                        <svg className="w-4 h-4 fill-accent-content" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" />
-                            <path fill="currentColor" d="M13 7h-2v6l4.2 2.5.8-1.2-3.5-2.1z" />
-                        </svg>
-                        <span className="font-bold text-xs md:display">Listen Later</span>
-                    </button>
-                    <button className="btn btn-neutral ml-2 btn-sm flex items-center rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
-                        <span className="font-bold text-xs md:display">Add</span>
-                    </button>
+                    <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}</div>
+                    <AddListenLaterButton userId={''} itemId={data.itemId} channelId={data.channelId} />
+                    <AddToPlaylistButton userId={''} itemId={data.itemId} channelId={data.channelId} playlistId={''} />
                 </div>
             </div>
         </div>
