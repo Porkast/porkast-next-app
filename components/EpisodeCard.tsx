@@ -31,8 +31,6 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
 
     const { updateAudio, play, pause } = useAudioPlayer()
-
-
     const parseHtmlStrinText = (htmlString: string): string => {
         const parser = new DOMParser();
         const doc = parser.parseFromString(htmlString, 'text/html');
