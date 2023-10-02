@@ -4,7 +4,7 @@ import { cache } from 'react';
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { AudioPlayerProvider } from '@/components/AudioPlayerContext';
+import { AppProvider } from '@/components/AudioPlayerContext';
 
 export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
@@ -33,7 +33,7 @@ export default async function Page({ params, searchParams }: { params: { channel
     const prevPageUrl = "/podcast/" + podcastId + "?page=" + prePage
 
     return (
-        <AudioPlayerProvider>
+        <AppProvider>
             <div>
                 <Header keyword={""} />
                 <div className='w-full flex justify-center'>
@@ -121,7 +121,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                 </div>
                 <Footer />
             </div>
-        </AudioPlayerProvider>
+        </AppProvider>
     );
 }
 

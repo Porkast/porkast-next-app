@@ -1,10 +1,10 @@
 'use client'
 
-import { useAudioPlayer } from './AudioPlayerContext'
+import { useAppContext } from './AudioPlayerContext'
 
 export default function AudioPlayButton({ data }: { data: AudioPlayerParams }) {
 
-    const { updateAudio, play, pause } = useAudioPlayer()
+    const { updateAudio, play, pause } = useAppContext()
 
     const parseHtmlStrinText = (htmlString: string): string => {
         const parser = new DOMParser();
