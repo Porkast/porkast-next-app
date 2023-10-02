@@ -25,7 +25,7 @@ export default async function Page({ params }: { params: { channelId: string, it
     return (
         <AppProvider>
             <Header />
-            <div className="w-full flex justify-center mb-9">
+            <div className="w-full flex justify-center mb-9 min-h-screen">
                 <div className='w-full max-w-2xl pt-28 pl-6 pr-6'>
                     {/* item header info block */}
                     <div className='w-full'>
@@ -71,7 +71,7 @@ export default async function Page({ params }: { params: { channelId: string, it
                             </button>
                         </div>
                         <p className="mt-4 text-xs">{channelInfo.Copyright}</p>
-                        <div className="card w-full min-h-screen bg-base-100 shadow-xl overflow-auto mt-9">
+                        <div className="card w-full bg-base-100 shadow-xl overflow-auto mt-9">
                             <div className="card-body">
                                 <h2 className="card-title mb-9">Show Notes</h2>
                                 <div className="text-base-content">
