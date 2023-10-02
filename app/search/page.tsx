@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { AudioPlayerProvider } from '@/components/AudioPlayerContext';
+import { AppProvider } from '@/components/AudioPlayerContext';
 
 export default function SearchPage() {
 
@@ -81,7 +81,7 @@ export default function SearchPage() {
     }, [q, page, scope, sortByDate])
 
     return (
-        <AudioPlayerProvider>
+        <AppProvider>
             <div className="w-full">
                 <Helmet>
                     <title>Porkast-{q}</title>
@@ -128,6 +128,6 @@ export default function SearchPage() {
                 </div>
                 <Footer />
             </div>
-        </AudioPlayerProvider>
+        </AppProvider>
     )
 }

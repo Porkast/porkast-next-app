@@ -1,8 +1,7 @@
 'use client'
 
 import { addToListenLater } from "@/libs/listen_later";
-import { useRef } from "react";
-import { MsgAlert, MsgAlertRef } from "./MsgAlert";
+import { useAppContext } from "./AudioPlayerContext";
 
 type AddListenLaterButtonProps = {
     userId: string;
@@ -13,14 +12,14 @@ type AddListenLaterButtonProps = {
 export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
 
     const { userId, itemId, channelId } = props
-    const successMsgAlertRef = useRef<MsgAlertRef>(null)
+    const appContext = useAppContext()
 
     const onAddListenLaterBtnClick = async () => {
         const resp = await addToListenLater(userId, itemId, channelId)
         if (resp.code === 0) {
-            successMsgAlertRef.current?.showAlert('Added to Listen Later playlist', 'success')
+            appContext.showMsgAlert('Added to listen later', 'success')
         } else {
-            successMsgAlertRef.current?.showAlert('Failed to add to Listen Later playlist', 'failed')
+            appContext.showMsgAlert('Failed to add to listen later', 'failed')
         }
     }
 
@@ -33,7 +32,6 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
                 </svg>
                 <span className="font-bold text-xs md:display">Listen Later</span>
             </button>
-            <MsgAlert ref={successMsgAlertRef} />
         </>
     )
 }

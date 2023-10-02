@@ -4,7 +4,7 @@ import { Metadata, ResolvingMetadata } from "next"
 import { cache } from "react"
 import parse from 'html-react-parser'
 import AudioPlayButton from "@/components/AudioPlayButton"
-import { AudioPlayerProvider } from "@/components/AudioPlayerContext"
+import { AppProvider } from "@/components/AudioPlayerContext"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
@@ -23,7 +23,7 @@ export default async function Page({ params }: { params: { channelId: string, it
     }
 
     return (
-        <AudioPlayerProvider>
+        <AppProvider>
             <Header />
             <div className="w-full flex justify-center mb-9">
                 <div className='w-full max-w-2xl pt-28 pl-6 pr-6'>
@@ -83,7 +83,7 @@ export default async function Page({ params }: { params: { channelId: string, it
                 </div>
             </div>
             <Footer />
-        </AudioPlayerProvider>
+        </AppProvider>
     )
 }
 
