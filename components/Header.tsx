@@ -28,20 +28,23 @@ export default function Header(props: HeaderProps) {
         }
     }
 
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Enter') {
-                onSearchButtonClicked()
-            }
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            onSearchButtonClicked()
         }
-        window.addEventListener('keydown', handleKeyDown)
+    }
 
+    useEffect(() => {
         if (props.keyword && props.keyword.length > 0) {
             setSearchInputVal(props.keyword)
         } else {
             setSearchPlaceholderVal("Search")
         }
     }, [])
+
+    useEffect(() => {
+        window.addEventListener('keydown', handleKeyDown)
+    }, [searchInputVal])
 
     return (
         <div className="w-full bg-transparent p-9 pt-2 fixed z-50">
