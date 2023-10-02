@@ -39,7 +39,7 @@ export default function HorizontalPodcastListView(props: ScrollPodcastListViewPr
                         <div className="mb-2">
                             <div className="avatar justify-center">
                                 <div className="w-24 h-24 rounded">
-                                    <img src={podcastChannelInfo.ImageUrl} alt={podcastChannelInfo.Title} />
+                                    <img src={podcastChannelInfo.ImageUrl} alt="podcast cover" />
                                 </div>
                             </div>
                             <div className="w-20 ml-2 mr-2 text-sm truncate">{parse(podcastChannelInfo.Title)}</div>
