@@ -2,6 +2,7 @@
 
 import { useAppContext } from "./AudioPlayerContext";
 import { addToPlayList } from "@/libs/playlist";
+import { MsgAlertType } from "./MsgAlert";
 
 type AddToPlaylistButtonProps = {
     userId: string;
@@ -19,9 +20,9 @@ export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
     const onAddToPlaylistBtnClick = async () => {
         const resp = await addToPlayList(userId, itemId, channelId, playlistId)
         if (resp.code === 0) {
-            appContext.showMsgAlert('Added to playlist', 'success')
+            appContext.showMsgAlert('Added to playlist', MsgAlertType.SUCCESS)
         } else {
-            appContext.showMsgAlert('Failed to add to playlist', 'failed')
+            appContext.showMsgAlert('Failed to add to playlist', MsgAlertType.FAILED)
         }
     }
 

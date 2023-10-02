@@ -3,7 +3,10 @@
 import { Ref, forwardRef, useEffect, useState } from "react";
 
 
-export type MsgAlertType = 'success' | 'failed'
+export enum MsgAlertType {
+    SUCCESS,
+    FAILED
+}
 
 export type MsgAlertRef = {
     showAlert: (msg: string, msgType: MsgAlertType) => void;
@@ -17,7 +20,7 @@ export const MsgAlert = forwardRef<MsgAlertRef, MsgAlertProps>((props, ref: Ref<
 
     const [show, setShow] = useState(false)
     const [msg, setMsg] = useState('')
-    const [msgType, setMsgType] = useState<MsgAlertType>('success')
+    const [msgType, setMsgType] = useState<MsgAlertType>(MsgAlertType.SUCCESS)
 
     useEffect(() => {
         if (ref) {
@@ -37,7 +40,7 @@ export const MsgAlert = forwardRef<MsgAlertRef, MsgAlertProps>((props, ref: Ref<
     return (
         <div className=" fixed top-0 left-0 right-0 z-50" style={{ visibility: show ? "visible" : "hidden" }}>
             {
-                msgType === 'success' ?
+                msgType === MsgAlertType.SUCCESS ?
                     <SuccessMsgAlert msg={msg} />
                     :
                     <FailedMsgAlert msg={msg} />
