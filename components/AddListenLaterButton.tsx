@@ -2,6 +2,7 @@
 
 import { addToListenLater } from "@/libs/listen_later";
 import { useAppContext } from "./AudioPlayerContext";
+import { MsgAlertType } from "./MsgAlert";
 
 type AddListenLaterButtonProps = {
     userId: string;
@@ -17,9 +18,9 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
     const onAddListenLaterBtnClick = async () => {
         const resp = await addToListenLater(userId, itemId, channelId)
         if (resp.code === 0) {
-            appContext.showMsgAlert('Added to listen later', 'success')
+            appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
         } else {
-            appContext.showMsgAlert('Failed to add to listen later', 'failed')
+            appContext.showMsgAlert('Failed to add to listen later', MsgAlertType.FAILED)
         }
     }
 
