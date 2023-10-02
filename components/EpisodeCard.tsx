@@ -47,7 +47,12 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <div className="w-full flex justify-start mt-4">
                     <a href={podcastChannelLink} className="avatar">
                         <div className="w-24 rounded-xl">
-                            <img src={data.image} />
+                            {
+                                data.image == "" || data.image == "null" ?
+                                    <img src="/porkast-logo.png" />
+                                    :
+                                    <img src={data.image} />
+                            }
                         </div>
                     </a>
                     <div className="ml-3">

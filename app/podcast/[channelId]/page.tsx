@@ -15,6 +15,9 @@ export default async function Page({ params, searchParams }: { params: { channel
         page = "1"
     }
     const data = await getChannelInfoById(podcastId, page)
+    if (!data) {
+        return
+    }
     const channelInfoData = data.channelInfo
     const searchResultTotalPage = channelInfoData.Count
     var channelDescription = channelInfoData.TextChannelDesc
@@ -51,7 +54,12 @@ export default async function Page({ params, searchParams }: { params: { channel
                                     <div className="w-full flex justify-start mt-4">
                                         <div className="avatar">
                                             <div className="w-24 rounded-xl">
-                                                <img src={channelInfoData.ImageUrl} />
+                                                {
+                                                    channelInfoData.ImageUrl == "" || channelInfoData.ImageUrl == "null" ?
+                                                        <img src="/porkast-logo.png" />
+                                                        :
+                                                        <img src={channelInfoData.ImageUrl} />
+                                                }
                                             </div>
                                         </div>
                                         <div className="ml-3">
@@ -68,9 +76,10 @@ export default async function Page({ params, searchParams }: { params: { channel
                                                     Source Link
                                                 </a>
                                             </div>
+                                            <p className="mt-4 text-xs">{channelInfoData.Copyright}</p>
                                         </div>
                                     </div>
-                                    <div className="overflow-clip mt-6">
+                                    <div className="mt-6">
                                         <p>{parse(channelDescription)}</p>
                                     </div>
                                     <div className="w-full carousel carousel-center p-2 mt-4 space-x-2 bg-base-200 rounded-lg">
@@ -87,7 +96,6 @@ export default async function Page({ params, searchParams }: { params: { channel
                                             })
                                         }
                                     </div>
-                                    <p className="mt-4 text-xs">{channelInfoData.Copyright}</p>
                                 </div> :
                                 <></>
                         }
@@ -142,6 +150,12 @@ export async function generateMetadata(
     const id = params.channelId
     const page = searchParams.page
     const data = await getChannelInfoById(id, page)
+    if (data == null) {
+        return {
+            title: "Porkast",
+            description: "Porkast is a podcast search engine.",
+        }
+    }
     const channelInfoData = data.channelInfo
     const title = channelInfoData.Title + "- Porkast"
 
