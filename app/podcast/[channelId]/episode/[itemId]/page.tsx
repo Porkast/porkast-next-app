@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { channelId: string, it
         <AppProvider>
             <Header />
             <div className="w-full flex justify-center mb-9 min-h-screen">
-                <div className='w-full max-w-2xl pt-28 pl-6 pr-6'>
+                <div className='w-full max-w-2xl pl-6 pr-6'>
                     {/* item header info block */}
                     <div className='w-full'>
                         <div className='text-xl font-bold'>{itemInfo.Title}</div>
