@@ -45,7 +45,7 @@ export default async function Page({ params, searchParams }: { params: { channel
             <div>
                 <Header keyword={""} />
                 <div className='w-full flex justify-center'>
-                    <div className='w-full max-w-2xl pt-28 pl-6 pr-6'>
+                    <div className='w-full max-w-2xl pl-6 pr-6'>
                         {/* channel info block */}
                         {
                             page == "1" ?
