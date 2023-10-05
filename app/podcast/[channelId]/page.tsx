@@ -4,7 +4,7 @@ import { cache } from 'react';
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { AppProvider } from '@/components/AudioPlayerContext';
+import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
 import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
 

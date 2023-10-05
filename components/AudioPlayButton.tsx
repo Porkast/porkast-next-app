@@ -1,6 +1,6 @@
 'use client'
 
-import { useAppContext } from './AudioPlayerContext'
+import { useAppContext } from './AppContext'
 
 export default function AudioPlayButton({ data }: { data: AudioPlayerParams }) {
 

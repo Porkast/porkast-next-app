@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
-import { AppProvider } from '@/components/AudioPlayerContext';
+import { AppProvider } from '@/components/AppContext';
 
 export default function SearchPage() {
 

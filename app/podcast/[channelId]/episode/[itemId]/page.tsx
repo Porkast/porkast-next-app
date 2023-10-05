@@ -4,7 +4,7 @@ import { Metadata, ResolvingMetadata } from "next"
 import { cache } from "react"
 import parse from 'html-react-parser'
 import AudioPlayButton from "@/components/AudioPlayButton"
-import { AppProvider } from "@/components/AudioPlayerContext"
+import { AppProvider } from "@/components/AppContext"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
