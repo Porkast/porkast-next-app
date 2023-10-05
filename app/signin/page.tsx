@@ -1,21 +1,28 @@
 'use client'
-import { Auth } from '@supabase/auth-ui-react'
+
+import { Auth, MagicLink } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { Database } from './database.types'
+import supabase from '@/libs/suapbase'
 
 export default function AuthForm() {
-    const supabase = createClientComponentClient<Database>()
 
     return (
-        <Auth
-            supabaseClient={supabase}
-            view="magic_link"
-            appearance={{ theme: ThemeSupa }}
-            theme="dark"
-            showLinks={false}
-            providers={[]}
-            redirectTo="http://localhost:3000/auth/callback"
-        />
+
+        <div className="w-full min-h-screen flex justify-center">
+            <div data-theme="light" className="w-full max-w-md pt-32 pl-6 pr-6">
+                <Auth
+                    supabaseClient={supabase}
+                    magicLink={true}
+                    appearance={{
+                        theme: ThemeSupa,
+                        className: {
+                            input: 'text-accent-content',
+                        }
+                    }}
+                    providers={['google', 'github']}
+
+                />
+            </div>
+        </div>
     )
 }
