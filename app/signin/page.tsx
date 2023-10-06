@@ -1,10 +1,18 @@
 'use client'
 
-import { Auth, MagicLink } from '@supabase/auth-ui-react'
+import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import supabase from '@/libs/suapbase'
+import { useEffect } from 'react'
 
 export default function AuthForm() {
+
+    useEffect(() => {
+        supabase.auth.onAuthStateChange((event, session) => {
+            console.log(event, session)
+        })
+
+    }, [])
 
     return (
 
@@ -20,7 +28,7 @@ export default function AuthForm() {
                         }
                     }}
                     providers={['google', 'github']}
-
+                    redirectTo='/'
                 />
             </div>
         </div>

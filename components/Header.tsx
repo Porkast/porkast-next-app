@@ -1,5 +1,6 @@
 'use client'
 
+import { isUserLoggedIn } from "@/libs/suapbase"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -13,6 +14,7 @@ export default function Header(props: HeaderProps) {
     const router = useRouter()
     const [searchInputVal, setSearchInputVal] = useState('');
     const [inputPlaceholderVal, setSearchPlaceholderVal] = useState('');
+    const [isLogin, setIsLogin] = useState(false);
     const onSearchInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInputVal(e.target.value)
     }
@@ -43,6 +45,14 @@ export default function Header(props: HeaderProps) {
     }, [])
 
     useEffect(() => {
+        const checkUserLogin = async () => {
+            const isUserLogin = await isUserLoggedIn()
+            setIsLogin(isUserLogin)
+        }
+        checkUserLogin()
+    }, [])
+
+    useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
     }, [searchInputVal])
 
@@ -60,7 +70,12 @@ export default function Header(props: HeaderProps) {
                             <li className="md:hidden"><Link href={"/"}>Porkast</Link></li>
                             <li><a>Listen Later</a></li>
                             <li><a>Playlist</a></li>
-                            <li><a>Logout</a></li>
+                            {
+                                isLogin ?
+                                    <li><a>Logout</a></li>
+                                    :
+                                    <li><Link href={"/signin"}>Sign In</Link></li>
+                            }
                         </ul>
                     </div>
                     <Link href="/" className="md:btn hidden md:btn-ghost md:normal-case md:text-xl">Porkast</Link>
