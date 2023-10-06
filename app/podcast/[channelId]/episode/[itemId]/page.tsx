@@ -2,11 +2,11 @@ import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { Metadata, ResolvingMetadata } from "next"
 import { cache } from "react"
-import parse from 'html-react-parser'
 import AudioPlayButton from "@/components/AudioPlayButton"
 import { AppProvider } from "@/components/AppContext"
 import AddListenLaterButton from "@/components/AddListenLaterButton"
 import AddToPlaylistButton from "@/components/AddToPlaylistButton"
+import ShowNotesViewer from "@/components/ShowNotesViewer"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
@@ -68,7 +68,9 @@ export default async function Page({ params }: { params: { channelId: string, it
                             <div className="card-body">
                                 <h2 className="card-title mb-9">Show Notes</h2>
                                 <div className="text-base-content">
-                                    {parse(formatDescription)}
+                                    <ShowNotesViewer data={{
+                                        description: formatDescription
+                                    }} />
                                 </div>
                             </div>
                         </div>
