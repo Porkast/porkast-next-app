@@ -8,12 +8,14 @@ type AppContextType = {
     updateAudio: (params: AudioPlayerParams) => void;
     play: () => void;
     pause: () => void;
+    seek: (time: number) => void;
     showMsgAlert: (msg: string, msgType: MsgAlertType) => void;
 };
 
 const AppContext = createContext<AppContextType>({
     play: () => { },
     pause: () => { },
+    seek: (time: number) => { },
     updateAudio: function (params: AudioPlayerParams): void {
         throw new Error('Function not implemented.');
     },
@@ -44,6 +46,11 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         updateAudio: function (params: AudioPlayerParams): void {
             if (audioRef.current) {
                 audioRef.current.updateAudioData({ params });
+            }
+        },
+        seek: (time: number) => {
+            if (audioRef.current) {
+                audioRef.current.seek(time);
             }
         },
         showMsgAlert: function (msg: string, msgType: MsgAlertType): void {

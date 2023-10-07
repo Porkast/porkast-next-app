@@ -12,6 +12,7 @@ export type AudioPlayerRef = {
     play: () => void;
     pause: () => void;
     updateAudioData: ({ params }: { params: AudioPlayerParams }) => void;
+    seek: (time: number) => void;
 };
 
 const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Ref<AudioPlayerRef>) => {
@@ -63,6 +64,9 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
                             src: params.src
                         })
                     },
+                    seek: (time: number) => {
+                        player.seek(time);
+                    }
                 }
             }
         }
