@@ -43,16 +43,8 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> 
 }
 
 export const sendResetPasswordEmail = async (email: string, redirectLink?: string) => {
-    // genrate 6 digit capcha code 
-    const generateCaptchaCode = (): string => {
-      const captchaCode = Math.floor(100000 + Math.random() * 900000).toString();
-      return captchaCode;
-    };
-
-    const captchaCode = generateCaptchaCode();
     await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectLink,
-        captchaToken: captchaCode
     })
 }
 
