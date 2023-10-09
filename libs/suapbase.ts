@@ -42,10 +42,24 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> 
     }
 }
 
-export const sendResetPasswordEmail = async (email: string, redirectLink?: string) => {
-    await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectLink,
+export const sendResetPasswordEmail = async (email: string) : Promise<SupabaseJsonResponse> => {
+    const resp = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
     })
+
+    if (resp.error) {
+        return {
+            code: 1,
+            message: resp.error.message,
+            data: null,
+        }
+    }
+
+    return {
+        code: 0,
+        message: 'Email sent',
+        data: null,
+    }
 }
 
 export const updatePassword = async (newPassword: string): Promise<SupabaseJsonResponse> => {
