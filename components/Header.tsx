@@ -1,6 +1,6 @@
 'use client'
 
-import { isUserLoggedIn } from "@/libs/suapbase"
+import supabase, { isUserLoggedIn, userSignout } from "@/libs/suapbase"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -36,6 +36,14 @@ export default function Header(props: HeaderProps) {
         }
     }
 
+    const handleLogout = async () => {
+        const isLogout = await userSignout()
+        if (isLogout) {
+            setIsLogin(false)
+            router.push('/')
+        }
+    }
+
     useEffect(() => {
         if (props.keyword && props.keyword.length > 0) {
             setSearchInputVal(props.keyword)
@@ -45,6 +53,11 @@ export default function Header(props: HeaderProps) {
     }, [])
 
     useEffect(() => {
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                window.location.href = '/signin'
+            }
+        })
         const checkUserLogin = async () => {
             const isUserLogin = await isUserLoggedIn()
             setIsLogin(isUserLogin)
@@ -71,10 +84,9 @@ export default function Header(props: HeaderProps) {
                             <li><a>Listen Later</a></li>
                             <li><a>Playlist</a></li>
                             {
-                                isLogin ?
-                                    <li><a>Logout</a></li>
-                                    :
-                                    <li><Link href={"/signin"}>Sign In</Link></li>
+                                isLogin ? (
+                                    <li onClick={handleLogout}><a>Logout</a></li>
+                                ) : <li><Link href={"/signin"}>Sign In</Link></li>
                             }
                         </ul>
                     </div>

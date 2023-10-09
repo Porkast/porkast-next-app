@@ -9,10 +9,13 @@ export default function AuthForm() {
 
     useEffect(() => {
         supabase.auth.onAuthStateChange((event, session) => {
-            console.log(event, session)
+            if (event === 'SIGNED_OUT') {
+                window.location.href = '/signin'
+            } else if (event === 'SIGNED_IN') {
+                window.location.href = '/'
+            }
         })
-
-    }, [])
+    })
 
     return (
 
