@@ -5,7 +5,7 @@ import EpisodeCard from "@/components/EpisodeCard"
 import HorizontalPodcastListView from '@/components/HorizontalPodcastListView';
 import Header from "@/components/Header"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState } from 'react';
+import { cache, useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
@@ -50,21 +50,21 @@ export default function SearchPage() {
     const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&scope=" + scope + "&sortByDate=" + sortByDate
 
     useEffect(() => {
-        async function fetchData() {
+        const fetchData = cache(async () => {
             const res = await fetch(`${process.env.API_BASE_URL}v1/api/search/feed/item?keyword=${q}&page=${page}&scope=${scope}&sortByDate=${sortByDate}`)
             const data = await res.json()
             setSearchResultData(data.data.items)
             setSearchResultCount(data.data.totalCount)
             setSearchResultTotalPage(data.data.totalPage)
             setSearchResultTime(data.data.tookTime)
-        }
+        })
 
-        async function searchFeedChannel() {
+        const searchFeedChannel = cache(async () => {
             const res = await fetch(`${process.env.API_BASE_URL}v1/api/search/feed/channel?keyword=${q}`)
             const data = await res.json()
             const channelResultList = data.data
             setSearchChannelResultData(channelResultList)
-        }
+        })
 
         if (!q || q.length == 0) {
             return
