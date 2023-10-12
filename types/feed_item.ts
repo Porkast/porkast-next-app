@@ -1,4 +1,4 @@
-type FeedItem = {
+export type FeedItem = {
     Id: string;
     ChannelId: string;
     Title: string;

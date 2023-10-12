@@ -1,0 +1,160 @@
+import { FeedItem } from "@/types/feed_item"
+import { cache } from "react"
+import { convertMillsTimeToDuration } from "./common"
+import { FeedChannel } from "@/types/feed_channel"
+import xml2js from 'xml2js';
+import { RSS } from "@/types/feed";
+
+export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: string, country: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
+    const res = await fetch(`https://itunes.apple.com/search?term=${q}&entity=${entity}&media=podcast&country=${country}&limit=${totalCount}`)
+    const jsonResp = await res.json()
+    var items: FeedItem[] = []
+    for (const resultItem of jsonResp.results) {
+        // format pubdate as yy:mm:dd
+        const formatedPubDate = new Date(resultItem.releaseDate).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+
+        const duration = convertMillsTimeToDuration(resultItem.trackTimeMillis)
+        items.push({
+            Id: resultItem.episodeGuid,
+            ChannelId: resultItem.collectionId,
+            Title: resultItem.trackName,
+            HighlightTitle: resultItem.trackName,
+            Link: resultItem.trackViewUrl,
+            PubDate: formatedPubDate,
+            Author: resultItem.artistIds.join(', '),
+            InputDate: new Date(formatedPubDate),
+            ImageUrl: resultItem.artworkUrl160,
+            EnclosureUrl: resultItem.episodeUrl,
+            EnclosureType: resultItem.episodeFileExtension,
+            EnclosureLength: resultItem.trackTimeMillis,
+            Duration: duration,
+            Episode: "",
+            Explicit: "",
+            Season: "",
+            EpisodeType: "",
+            Description: resultItem.description,
+            TextDescription: resultItem.description,
+            ChannelImageUrl: resultItem.artworkUrl600,
+            ChannelTitle: resultItem.collectionName,
+            HighlightChannelTitle: resultItem.collectionName,
+            FeedLink: resultItem.feedUrl,
+            Count: jsonResp.results.length,
+            TookTime: 0,
+            HasThumbnail: false
+        })
+    }
+
+    return items.slice(offset, offset + limit)
+})
+
+export const getPodcastInfo = cache(async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
+    const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
+    const jsonResp = await res.json()
+    const podcastInfo = jsonResp.results[0]
+    const feedLink = podcastInfo.feedUrl
+    const rss = await getRSSFeed(feedLink);
+
+    var episodeList: FeedItem[] = []
+    var channelInfo: FeedChannel = {
+        Id: podcastInfo.collectionId,
+        Title: podcastInfo.collectionName,
+        ChannelDesc: podcastInfo.collectionCensoredName,
+        TextChannelDesc: "",
+        ImageUrl: "",
+        Link: "",
+        FeedLink: "",
+        FeedType: "",
+        Categories: [],
+        Author: "",
+        OwnerName: "",
+        OwnerEmail: "",
+        Items: [],
+        Count: 0,
+        Copyright: "",
+        Language: "",
+        TookTime: 0,
+        HasThumbnail: false
+    };
+
+    return {
+        podcast: channelInfo,
+        episodes: episodeList
+    }
+})
+
+export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: string): Promise<{ podcast: FeedChannel, episode: FeedItem }> => {
+    const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
+    const jsonResp = await res.json()
+    const podcastInfo = jsonResp.results[0]
+    const feedLink = podcastInfo.feedUrl
+    const rss = await getRSSFeed(feedLink);
+    const rssChannelInfo = rss.rss.channel;
+    const rssItemList = rss.rss.channel.item
+    const targetItem = rssItemList.find(item => encodeURIComponent(item.guid) === episodeId)
+
+    // fill episode info with rss data 
+    const formatedPubDate = new Date(targetItem?.pubDate || '').toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    var episodeInfo: FeedItem = {
+        Id: episodeId,
+        ChannelId: podcastInfo.collectionId,
+        Title: targetItem?.title || '',
+        HighlightTitle: targetItem?.title || '',
+        Link: targetItem?.link || '',
+        PubDate: formatedPubDate,
+        Author: rssChannelInfo.title,
+        InputDate: new Date(targetItem?.pubDate || ''),
+        ImageUrl: targetItem?.["itunes:image"].$.href || '',
+        EnclosureUrl: targetItem?.enclosure?.$.url || '',
+        EnclosureType: targetItem?.enclosure?.$.type || '',
+        EnclosureLength: targetItem?.enclosure?.$.length || '',
+        Duration: targetItem?.["itunes:duration"] || '',
+        Episode: '',
+        Explicit: "",
+        Season: "",
+        EpisodeType: "",
+        Description: targetItem?.description || "",
+        TextDescription: targetItem?.description || "",
+        ChannelImageUrl: podcastInfo.artworkUrl600,
+        ChannelTitle: rssChannelInfo.title,
+        HighlightChannelTitle: rssChannelInfo.title,
+        FeedLink: feedLink,
+        Count: 0,
+        TookTime: 0,
+        HasThumbnail: false
+    }
+
+    var channelInfo: FeedChannel = {
+        Id: podcastInfo.collectionId,
+        Title: rssChannelInfo.title,
+        ChannelDesc: rssChannelInfo.description,
+        TextChannelDesc: rssChannelInfo.description,
+        ImageUrl: rssChannelInfo["itunes:image"].$.href,
+        Link: rssChannelInfo.link,
+        FeedLink: feedLink,
+        FeedType: rssChannelInfo.type,
+        Categories: podcastInfo.categories,
+        Author: rssChannelInfo["itunes:author"],
+        OwnerName: rssChannelInfo["itunes:owner"],
+        OwnerEmail: rssChannelInfo["itunes:owner"],
+        Items: [],
+        Count: 0,
+        Copyright: rssChannelInfo.copyright,
+        Language: rssChannelInfo.language,
+        TookTime: 0,
+        HasThumbnail: false
+    };
+
+    return {
+        podcast: channelInfo,
+        episode: episodeInfo
+    }
+})
+
+export const getRSSFeed = cache(async (feedUrl: string): Promise<RSS> => {
+    const res = await fetch(feedUrl);
+    const respStr = await res.text();
+    const parser = new xml2js.Parser({ explicitArray: false });
+    const result = await parser.parseStringPromise(respStr);
+
+    return result
+})

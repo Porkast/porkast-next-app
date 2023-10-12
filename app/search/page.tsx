@@ -9,28 +9,34 @@ import { cache, useEffect, useState } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
+import { FeedItem } from '@/types/feed_item';
+import { FeedChannel } from '@/types/feed_channel';
+import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
+
 
 export default function SearchPage() {
 
     const searhcParam = useSearchParams()
-    const [searchResultData, setSearchResultData] = useState([])
-    const [searchChannelResultData, setSearchChannelResultData] = useState([])
+    const [searchResultData, setSearchResultData] = useState<FeedItem[]>([])
+    const [searchChannelResultData, setSearchChannelResultData] = useState<FeedChannel[]>([])
     const [searchResultCount, setSearchResultCount] = useState(0)
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
-    const [searchResultTime, setSearchResultTime] = useState(0)
-    const [showSearchChannelResult, setShowSearchChannelResult] = useState(true)
+    const [showSearchChannelResult, setShowSearchChannelResult] = useState(false)
     const q = searhcParam.get('q')
+    const searchTotalCount = 200
+    const limit = 10
+
     let page = searhcParam.get('page')
     if (!page) {
         page = "1"
     }
-    let scope = searhcParam.get('scope')
-    if (!scope) {
-        scope = "item"
+    let entity = searhcParam.get('scope')
+    if (!entity) {
+        entity = "item"
     }
-    let sortByDate = searhcParam.get('sortByDate')
-    if (!sortByDate) {
-        sortByDate = "0"
+    let country = searhcParam.get('country')
+    if (!country) {
+        country = "US"
     }
 
     let nextPage = 0
@@ -39,7 +45,7 @@ export default function SearchPage() {
     } else {
         nextPage = parseInt(page) + 1
     }
-    const nextPageUrl = "/search?q=" + q + "&page=" + nextPage + "&scope=" + scope + "&sortByDate=" + sortByDate
+    const nextPageUrl = "/search?q=" + q + "&page=" + nextPage + "&entity=" + entity + "&country" + country
 
     let prePage = 0
     if (parseInt(page) > 1) {
@@ -47,20 +53,25 @@ export default function SearchPage() {
     } else {
         prePage = parseInt(page)
     }
-    const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&scope=" + scope + "&sortByDate=" + sortByDate
+    const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&entity=" + entity + "&country" + country
 
     useEffect(() => {
         const fetchData = cache(async () => {
-            const res = await fetch(`${process.env.API_BASE_URL}v1/api/search/feed/item?keyword=${q}&page=${page}&scope=${scope}&sortByDate=${sortByDate}`)
-            const data = await res.json()
-            setSearchResultData(data.data.items)
-            setSearchResultCount(data.data.totalCount)
-            setSearchResultTotalPage(data.data.totalPage)
-            setSearchResultTime(data.data.tookTime)
+            const offest = (parseInt(page || '1') - 1) * limit
+            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', 'CN', parseInt(page || '1'), limit, searchTotalCount)
+            setSearchResultData(data)
+            if (data.length > 0) {
+                const totalCount = data[0].Count
+                setSearchResultCount(totalCount)
+                const totalPage = Math.ceil(totalCount / limit)
+                setSearchResultTotalPage(totalPage)
+            } else {
+                setSearchResultCount(0)
+            }
         })
 
         const searchFeedChannel = cache(async () => {
-            const res = await fetch(`${process.env.API_BASE_URL}v1/api/search/feed/channel?keyword=${q}`)
+            const res = await fetch(`${process.env.API_BASE_URL}v1 / api / search / feed / channel ? keyword = ${q}`)
             const data = await res.json()
             const channelResultList = data.data
             setSearchChannelResultData(channelResultList)
@@ -70,15 +81,8 @@ export default function SearchPage() {
             return
         }
 
-        if (page == "1" && scope == "item") {
-            searchFeedChannel()
-            setShowSearchChannelResult(true)
-        } else {
-            setShowSearchChannelResult(false)
-        }
-
         fetchData()
-    }, [q, page, scope, sortByDate])
+    }, [q, page, entity, country])
 
     return (
         <AppProvider>
@@ -89,7 +93,7 @@ export default function SearchPage() {
                 <Header keyword={q ? q : ""} />
                 <div className="w-full flex justify-center pl-6 pr-6">
                     <div className="w-full max-w-2xl">
-                        <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results ({searchResultTime} seconds)</div>
+                        <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results</div>
                         {
                             showSearchChannelResult ?
                                 <div className='w-full mt-4 mb-9'>

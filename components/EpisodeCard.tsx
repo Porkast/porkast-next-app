@@ -25,7 +25,8 @@ type EpisodeCardProps = {
 export default function EpisodeCard(props: EpisodeCardProps) {
 
     const { data } = props
-    const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + data.itemId
+    const urlEncodeItemId = encodeURIComponent(data.itemId)
+    const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + urlEncodeItemId
     const podcastChannelLink = "/podcast/" + data.channelId
     data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
     data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
@@ -57,7 +58,13 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                     </a>
                     <div className="ml-3">
                         <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
-                        <div className="text-sm font-medium text-gray-500 mt-2">By {parse(data.authorName)}</div>
+                        {
+                            data.authorName == "" || data.authorName == "null" ? (
+                                <></>
+                            ) : (
+                                <div className="text-sm font-medium text-gray-500 mt-2">By {parse(data.authorName)}</div>
+                            )
+                        }
                         <div className="flex justify-start mt-4">
                             <div className="tooltip" data-tip="RSS Feed">
                                 <a href={data.rssLink} target="_blank">
@@ -93,6 +100,6 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
