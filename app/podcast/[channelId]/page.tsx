@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
 import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
+import { getPodcastInfo } from '@/libs/itunes';
+import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 
 export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
@@ -14,11 +16,11 @@ export default async function Page({ params, searchParams }: { params: { channel
     if (!page) {
         page = "1"
     }
-    const data = await getChannelInfoById(podcastId, page)
-    if (!data) {
+    const podcastData = await getPodcastInfo(podcastId)
+    if (!podcastData) {
         return
     }
-    const channelInfoData = data.channelInfo
+    const channelInfoData = podcastData.podcast
     const searchResultTotalPage = channelInfoData.Count
     var channelDescription = channelInfoData.TextChannelDesc
     channelDescription = addLinkTagToUrl(channelDescription)
@@ -114,7 +116,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                                 channelId: item.ChannelId,
                                                 title: item.HighlightTitle,
                                                 description: item.TextDescription,
-                                                image: item.ImageUrl,
+                                                image: item.ImageUrl == "" ? podcastData.podcast.ImageUrl : item.ImageUrl,
                                                 link: item.Link,
                                                 rssLink: item.FeedLink,
                                                 channelName: item.ChannelTitle,
@@ -149,25 +151,23 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.channelId
     const page = searchParams.page
-    const data = await getChannelInfoById(id, page)
-    if (data == null) {
+    const podcastData = await getPodcastInfo(id)
+    if (podcastData == null) {
         return {
             title: "Porkast",
             description: "Porkast is a podcast search engine.",
         }
     }
-    const channelInfoData = data.channelInfo
-    const title = channelInfoData.Title + "- Porkast"
-
+    const description = podcastData.podcast.ChannelDesc
+    const title = podcastData.podcast.Title + "- Porkast"
+    const authorList: Author[] = []
+    authorList.push({
+        name: podcastData.podcast.OwnerName,
+        url: podcastData.podcast.OwnerEmail
+    })
     return {
         title: title,
-        description: channelInfoData.ChannelDesc,
-        authors: [channelInfoData.Author],
+        description: description,
+        authors: authorList,
     }
 }
-
-export const getChannelInfoById = cache(async (id: string, page: string) => {
-    const res = await fetch(`${process.env.API_BASE_URL}v1/api/feed/channel/${id}?page=${page}`)
-    const data = await res.json()
-    return data.data
-})

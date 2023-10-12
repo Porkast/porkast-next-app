@@ -55,26 +55,16 @@ export const getPodcastInfo = cache(async (podcastId: string): Promise<{ podcast
     const rss = await getRSSFeed(feedLink);
 
     var episodeList: FeedItem[] = []
-    var channelInfo: FeedChannel = {
-        Id: podcastInfo.collectionId,
-        Title: podcastInfo.collectionName,
-        ChannelDesc: podcastInfo.collectionCensoredName,
-        TextChannelDesc: "",
-        ImageUrl: "",
-        Link: "",
-        FeedLink: "",
-        FeedType: "",
-        Categories: [],
-        Author: "",
-        OwnerName: "",
-        OwnerEmail: "",
-        Items: [],
-        Count: 0,
-        Copyright: "",
-        Language: "",
-        TookTime: 0,
-        HasThumbnail: false
-    };
+    rss.rss.channel.item.forEach(item => {
+        var guid = item.guid._
+        if (guid === undefined) {
+            // convert item.guid to string
+            guid = item.guid as unknown as string
+        }
+        episodeList.push(buildFeedItemModel(rss, feedLink, encodeURIComponent(guid), podcastId));
+    })
+    var channelInfo: FeedChannel = buildFeedChannelModel(rss, feedLink, podcastId);
+    channelInfo.Items = episodeList
 
     return {
         podcast: channelInfo,
@@ -88,8 +78,18 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
     const podcastInfo = jsonResp.results[0]
     const feedLink = podcastInfo.feedUrl
     const rss = await getRSSFeed(feedLink);
-    const rssChannelInfo = rss.rss.channel;
-    const rssItemList = rss.rss.channel.item
+    const episodeInfo = buildFeedItemModel(rss, feedLink, episodeId, podcastId);
+    var channelInfo: FeedChannel = buildFeedChannelModel(rss, feedLink, podcastId);
+
+    return {
+        podcast: channelInfo,
+        episode: episodeInfo
+    }
+})
+
+const buildFeedItemModel = (rssFeed: RSS, feedLink: string, episodeId: string, podcastId: string): FeedItem => {
+    const rssChannelInfo = rssFeed.rss.channel;
+    const rssItemList = rssFeed.rss.channel.item
     const targetItem = rssItemList.find(item => {
         var guid = item.guid._
         if (guid === undefined) {
@@ -100,7 +100,6 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
             return true
         }
     })
-
     // fill episode info with rss data 
     const formatedPubDate = new Date(targetItem?.pubDate || '').toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
     var formaedDuration = '';
@@ -113,14 +112,14 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
     }
     var episodeInfo: FeedItem = {
         Id: episodeId,
-        ChannelId: podcastInfo.collectionId,
+        ChannelId: podcastId,
         Title: targetItem?.title || '',
         HighlightTitle: targetItem?.title || '',
         Link: targetItem?.link || '',
         PubDate: formatedPubDate,
-        Author: rssChannelInfo.title,
+        Author: rssChannelInfo["itunes:author"],
         InputDate: new Date(targetItem?.pubDate || ''),
-        ImageUrl: targetItem?.["itunes:image"].$.href || '',
+        ImageUrl: targetItem?.["itunes:image"]?.$.href || rssChannelInfo["itunes:image"]?.$.href || '',
         EnclosureUrl: targetItem?.enclosure?.$.url || '',
         EnclosureType: targetItem?.enclosure?.$.type || '',
         EnclosureLength: targetItem?.enclosure?.$.length || '',
@@ -131,7 +130,7 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
         EpisodeType: "",
         Description: targetItem?.description || "",
         TextDescription: targetItem?.description || "",
-        ChannelImageUrl: podcastInfo.artworkUrl600,
+        ChannelImageUrl: rssChannelInfo["itunes:image"].$.href,
         ChannelTitle: rssChannelInfo.title,
         HighlightChannelTitle: rssChannelInfo.title,
         FeedLink: feedLink,
@@ -140,8 +139,13 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
         HasThumbnail: false
     }
 
+    return episodeInfo
+}
+
+const buildFeedChannelModel = (rssFeed: RSS, feedLink: string, podcastId: string): FeedChannel => {
+    const rssChannelInfo = rssFeed.rss.channel;
     var channelInfo: FeedChannel = {
-        Id: podcastInfo.collectionId,
+        Id: podcastId,
         Title: rssChannelInfo.title,
         ChannelDesc: rssChannelInfo.description,
         TextChannelDesc: rssChannelInfo.description,
@@ -149,23 +153,20 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
         Link: rssChannelInfo.link,
         FeedLink: feedLink,
         FeedType: rssChannelInfo.type,
-        Categories: podcastInfo.categories,
+        Categories: rssChannelInfo["itunes:category"].$.text.split(', '),
         Author: rssChannelInfo["itunes:author"],
         OwnerName: rssChannelInfo["itunes:owner"],
         OwnerEmail: rssChannelInfo["itunes:owner"],
         Items: [],
-        Count: 0,
+        Count: rssChannelInfo.item.length,
         Copyright: rssChannelInfo.copyright,
         Language: rssChannelInfo.language,
         TookTime: 0,
         HasThumbnail: false
     };
 
-    return {
-        podcast: channelInfo,
-        episode: episodeInfo
-    }
-})
+    return channelInfo
+}
 
 export const getRSSFeed = cache(async (feedUrl: string): Promise<RSS> => {
     const res = await fetch(feedUrl);

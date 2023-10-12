@@ -10,7 +10,11 @@ export interface RSS {
         channel: {
             title: string;
             description: string;
-            'itunes:category': string;
+            'itunes:category': {
+                "$": {
+                    text: string
+                }
+            };
             language: string;
             explicit: string;
             atomLink: {
