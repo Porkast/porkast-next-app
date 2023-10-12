@@ -37,7 +37,12 @@ export interface RSS {
                         length: string;
                     }
                 };
-                guid: string;
+                guid: {
+                    '$': {
+                        isPermaLink: string
+                    }
+                    '_': string
+                };
                 pubDate: string;
                 description: string;
                 link: string;
