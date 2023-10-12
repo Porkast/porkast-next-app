@@ -1,4 +1,6 @@
-type FeedChannel = {
+import { FeedItem } from "./feed_item";
+
+export type FeedChannel = {
     Id: string;
     Title: string;
     ChannelDesc: string;
@@ -6,7 +8,6 @@ type FeedChannel = {
     ImageUrl: string;
     Link: string;
     FeedLink: string;
-    Launguage: string;
     FeedType: string;
     Categories: string[];
     Author: string;
