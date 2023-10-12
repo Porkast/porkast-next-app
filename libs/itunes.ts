@@ -2,7 +2,7 @@ import { FeedItem } from "@/types/feed_item"
 import { cache } from "react"
 import { convertMillsTimeToDuration } from "./common"
 import { FeedChannel } from "@/types/feed_channel"
-import xml2js from 'xml2js';
+import xml2js, { parseString } from 'xml2js';
 import { RSS } from "@/types/feed";
 
 export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: string, country: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
@@ -90,10 +90,27 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
     const rss = await getRSSFeed(feedLink);
     const rssChannelInfo = rss.rss.channel;
     const rssItemList = rss.rss.channel.item
-    const targetItem = rssItemList.find(item => encodeURIComponent(item.guid) === episodeId)
+    const targetItem = rssItemList.find(item => {
+        var guid = item.guid._
+        if (guid === undefined) {
+            // convert item.guid to string
+            guid = item.guid as unknown as string
+        }
+        if (encodeURIComponent(guid) === episodeId) {
+            return true
+        }
+    })
 
     // fill episode info with rss data 
     const formatedPubDate = new Date(targetItem?.pubDate || '').toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
+    var formaedDuration = '';
+    // if duration contain : then ignore it 
+    if (targetItem?.["itunes:duration"]?.includes(':')) {
+        formaedDuration = targetItem?.["itunes:duration"]
+    } else {
+        const durationInt = parseInt(targetItem?.["itunes:duration"] || '0')
+        formaedDuration = convertMillsTimeToDuration(durationInt)
+    }
     var episodeInfo: FeedItem = {
         Id: episodeId,
         ChannelId: podcastInfo.collectionId,
@@ -107,7 +124,7 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
         EnclosureUrl: targetItem?.enclosure?.$.url || '',
         EnclosureType: targetItem?.enclosure?.$.type || '',
         EnclosureLength: targetItem?.enclosure?.$.length || '',
-        Duration: targetItem?.["itunes:duration"] || '',
+        Duration: formaedDuration,
         Episode: '',
         Explicit: "",
         Season: "",
