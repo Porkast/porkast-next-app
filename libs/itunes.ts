@@ -153,7 +153,7 @@ const buildFeedChannelModel = (rssFeed: RSS, feedLink: string, podcastId: string
         Link: rssChannelInfo.link,
         FeedLink: feedLink,
         FeedType: rssChannelInfo.type,
-        Categories: rssChannelInfo["itunes:category"].$.text.split(', '),
+        Categories: rssChannelInfo["itunes:category"].$?.text.split(', '),
         Author: rssChannelInfo["itunes:author"],
         OwnerName: rssChannelInfo["itunes:owner"],
         OwnerEmail: rssChannelInfo["itunes:owner"],

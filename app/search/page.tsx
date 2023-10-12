@@ -45,7 +45,7 @@ export default function SearchPage() {
     } else {
         nextPage = parseInt(page) + 1
     }
-    const nextPageUrl = "/search?q=" + q + "&page=" + nextPage + "&entity=" + entity + "&country" + country
+    const nextPageUrl = "/search?q=" + q + "&page=" + nextPage + "&entity=" + entity + "&country=" + country
 
     let prePage = 0
     if (parseInt(page) > 1) {
@@ -53,12 +53,12 @@ export default function SearchPage() {
     } else {
         prePage = parseInt(page)
     }
-    const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&entity=" + entity + "&country" + country
+    const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&entity=" + entity + "&country=" + country
 
     useEffect(() => {
         const fetchData = cache(async () => {
             const offest = (parseInt(page || '1') - 1) * limit
-            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', 'CN', parseInt(page || '1'), limit, searchTotalCount)
+            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', offest, limit, searchTotalCount)
             setSearchResultData(data)
             if (data.length > 0) {
                 const totalCount = data[0].Count
