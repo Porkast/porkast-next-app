@@ -1,6 +1,5 @@
 import type { Metadata, ResolvingMetadata } from 'next'
 import Header from "@/components/Header";
-import { cache } from 'react';
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
