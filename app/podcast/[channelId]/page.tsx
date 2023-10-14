@@ -15,18 +15,25 @@ export default async function Page({ params, searchParams }: { params: { channel
     if (!page) {
         page = "1"
     }
-    const podcastData = await getPodcastInfo(podcastId)
+    const limit = 10
+    const offest = (parseInt(page || '1') - 1) * limit
+    var podcastData = await getPodcastInfo(podcastId)
+    podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
+    podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
+
     if (!podcastData) {
         return
     }
     const channelInfoData = podcastData.podcast
-    const searchResultTotalPage = channelInfoData.Count
+    const episodeTotalCount = channelInfoData.Count
     var channelDescription = channelInfoData.TextChannelDesc
     channelDescription = addLinkTagToUrl(channelDescription)
     channelDescription = replaceWithBr(channelDescription)
 
+    const totalPage = Math.ceil(episodeTotalCount / limit)
+
     let nextPage = 0
-    if (parseInt(page) >= searchResultTotalPage) {
+    if (parseInt(page) >= totalPage) {
         nextPage = parseInt(page)
     } else {
         nextPage = parseInt(page) + 1
@@ -110,7 +117,7 @@ export default async function Page({ params, searchParams }: { params: { channel
 
                         {/* feed channel all item block */}
                         <div className="flex justify-start mt-6">
-                            <div className="text-sm">Total {channelInfoData.Count} Episodes</div>
+                            <div className="text-sm">Total {episodeTotalCount} Episodes</div>
                         </div>
                         <div className="w-full flex justify-center pt-9">
                             <div className="w-full">
