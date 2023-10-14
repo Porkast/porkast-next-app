@@ -12,6 +12,7 @@ import { AppProvider } from '@/components/AppContext';
 import { FeedItem } from '@/types/feed_item';
 import { FeedChannel } from '@/types/feed_channel';
 import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
+import Loading from '@/components/Loading';
 
 
 export default function SearchPage() {
@@ -22,6 +23,7 @@ export default function SearchPage() {
     const [searchResultCount, setSearchResultCount] = useState(0)
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
     const [showSearchChannelResult, setShowSearchChannelResult] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const q = searhcParam.get('q')
     const searchTotalCount = 200
     const limit = 10
@@ -57,8 +59,10 @@ export default function SearchPage() {
 
     useEffect(() => {
         const fetchData = cache(async () => {
+            setIsLoading(true)
             const offest = (parseInt(page || '1') - 1) * limit
             const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', offest, limit, searchTotalCount)
+            setIsLoading(false)
             setSearchResultData(data)
             if (data.length > 0) {
                 const totalCount = data[0].Count
@@ -102,24 +106,32 @@ export default function SearchPage() {
                                 : null
                         }
                         {
-                            searchResultData?.map((item: any) => {
-                                return (
-                                    <EpisodeCard key={item.Id} data={{
-                                        itemId: item.Id,
-                                        channelId: item.ChannelId,
-                                        title: item.HighlightTitle,
-                                        description: item.TextDescription,
-                                        image: item.ImageUrl,
-                                        link: item.Link,
-                                        rssLink: item.FeedLink,
-                                        channelName: item.HighlightChannelTitle,
-                                        authorName: item.Author,
-                                        pubDate: item.PubDate,
-                                        audioLength: item.Duration,
-                                        audioSrc: item.EnclosureUrl
-                                    }} />
-                                )
-                            })
+                            isLoading ? (
+                                <Loading />
+                            ) : (
+                                <>
+                                    {
+                                        searchResultData?.map((item: any) => {
+                                            return (
+                                                <EpisodeCard key={item.Id} data={{
+                                                    itemId: item.Id,
+                                                    channelId: item.ChannelId,
+                                                    title: item.HighlightTitle,
+                                                    description: item.TextDescription,
+                                                    image: item.ImageUrl,
+                                                    link: item.Link,
+                                                    rssLink: item.FeedLink,
+                                                    channelName: item.HighlightChannelTitle,
+                                                    authorName: item.Author,
+                                                    pubDate: item.PubDate,
+                                                    audioLength: item.Duration,
+                                                    audioSrc: item.EnclosureUrl
+                                                }} />
+                                            )
+                                        })
+                                    }
+                                </>
+                            )
                         }
                     </div>
                 </div>
