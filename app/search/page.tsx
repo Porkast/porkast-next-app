@@ -94,55 +94,56 @@ export default function SearchPage() {
                 <Helmet>
                     <title>Porkast-{q}</title>
                 </Helmet>
-                <Header keyword={q ? q : ""} />
-                <div className="w-full flex justify-center pl-6 pr-6">
-                    <div className="w-full max-w-2xl">
-                        <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results</div>
-                        {
-                            showSearchChannelResult ?
-                                <div className='w-full mt-4 mb-9'>
-                                    <HorizontalPodcastListView podcastChannelInfoList={searchChannelResultData} />
-                                </div>
-                                : null
-                        }
-                        {
-                            isLoading ? (
-                                <Loading />
-                            ) : (
-                                <>
-                                    {
-                                        searchResultData?.map((item: any) => {
-                                            return (
-                                                <EpisodeCard key={item.Id} data={{
-                                                    itemId: item.Id,
-                                                    channelId: item.ChannelId,
-                                                    title: item.HighlightTitle,
-                                                    description: item.TextDescription,
-                                                    image: item.ImageUrl,
-                                                    link: item.Link,
-                                                    rssLink: item.FeedLink,
-                                                    channelName: item.HighlightChannelTitle,
-                                                    authorName: item.Author,
-                                                    pubDate: item.PubDate,
-                                                    audioLength: item.Duration,
-                                                    audioSrc: item.EnclosureUrl
-                                                }} />
-                                            )
-                                        })
-                                    }
-                                </>
-                            )
-                        }
+                <Header keyword={q ? q : ""}>
+                    <div className="w-full flex justify-center pl-6 pr-6 pt-20">
+                        <div className="w-full max-w-2xl">
+                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results</div>
+                            {
+                                showSearchChannelResult ?
+                                    <div className='w-full mt-4 mb-9'>
+                                        <HorizontalPodcastListView podcastChannelInfoList={searchChannelResultData} />
+                                    </div>
+                                    : null
+                            }
+                            {
+                                isLoading ? (
+                                    <Loading />
+                                ) : (
+                                    <>
+                                        {
+                                            searchResultData?.map((item: any) => {
+                                                return (
+                                                    <EpisodeCard key={item.Id} data={{
+                                                        itemId: item.Id,
+                                                        channelId: item.ChannelId,
+                                                        title: item.HighlightTitle,
+                                                        description: item.TextDescription,
+                                                        image: item.ImageUrl,
+                                                        link: item.Link,
+                                                        rssLink: item.FeedLink,
+                                                        channelName: item.HighlightChannelTitle,
+                                                        authorName: item.Author,
+                                                        pubDate: item.PubDate,
+                                                        audioLength: item.Duration,
+                                                        audioSrc: item.EnclosureUrl
+                                                    }} />
+                                                )
+                                            })
+                                        }
+                                    </>
+                                )
+                            }
+                        </div>
                     </div>
-                </div>
-                <div className="w-full flex justify-center pt-6 pb-9">
-                    <div className="join">
-                        <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
-                        <button className="join-item btn btn-neutral">Page {page}</button>
-                        <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                    <div className="w-full flex justify-center pt-6 pb-9">
+                        <div className="join">
+                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                            <button className="join-item btn btn-neutral">Page {page}</button>
+                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                        </div>
                     </div>
-                </div>
-                <Footer />
+                    <Footer />
+                </Header>
             </div>
         </AppProvider>
     )
