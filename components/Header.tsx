@@ -78,11 +78,11 @@ export default function Header(props: HeaderProps) {
 
     return (
         <>
-            <div className="drawer md:p-9 pt-2">
+            <div className="drawer md:p-9 pt-2 block">
                 <input id="header-drawer" type="checkbox" className="drawer-toggle" />
-                <div className="drawer-content flex flex-col relative">
+                <div className="drawer-content flex flex-col">
                     {/* Navbar */}
-                    <div className=" fixed top-4 left-4 right-4 z-40">
+                    <div className="fixed top-4 left-4 right-4 z-40">
                         <div className="w-full navbar bg-base-200 rounded-box">
                             <div className="flex-none lg:hidden">
                                 <label htmlFor="header-drawer" aria-label="open sidebar" className="btn btn-square btn-ghost">
