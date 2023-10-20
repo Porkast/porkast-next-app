@@ -19,7 +19,12 @@ export default function Header(props: HeaderProps) {
     const [isLogin, setIsLogin] = useState(false);
 
     const showSearchModal = () => {
-        document?.getElementById('search_modal')?.showModal()
+        const dialog = document.getElementById('search_modal') as HTMLDialogElement;
+        if (dialog) {
+            dialog.open = true;
+        }
+        const searchInput = document.getElementById("search_input") as HTMLInputElement;
+        searchInput.focus();
     }
 
     const onSearchInputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,6 +32,10 @@ export default function Header(props: HeaderProps) {
     }
 
     const onSearchButtonClicked = () => {
+        const dialog = document.getElementById('search_modal') as HTMLDialogElement;
+        if (dialog) {
+            dialog.open = false;
+        }
         if (searchInputVal.length == 0) {
             return
         }
@@ -129,14 +138,17 @@ export default function Header(props: HeaderProps) {
                     </div>
                     {/* Page content here */}
                     {props.children}
+                    {/* Search Modal */}
                     <dialog id="search_modal" className="modal">
                         <div className="modal-box">
                             <div className="flex justify-end w-full">
                                 <div className="relative w-full">
-                                    <input type="text" placeholder={inputPlaceholderVal} value={searchInputVal} className="w-full px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
-                                    <button type="submit" className="absolute right-0 top-0 mt-2 mr-4" onClick={onSearchButtonClicked}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.873-4.873"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.618 10.382a5.5 5.5 0 11-7.778 0 5.5 5.5 0 017.778 0z"></path></svg>
-                                    </button>
+                                    <input id="search_input" type="text" placeholder={inputPlaceholderVal} value={searchInputVal} className="w-full px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
+                                    <form id="search_form" method="dialog">
+                                        <button id="search_button" type="submit" className="absolute right-0 top-0 mt-2 mr-4" onClick={onSearchButtonClicked}>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-5 h-5 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.873-4.873"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.618 10.382a5.5 5.5 0 11-7.778 0 5.5 5.5 0 017.778 0z"></path></svg>
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
