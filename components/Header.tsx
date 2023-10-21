@@ -106,12 +106,12 @@ export default function Header(props: HeaderProps) {
                                 <ul className="menu menu-horizontal">
                                     {/* Navbar menu content here */}
                                     <button className="btn btn-active btn-primary mr-4" onClick={showSearchModal}>Search</button>
-                                    <li><a className="text-xl btn btn-ghost">Trending</a></li>
+                                    <li><a className="text-base btn btn-ghost">Trending</a></li>
                                     {
                                         isLogin ? (
                                             <>
-                                                <li><a className="text-xl btn btn-ghost">Listen Later</a></li>
-                                                <li><a className="text-xl btn btn-ghost">Playlist</a></li>
+                                                <li><a className="text-base btn btn-ghost">Listen Later</a></li>
+                                                <li><a className="text-base btn btn-ghost">Playlist</a></li>
                                             </>
                                         ) : (
                                             <></>
@@ -127,10 +127,10 @@ export default function Header(props: HeaderProps) {
                                                 </label>
                                                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
                                                     {/* <li><a>Settings</a></li> */}
-                                                    <li><a className="text-xl btn btn-ghost">Sign Out</a></li>
+                                                    <li><a className="text-base btn btn-ghost">Sign Out</a></li>
                                                 </ul>
                                             </div>
-                                        ) : <li><Link className="text-xl btn btn-ghost" href={"/signin"}>Sign In</Link></li>
+                                        ) : <li><Link className="text-base btn btn-ghost" href={"/signin"}>Sign In</Link></li>
                                     }
                                 </ul>
                             </div>
@@ -161,12 +161,12 @@ export default function Header(props: HeaderProps) {
                     <label htmlFor="header-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-80 min-h-full bg-base-200">
                         {/* Sidebar content here */}
-                        <li><a className="text-xl font-bold">Trending</a></li>
+                        <li><a className="text-base font-bold">Trending</a></li>
                         {
                             isLogin ? (
                                 <>
-                                    <li><a className="text-xl font-bold">Listen Later</a></li>
-                                    <li><a className="text-xl font-bold">Playlist</a></li>
+                                    <li><a className="text-base font-bold">Listen Later</a></li>
+                                    <li><a className="text-base font-bold">Playlist</a></li>
                                 </>
                             ) : (
                                 <></>
@@ -174,8 +174,8 @@ export default function Header(props: HeaderProps) {
                         }
                         {
                             isLogin ? (
-                                <li onClick={handleLogout}><a className="text-xl font-bold">Sign Out</a></li>
-                            ) : <li><Link className="text-xl font-bold" href={"/signin"}>Sign In</Link></li>
+                                <li onClick={handleLogout}><a className="text-base font-bold">Sign Out</a></li>
+                            ) : <li><Link className="text-base font-bold" href={"/signin"}>Sign In</Link></li>
                         }
                     </ul>
                 </div>
