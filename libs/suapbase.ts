@@ -9,6 +9,7 @@ type SupabaseJsonResponse = {
 }
 
 type SupabaseSessionInfo = {
+    userId: string
     email: string
     token: string
 }
@@ -34,6 +35,7 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> 
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
         return {
+            userId: session.user.id,
             email: session.user.email as string,
             token: session.access_token,
         }
@@ -42,7 +44,7 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> 
     }
 }
 
-export const sendResetPasswordEmail = async (email: string) : Promise<SupabaseJsonResponse> => {
+export const sendResetPasswordEmail = async (email: string): Promise<SupabaseJsonResponse> => {
     const resp = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
     })

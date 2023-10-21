@@ -11,6 +11,7 @@ import { AppProvider } from '@/components/AppContext';
 import { FeedItem } from '@/types/feed_item';
 import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
 import Loading from '@/components/Loading';
+import SubscribeSearchKeywordButton from '@/components/SubscribeSearchKeywordButton';
 
 
 export default function SearchPage() {
@@ -115,6 +116,9 @@ export default function SearchPage() {
                                     </>
                                 )
                             }
+                            <div className='flex justify-start w-full'>
+                                <SubscribeSearchKeywordButton keyword={q || ''} />
+                            </div>
                         </div>
                     </div>
                     <div className="w-full flex justify-center pt-6 pb-9">
