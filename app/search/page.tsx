@@ -22,6 +22,8 @@ export default function SearchPage() {
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
     const q = searhcParam.get('q')
+    const excludeFeedId = searhcParam.get('excludeFeedId')
+    const source = searhcParam.get('source')
     const searchTotalCount = 200
     const limit = 10
 
@@ -117,7 +119,7 @@ export default function SearchPage() {
                                 )
                             }
                             <div className='flex justify-start w-full'>
-                                <SubscribeSearchKeywordButton keyword={q || ''} />
+                                <SubscribeSearchKeywordButton keyword={q || ''} excludeFeedId={excludeFeedId || ''} country={country} source={source || ''} />
                             </div>
                         </div>
                     </div>

@@ -35,14 +35,17 @@ export default function SubscribeSearchKeywordButton(props: SubscribeSearchKeywo
             userId: userId,
             keyword: props.keyword,
             country: props.country,
-            source: props.source,
+            source: props.source || 'itunes',
             excludeFeedId: props.excludeFeedId
         }
+
+        const userInfo = await getUserSessionInfo()
 
         const resp = await fetch(apiUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + userInfo?.token
             },
             body: JSON.stringify(params)
         })
