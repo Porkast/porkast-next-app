@@ -1,6 +1,6 @@
 'use client'
 
-import supabase, { isUserLoggedIn, userSignout } from "@/libs/suapbase"
+import supabase, { getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/suapbase"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -81,6 +81,18 @@ export default function Header(props: HeaderProps) {
         checkUserLogin()
     }, [])
 
+
+    useEffect(()=>{
+        const getUserInfo = async () => {
+            const userInfo = await getUserSessionInfo()
+            console.log(userInfo)
+        }
+
+        getUserInfo()
+
+
+    },[])
+
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
     }, [searchInputVal])
@@ -105,18 +117,19 @@ export default function Header(props: HeaderProps) {
                             <div className="flex-none hidden lg:block">
                                 <ul className="menu menu-horizontal">
                                     {/* Navbar menu content here */}
-                                    <button className="btn btn-active btn-primary mr-4" onClick={showSearchModal}>Search</button>
                                     <li><a className="text-base btn btn-ghost">Trending</a></li>
                                     {
                                         isLogin ? (
                                             <>
                                                 <li><a className="text-base btn btn-ghost">Listen Later</a></li>
                                                 <li><a className="text-base btn btn-ghost">Playlist</a></li>
+                                                <li><a className="text-base btn btn-ghost">Subscription</a></li>
                                             </>
                                         ) : (
                                             <></>
                                         )
                                     }
+                                    <li><a className="text-base btn btn-primary mr-2 ml-2" onClick={showSearchModal}>Search</a></li>
                                     {
                                         isLogin ? (
                                             <div className="dropdown dropdown-end">
@@ -167,6 +180,7 @@ export default function Header(props: HeaderProps) {
                                 <>
                                     <li><a className="text-base font-bold">Listen Later</a></li>
                                     <li><a className="text-base font-bold">Playlist</a></li>
+                                    <li><a className="text-base font-bold">Subscription</a></li>
                                 </>
                             ) : (
                                 <></>
