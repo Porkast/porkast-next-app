@@ -8,7 +8,7 @@ type SupabaseJsonResponse = {
     data: any
 }
 
-type SupabaseSessionInfo = {
+export type SupabaseSessionInfo = {
     userId: string
     email: string
     token: string
@@ -31,7 +31,7 @@ export const userSignout = async (): Promise<boolean> => {
     }
 }
 
-export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> => {
+export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
         return {
@@ -40,7 +40,11 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo | null> 
             token: session.access_token,
         }
     } else {
-        return null
+        return {
+            userId: '',
+            email: '',
+            token: '',
+        }
     }
 }
 

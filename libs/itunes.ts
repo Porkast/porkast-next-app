@@ -40,7 +40,12 @@ export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: st
             FeedLink: resultItem.feedUrl,
             Count: jsonResp.results.length,
             TookTime: 0,
-            HasThumbnail: false
+            HasThumbnail: false,
+            FeedId: resultItem.collectionId,
+            GUID: resultItem.episodeGuid,
+            Source: "itunes",
+            ExcludeFeedId: "",
+            Country: country
         })
     }
 
@@ -136,7 +141,12 @@ const buildFeedItemModel = (rssFeed: RSS, feedLink: string, episodeId: string, p
         FeedLink: feedLink,
         Count: 0,
         TookTime: 0,
-        HasThumbnail: false
+        HasThumbnail: false,
+        FeedId: podcastId,
+        GUID: episodeId,
+        Source: "itunes",
+        ExcludeFeedId: "",
+        Country: ""
     }
 
     return episodeInfo

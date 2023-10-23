@@ -1,5 +1,7 @@
 export type FeedItem = {
     Id: string;
+    FeedId: string;
+    GUID: string;
     ChannelId: string;
     Title: string;
     HighlightTitle: string;
@@ -23,6 +25,9 @@ export type FeedItem = {
     HighlightChannelTitle: string;
     FeedLink: string;
     Count: number;
+    Source: string
+    ExcludeFeedId: string
+    Country: string
     TookTime: number;
     HasThumbnail: boolean;
 }
