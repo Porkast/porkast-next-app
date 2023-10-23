@@ -1,6 +1,6 @@
 'use client'
 
-import supabase, { getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/suapbase"
+import supabase, { SupabaseSessionInfo, getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/suapbase"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -17,6 +17,7 @@ export default function Header(props: HeaderProps) {
     const [inputPlaceholderVal, setSearchPlaceholderVal] = useState('');
     const [headerTitle, setHeaderTitle] = useState('Porkast')
     const [isLogin, setIsLogin] = useState(false);
+    const [userInfo, setUserInfo] = useState<SupabaseSessionInfo>();
 
     const showSearchModal = () => {
         const dialog = document.getElementById('search_modal') as HTMLDialogElement;
@@ -82,16 +83,13 @@ export default function Header(props: HeaderProps) {
     }, [])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         const getUserInfo = async () => {
             const userInfo = await getUserSessionInfo()
-            console.log(userInfo)
+            setUserInfo(userInfo)
         }
-
         getUserInfo()
-
-
-    },[])
+    }, [])
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
@@ -123,7 +121,7 @@ export default function Header(props: HeaderProps) {
                                             <>
                                                 <li><a className="text-base btn btn-ghost">Listen Later</a></li>
                                                 <li><a className="text-base btn btn-ghost">Playlist</a></li>
-                                                <li><a className="text-base btn btn-ghost">Subscription</a></li>
+                                                <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Subscription</Link></li>
                                             </>
                                         ) : (
                                             <></>
@@ -180,7 +178,7 @@ export default function Header(props: HeaderProps) {
                                 <>
                                     <li><a className="text-base font-bold">Listen Later</a></li>
                                     <li><a className="text-base font-bold">Playlist</a></li>
-                                    <li><a className="text-base font-bold">Subscription</a></li>
+                                    <li><a href={`/subscription/${userInfo?.userId || ''}`} className="text-base font-bold">Subscription</a></li>
                                 </>
                             ) : (
                                 <></>
