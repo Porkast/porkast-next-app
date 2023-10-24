@@ -63,7 +63,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                                             link: item.Link,
                                             rssLink: item.FeedLink,
                                             channelName: item.ChannelTitle,
-                                            authorName: item.ChannelTitle,
+                                            authorName: item.Author,
                                             pubDate: item.PubDate,
                                             audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
                                             audioSrc: item.EnclosureUrl
