@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
 import { getUserSessionInfo } from "@/libs/suapbase"
@@ -13,7 +13,11 @@ type SubscribeSearchKeywordButtonProps = {
     excludeFeedId?: string
 }
 
-export default function SubscribeSearchKeywordButton(props: SubscribeSearchKeywordButtonProps) {
+export type SubscribeSearchKeywordButtonRef = {
+    updateSearchKeyword: (keyword: string) => void
+}
+
+const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordButtonProps, ref: Ref<SubscribeSearchKeywordButtonRef>) => {
 
     const [searchKeyword, setSearchKeyword] = useState('')
     const [userId, setUserId] = useState('')
@@ -33,7 +37,7 @@ export default function SubscribeSearchKeywordButton(props: SubscribeSearchKeywo
         var apiUrl = `${process.env.API_BASE_URL}v1/api/subscription/keyword`
         var params = {
             userId: userId,
-            keyword: props.keyword,
+            keyword: searchKeyword,
             country: props.country,
             source: props.source || 'itunes',
             excludeFeedId: props.excludeFeedId
@@ -71,6 +75,14 @@ export default function SubscribeSearchKeywordButton(props: SubscribeSearchKeywo
     useEffect(() => {
         setSearchKeyword(props.keyword)
 
+        if (ref) {
+            (ref as any).current = {
+                updateSearchKeyword: (keyword: string) => {
+                    setSearchKeyword(keyword)
+                }
+            }
+        }
+
     }, [])
 
     return (
@@ -80,4 +92,6 @@ export default function SubscribeSearchKeywordButton(props: SubscribeSearchKeywo
             </button>
         </>
     )
-}
+})
+
+export default SubscribeSearchKeywordButton;
