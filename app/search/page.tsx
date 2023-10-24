@@ -4,14 +4,14 @@ import { Helmet } from 'react-helmet';
 import EpisodeCard from "@/components/EpisodeCard"
 import Header from "@/components/Header"
 import { useSearchParams } from "next/navigation"
-import { cache, useEffect, useState } from 'react';
+import { cache, useEffect, useState, useRef } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import { FeedItem } from '@/types/feed_item';
 import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
 import Loading from '@/components/Loading';
-import SubscribeSearchKeywordButton from '@/components/SubscribeSearchKeywordButton';
+import SubscribeSearchKeywordButton, { SubscribeSearchKeywordButtonRef } from '@/components/SubscribeSearchKeywordButton';
 
 
 export default function SearchPage() {
@@ -21,6 +21,7 @@ export default function SearchPage() {
     const [searchResultCount, setSearchResultCount] = useState(0)
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
+    const subBtnRef = useRef<SubscribeSearchKeywordButtonRef>(null)
     const q = searhcParam.get('q')
     const excludeFeedId = searhcParam.get('excludeFeedId')
     const source = searhcParam.get('source')
@@ -71,6 +72,7 @@ export default function SearchPage() {
             } else {
                 setSearchResultCount(0)
             }
+            subBtnRef.current?.updateSearchKeyword(q || '')
         })
 
         if (!q || q.length == 0) {
@@ -119,7 +121,7 @@ export default function SearchPage() {
                                 )
                             }
                             <div className='flex justify-start w-full'>
-                                <SubscribeSearchKeywordButton keyword={q || ''} excludeFeedId={excludeFeedId || ''} country={country} source={source || ''} />
+                                <SubscribeSearchKeywordButton ref={subBtnRef} keyword={q || ''} excludeFeedId={excludeFeedId || ''} country={country} source={source || ''} />
                             </div>
                         </div>
                     </div>
