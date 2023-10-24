@@ -12,6 +12,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
 
     const userId = params.userId;
     const keyword = params.keyword
+    var totalCount = 0
     var page = searchParams.page
     if (!page) {
         page = "1"
@@ -24,6 +25,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
     itemList = resp.data
     if (itemList.length > 0) {
         totalPage = Math.ceil(itemList[0].Count / 10)
+        totalCount = itemList[0].Count
     }
 
     let nextPage = 0
@@ -48,9 +50,10 @@ export default async function Page({ params, searchParams }: { params: { userId:
                 <Header>
                     <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                         <div className='w-full max-w-2xl pl-6 pr-6'>
+                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                             {
                                 itemList.map((item, index) => {
-                                    return(
+                                    return (
                                         <EpisodeCard data={{
                                             itemId: item.GUID,
                                             channelId: item.FeedId,
@@ -106,10 +109,10 @@ export async function generateMetadata(
     parent: ResolvingMetadata
 ): Promise<Metadata> {
 
-    const itemList = await getUserKeywordSubscriptionItemList(params.userId, params.keyword, searchParams.page)
+    const title = 'Porkast-#' + decodeURIComponent(params.keyword)
 
     return {
-        title: params.keyword,
+        title: title,
         description: "",
     }
 }
