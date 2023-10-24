@@ -58,8 +58,9 @@ const getUserSubscriptionList = cache(async (userId: string): Promise<{ code: nu
     const subscriptionList: SubscriptionData[] = []
     const resp = await fetch(`${process.env.API_BASE_URL}v1/api/subscription/list?userId=${userId}`)
     const respJson = await resp.json()
-    console.log(respJson)
-    subscriptionList.push(...respJson.data)
+    if (respJson && respJson.data) {
+        subscriptionList.push(...respJson.data)
+    }
     return {
         code: respJson.code,
         message: respJson.message,
