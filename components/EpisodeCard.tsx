@@ -18,7 +18,8 @@ type EpisodeCardProps = {
         authorName: string;
         pubDate: string;
         audioLength: string;
-        audioSrc: string
+        audioSrc: string;
+        showExcludeBtn?: boolean;
     }
 }
 
@@ -47,7 +48,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <a href={podcastEpisodeLink} className="text-2xl font-medium mt-9">{parse(data.title)}</a>
                 <div className="w-full flex justify-start mt-4">
                     <a href={podcastChannelLink} className="avatar">
-                        <div className="w-24 rounded-xl">
+                        <div className="w-24 h-24 rounded-xl">
                             {
                                 data.image == "" || data.image == "null" ?
                                     <img src="/porkast-logo.png" />
@@ -57,7 +58,16 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                         </div>
                     </a>
                     <div className="ml-3">
-                        <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
+                        <div className='md:flex md:justify-start md:items-center'>
+                            <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
+                            {
+                                props.data.showExcludeBtn ? (
+                                    <button className="btn btn-xs btn-neutral items-center rounded-lg md:ml-2 md:mt-0 mt-2">Exclude</button>
+                                ) : (
+                                    <></>
+                                )
+                            }
+                        </div>
                         {
                             data.authorName == "" || data.authorName == "null" ? (
                                 <></>

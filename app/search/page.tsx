@@ -112,7 +112,8 @@ export default function SearchPage() {
                                                         authorName: item.Author,
                                                         pubDate: item.PubDate,
                                                         audioLength: item.Duration,
-                                                        audioSrc: item.EnclosureUrl
+                                                        audioSrc: item.EnclosureUrl,
+                                                        showExcludeBtn: true
                                                     }} />
                                                 )
                                             })
