@@ -1,10 +1,13 @@
+import { getUserSessionInfo } from "./suapbase";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string): Promise<JsonResponse> {
 
+    const userInfo = await getUserSessionInfo()
     const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/listenlater/item`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + userInfo?.token
         },
         body: JSON.stringify({
             channelId: channelId,

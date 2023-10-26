@@ -105,8 +105,8 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                         <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}</div>
                     </div>
                     <div className='flex justify-start mt-4 md:mt-0 items-center'>
-                        <AddListenLaterButton userId={''} itemId={data.itemId} channelId={data.channelId} />
-                        <AddToPlaylistButton userId={''} itemId={data.itemId} channelId={data.channelId} playlistId={''} />
+                        <AddListenLaterButton itemId={data.itemId} channelId={data.channelId} />
+                        <AddToPlaylistButton itemId={data.itemId} channelId={data.channelId} playlistId={''} />
                     </div>
                 </div>
             </div>
