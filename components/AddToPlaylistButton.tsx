@@ -3,9 +3,11 @@
 import { useAppContext } from "./AppContext";
 import { addToPlayList } from "@/libs/playlist";
 import { MsgAlertType } from "./MsgAlert";
+import { useEffect, useState } from "react";
+import { getUserSessionInfo } from "@/libs/suapbase";
 
 type AddToPlaylistButtonProps = {
-    userId: string;
+    userId?: string;
     itemId: string;
     channelId: string;
     playlistId: string;
@@ -15,16 +17,29 @@ type AddToPlaylistButtonProps = {
 export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
 
     const { userId, itemId, channelId, playlistId } = props
+    const [currentUserId, setCurrentUserId] = useState('')
     const appContext = useAppContext()
 
     const onAddToPlaylistBtnClick = async () => {
-        const resp = await addToPlayList(userId, itemId, channelId, playlistId)
+        const resp = await addToPlayList(userId || '', itemId, channelId, playlistId)
         if (resp.code === 0) {
             appContext.showMsgAlert('Added to playlist', MsgAlertType.SUCCESS)
         } else {
             appContext.showMsgAlert('Failed to add to playlist', MsgAlertType.FAILED)
         }
     }
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const usefInfo = await getUserSessionInfo()
+            if (userId) {
+                setCurrentUserId(userId)
+            } else {
+                setCurrentUserId(usefInfo.userId)
+            }
+        }
+        getUserInfo()
+    }, [userId, itemId, channelId])
 
     return (
         <>

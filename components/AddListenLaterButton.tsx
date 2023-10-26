@@ -3,9 +3,11 @@
 import { addToListenLater } from "@/libs/listen_later";
 import { useAppContext } from "./AppContext";
 import { MsgAlertType } from "./MsgAlert";
+import { useEffect, useState } from "react";
+import { getUserSessionInfo } from "@/libs/suapbase";
 
 type AddListenLaterButtonProps = {
-    userId: string;
+    userId?: string;
     itemId: string;
     channelId: string;
 }
@@ -13,10 +15,24 @@ type AddListenLaterButtonProps = {
 export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
 
     const { userId, itemId, channelId } = props
+    const [currentUserId, setCurrentUserId] = useState('')
     const appContext = useAppContext()
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const usefInfo = await getUserSessionInfo()
+            if (userId) {
+                setCurrentUserId(userId)
+            } else {
+                setCurrentUserId(usefInfo.userId)
+            }
+        }
+        getUserInfo()
+    }, [userId, itemId, channelId])
+
+
 
     const onAddListenLaterBtnClick = async () => {
-        const resp = await addToListenLater(userId, itemId, channelId)
+        const resp = await addToListenLater(currentUserId, itemId, channelId)
         if (resp.code === 0) {
             appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
         } else {
