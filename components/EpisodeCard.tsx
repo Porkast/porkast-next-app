@@ -5,6 +5,8 @@ import AudioPlayButton from './AudioPlayButton';
 import AddListenLaterButton from './AddListenLaterButton';
 import AddToPlaylistButton from './AddToPlaylistButton';
 
+type ExcludeFunction = (channelTitle: string, feedId: string) => void
+
 type EpisodeCardProps = {
     data: {
         itemId: string;
@@ -21,6 +23,7 @@ type EpisodeCardProps = {
         audioSrc: string;
         showExcludeBtn?: boolean;
     }
+    onExcludeModalBtnClick?: ExcludeFunction
 }
 
 export default function EpisodeCard(props: EpisodeCardProps) {
@@ -39,6 +42,12 @@ export default function EpisodeCard(props: EpisodeCardProps) {
         artist: data.authorName,
         cover: data.image,
         src: data.audioSrc
+    }
+
+    const onExcludeModalBtnClick = () => {
+        if (props.onExcludeModalBtnClick) {
+            props.onExcludeModalBtnClick(data.channelName, data.channelId)
+        }
     }
 
     return (
@@ -62,7 +71,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                             <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
                             {
                                 props.data.showExcludeBtn ? (
-                                    <button className="btn btn-xs btn-neutral items-center rounded-lg md:ml-2 md:mt-0 mt-2">Exclude</button>
+                                    <button className="btn btn-xs btn-neutral items-center rounded-lg md:ml-2 md:mt-0 mt-2" onClick={onExcludeModalBtnClick}>Exclude</button>
                                 ) : (
                                     <></>
                                 )

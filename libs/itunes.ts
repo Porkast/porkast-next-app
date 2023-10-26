@@ -5,11 +5,17 @@ import { FeedChannel } from "@/types/feed_channel"
 import xml2js, { parseString } from 'xml2js';
 import { RSS } from "@/types/feed";
 
-export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: string, country: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
+export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: string, country: string, excludeFeedId: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
     const res = await fetch(`https://itunes.apple.com/search?term=${q}&entity=${entity}&media=podcast&country=${country}&limit=${totalCount}`)
     const jsonResp = await res.json()
     var items: FeedItem[] = []
+    const excludeFeedIdList = excludeFeedId.split(',')
     for (const resultItem of jsonResp.results) {
+        // if the resultItem.collectionId is in excludeFeedIdList, skip
+        if (excludeFeedIdList.includes(String(resultItem.collectionId))) {
+            continue
+        }
+
         // format pubdate as yy:mm:dd
         const formatedPubDate = new Date(resultItem.releaseDate).toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
 
@@ -38,7 +44,7 @@ export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: st
             ChannelTitle: resultItem.collectionName,
             HighlightChannelTitle: resultItem.collectionName,
             FeedLink: resultItem.feedUrl,
-            Count: jsonResp.results.length,
+            Count: 0,
             TookTime: 0,
             HasThumbnail: false,
             FeedId: resultItem.collectionId,
@@ -48,6 +54,10 @@ export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: st
             Country: country
         })
     }
+
+    items.map(item => {
+        item.Count = items.length
+    })
 
     return items.slice(offset, offset + limit)
 })

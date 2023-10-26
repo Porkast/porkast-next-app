@@ -12,6 +12,7 @@ import { FeedItem } from '@/types/feed_item';
 import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
 import Loading from '@/components/Loading';
 import SubscribeSearchKeywordButton, { SubscribeSearchKeywordButtonRef } from '@/components/SubscribeSearchKeywordButton';
+import AddExcludeFeedIdDialog, { AddExcludeFeedIdDialogRef } from '@/components/AddExcludeFeedIdDialog';
 
 
 export default function SearchPage() {
@@ -21,6 +22,7 @@ export default function SearchPage() {
     const [searchResultCount, setSearchResultCount] = useState(0)
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
+    const addExcludeFeedIdDialogRef = useRef<AddExcludeFeedIdDialogRef>(null)
     const subBtnRef = useRef<SubscribeSearchKeywordButtonRef>(null)
     const q = searhcParam.get('q')
     const excludeFeedId = searhcParam.get('excludeFeedId')
@@ -57,11 +59,16 @@ export default function SearchPage() {
     }
     const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&entity=" + entity + "&country=" + country
 
+
+    const showExcludeDialog = (channelTitle: string, feedId: string) => {
+        addExcludeFeedIdDialogRef.current?.showModal(channelTitle, feedId)
+    }
+
     useEffect(() => {
         const fetchData = cache(async () => {
             setIsLoading(true)
             const offest = (parseInt(page || '1') - 1) * limit
-            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', offest, limit, searchTotalCount)
+            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)
             setIsLoading(false)
             setSearchResultData(data)
             if (data.length > 0) {
@@ -114,7 +121,9 @@ export default function SearchPage() {
                                                         audioLength: item.Duration,
                                                         audioSrc: item.EnclosureUrl,
                                                         showExcludeBtn: true
-                                                    }} />
+                                                    }}
+                                                        onExcludeModalBtnClick={showExcludeDialog}
+                                                    />
                                                 )
                                             })
                                         }
@@ -133,6 +142,7 @@ export default function SearchPage() {
                             <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
                         </div>
                     </div>
+                    <AddExcludeFeedIdDialog ref={addExcludeFeedIdDialogRef} />
                     <Footer />
                 </Header>
             </div>
