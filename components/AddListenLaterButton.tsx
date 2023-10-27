@@ -32,7 +32,7 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
 
 
     const onAddListenLaterBtnClick = async () => {
-        const resp = await addToListenLater(currentUserId, itemId, channelId)
+        const resp = await addToListenLater(channelId, itemId, currentUserId, "itunes")
         if (resp.code === 0) {
             appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
         } else {
