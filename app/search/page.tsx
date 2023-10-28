@@ -14,6 +14,10 @@ import Loading from '@/components/Loading';
 import SubscribeSearchKeywordButton, { SubscribeSearchKeywordButtonRef } from '@/components/SubscribeSearchKeywordButton';
 import AddExcludeFeedIdDialog, { AddExcludeFeedIdDialogRef } from '@/components/AddExcludeFeedIdDialog';
 
+enum Page {
+    NextPage,
+    PrePage
+}
 
 export default function SearchPage() {
 
@@ -43,22 +47,8 @@ export default function SearchPage() {
         country = "US"
     }
 
-    let nextPage = 0
-    if (parseInt(page) >= searchResultTotalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/search?q=" + q + "&page=" + nextPage + "&entity=" + entity + "&country=" + country
-
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/search?q=" + q + "&page=" + prePage + "&entity=" + entity + "&country=" + country
-
+    const prevPageUrl = getTargetPageUrl(q || '', parseInt(page) - 1, searchResultTotalPage, Page.PrePage)
+    const nextPageUrl = getTargetPageUrl(q || '', parseInt(page) + 1, searchResultTotalPage, Page.NextPage)
 
     const showExcludeDialog = (channelTitle: string, feedId: string) => {
         addExcludeFeedIdDialogRef.current?.showModal(channelTitle, feedId)
@@ -148,4 +138,22 @@ export default function SearchPage() {
             </div>
         </AppProvider>
     )
+}
+
+const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTotalPage: number, target: Page): string => {
+    const urlParams = new URLSearchParams(window.location.search);
+    var targetPageUrl = '';
+    var targetPageNum = 0;
+    var entity = urlParams.get('entity') ? urlParams.get('entity') : 'item';
+    var country = urlParams.get('country') ? urlParams.get('country') : 'US';
+    var excludeFeedId = urlParams.get('excludeFeedId') ? urlParams.get('excludeFeedId') : '';
+
+    if (target == Page.NextPage) {
+        targetPageNum = targetPageNum > searchResultTotalPage ? currentPage : currentPage + 1
+    } else {
+        targetPageNum = targetPageNum > 1 ? currentPage -1 : currentPage
+    }
+    targetPageUrl = "/search?q=" + keyword + "&page=" + targetPageNum + "&entity=" + entity + "&country=" + country + "&excludeFeedId=" + excludeFeedId
+
+    return targetPageUrl
 }
