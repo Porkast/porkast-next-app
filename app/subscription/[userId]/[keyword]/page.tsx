@@ -23,9 +23,11 @@ export default async function Page({ params, searchParams }: { params: { userId:
     var itemList: FeedItem[] = []
     const resp = await getUserKeywordSubscriptionItemList(userId, keyword, page)
     itemList = resp.data
-    if (itemList.length > 0) {
+    if (itemList && itemList.length > 0) {
         totalPage = Math.ceil(itemList[0].Count / 10)
         totalCount = itemList[0].Count
+    } else {
+        return
     }
 
     let nextPage = 0
