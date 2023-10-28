@@ -37,9 +37,16 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
     data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
 
+    var artist = ''
+    if (!data.authorName) {
+        artist = data.channelName
+    } else {
+        artist = data.authorName
+    }
+
     const audioPlayerParams: AudioPlayerParams = {
         title: data.title,
-        artist: data.authorName,
+        artist: artist,
         cover: data.image,
         src: data.audioSrc
     }
