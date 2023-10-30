@@ -125,7 +125,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                         channelInfoData.Items.map((item: any) => {
                                             return (
                                                 <EpisodeCard key={item.Id} data={{
-                                                    itemId: item.Id,
+                                                    itemId: item.GUID,
                                                     channelId: item.ChannelId,
                                                     title: item.HighlightTitle,
                                                     description: item.TextDescription,
