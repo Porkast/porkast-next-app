@@ -22,6 +22,7 @@ type EpisodeCardProps = {
         audioLength: string;
         audioSrc: string;
         showExcludeBtn?: boolean;
+        hideListenLaterBtn?: boolean;
     }
     onExcludeModalBtnClick?: ExcludeFunction
 }
@@ -121,7 +122,13 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                         <div className="text-base text-gray-500 w-20 ml-4">{data.audioLength}</div>
                     </div>
                     <div className='flex justify-start mt-4 md:mt-0 items-center'>
-                        <AddListenLaterButton itemId={data.itemId} channelId={data.channelId} />
+                        {
+                            data.hideListenLaterBtn ? (
+                                <></>
+                            ) : (
+                                <AddListenLaterButton itemId={data.itemId} channelId={data.channelId} />
+                            )
+                        }
                         <AddToPlaylistButton itemId={data.itemId} channelId={data.channelId} playlistId={''} />
                     </div>
                 </div>
