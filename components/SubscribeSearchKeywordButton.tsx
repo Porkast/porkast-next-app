@@ -21,6 +21,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
 
     const [searchKeyword, setSearchKeyword] = useState('')
     const [userId, setUserId] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
     const appContext = useAppContext()
 
     useEffect(() => {
@@ -55,7 +56,6 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
         })
 
         const respJson = await resp.json()
-        console.log(respJson)
         if (respJson.code === 0) {
             appContext.showMsgAlert('Subscribed Success', MsgAlertType.SUCCESS)
         } else {
@@ -69,7 +69,12 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
             appContext.showMsgAlert('Please login first', MsgAlertType.FAILED)
             return
         }
+        if (isLoading) {
+            return
+        }
+        setIsLoading(true)
         subscribeByKeyword()
+        setIsLoading(false)
     }
 
     useEffect(() => {
@@ -88,7 +93,13 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
     return (
         <>
             <button className="btn btn-primary rounded-lg ml-4" onClick={onSubscribeByKeywordBtnClick}>
-                <span className="font-bold text-base">Subscribe {searchKeyword}</span>
+                {
+                    isLoading ? (
+                        <span className="font-bold text-base flex items-center">Subscribe <span className="loading loading-spinner loading-sm ml-4"></span></span>
+                    ) : (
+                        <span className="font-bold text-base">Subscribe {searchKeyword}</span>
+                    )
+                }
             </button>
         </>
     )
