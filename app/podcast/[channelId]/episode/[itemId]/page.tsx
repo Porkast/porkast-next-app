@@ -63,8 +63,8 @@ export default async function Page({ params }: { params: { channelId: string, it
                                     <div className="text-base text-gray-500 w-20 ml-4">{episode.Duration}</div>
                                 </div>
                                 <div className="flex justify-start items-center md:mt-0 mt-4">
-                                    <AddListenLaterButton userId={''} itemId={episode.Id} channelId={podcastInfo.Id} />
-                                    <AddToPlaylistButton userId={''} itemId={episode.Id} channelId={podcastInfo.Id} playlistId={''} />
+                                    <AddListenLaterButton userId={''} itemId={episode.GUID} channelId={podcastInfo.Id} />
+                                    <AddToPlaylistButton userId={''} itemId={episode.GUID} channelId={podcastInfo.Id} playlistId={''} />
                                 </div>
                             </div>
                             <p className="mt-4 text-xs">{podcastInfo.Copyright}</p>

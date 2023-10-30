@@ -119,7 +119,7 @@ export default function Header(props: HeaderProps) {
                                     {
                                         isLogin ? (
                                             <>
-                                                <li><a className="text-base btn btn-ghost">Listen Later</a></li>
+                                                <li><Link href={`/listenlater/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Listen Later</Link></li>
                                                 <li><a className="text-base btn btn-ghost">Playlist</a></li>
                                                 <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Subscription</Link></li>
                                             </>
@@ -176,9 +176,9 @@ export default function Header(props: HeaderProps) {
                         {
                             isLogin ? (
                                 <>
-                                    <li><a className="text-base font-bold">Listen Later</a></li>
+                                    <li><Link href={'/listenlater/' + userInfo?.userId} className="text-base font-bold">Listen Later</Link></li>
                                     <li><a className="text-base font-bold">Playlist</a></li>
-                                    <li><a href={`/subscription/${userInfo?.userId || ''}`} className="text-base font-bold">Subscription</a></li>
+                                    <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base font-bold">Subscription</Link></li>
                                 </>
                             ) : (
                                 <></>
