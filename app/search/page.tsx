@@ -47,8 +47,8 @@ export default function SearchPage() {
         country = "US"
     }
 
-    const prevPageUrl = getTargetPageUrl(q || '', parseInt(page) - 1, searchResultTotalPage, Page.PrePage)
-    const nextPageUrl = getTargetPageUrl(q || '', parseInt(page) + 1, searchResultTotalPage, Page.NextPage)
+    const prevPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.PrePage)
+    const nextPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.NextPage)
 
     const showExcludeDialog = (channelTitle: string, feedId: string) => {
         addExcludeFeedIdDialogRef.current?.showModal(channelTitle, feedId)
@@ -141,6 +141,9 @@ export default function SearchPage() {
 }
 
 const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTotalPage: number, target: Page): string => {
+    console.log('target : ', target)
+    console.log('currentPage : ', currentPage)
+    console.log('searchResultCount : ', searchResultTotalPage)
     const urlParams = new URLSearchParams(window.location.search);
     var targetPageUrl = '';
     var targetPageNum = 0;
@@ -149,9 +152,9 @@ const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTota
     var excludeFeedId = urlParams.get('excludeFeedId') ? urlParams.get('excludeFeedId') : '';
 
     if (target == Page.NextPage) {
-        targetPageNum = targetPageNum > searchResultTotalPage ? currentPage : currentPage + 1
+        targetPageNum = currentPage >= searchResultTotalPage ? currentPage : currentPage + 1
     } else {
-        targetPageNum = targetPageNum > 1 ? currentPage -1 : currentPage
+        targetPageNum = currentPage > 1 ? currentPage -1 : currentPage
     }
     targetPageUrl = "/search?q=" + keyword + "&page=" + targetPageNum + "&entity=" + entity + "&country=" + country + "&excludeFeedId=" + excludeFeedId
 
