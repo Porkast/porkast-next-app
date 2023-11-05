@@ -26,6 +26,8 @@ export default function SearchPage() {
     const [searchResultCount, setSearchResultCount] = useState(0)
     const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
     const [isLoading, setIsLoading] = useState(true)
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
     const addExcludeFeedIdDialogRef = useRef<AddExcludeFeedIdDialogRef>(null)
     const subBtnRef = useRef<SubscribeSearchKeywordButtonRef>(null)
     const q = searhcParam.get('q')
@@ -34,10 +36,7 @@ export default function SearchPage() {
     const searchTotalCount = 200
     const limit = 10
 
-    let page = searhcParam.get('page')
-    if (!page) {
-        page = "1"
-    }
+    let page = searhcParam.get('page') || '1'
     let entity = searhcParam.get('scope')
     if (!entity) {
         entity = "item"
@@ -78,6 +77,20 @@ export default function SearchPage() {
 
         fetchData()
     }, [q, page, entity, country])
+
+
+    useEffect(()=>{
+        if (parseInt(page) >= searchResultTotalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsPreBtnClickable(true)
+        }
+    }, [page, searchResultCount])
 
     return (
         <AppProvider>
@@ -127,9 +140,21 @@ export default function SearchPage() {
                     </div>
                     <div className="w-full flex justify-center pt-6 pb-9">
                         <div className="join">
-                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                            {
+                                isPreBtnClickable ? (
+                                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                ) : (
+                                    <button className="join-item btn btn-neutral btn-disabled">«</button>
+                                )
+                            }
                             <button className="join-item btn btn-neutral">Page {page}</button>
-                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                            {
+                                isNextBtnClickable ? (
+                                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                ) : (
+                                    <button className="join-item btn btn-neutral btn-disabled">»</button>
+                                )
+                            }
                         </div>
                     </div>
                     <AddExcludeFeedIdDialog ref={addExcludeFeedIdDialogRef} />
@@ -141,9 +166,6 @@ export default function SearchPage() {
 }
 
 const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTotalPage: number, target: Page): string => {
-    console.log('target : ', target)
-    console.log('currentPage : ', currentPage)
-    console.log('searchResultCount : ', searchResultTotalPage)
     const urlParams = new URLSearchParams(window.location.search);
     var targetPageUrl = '';
     var targetPageNum = 0;
@@ -154,7 +176,7 @@ const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTota
     if (target == Page.NextPage) {
         targetPageNum = currentPage >= searchResultTotalPage ? currentPage : currentPage + 1
     } else {
-        targetPageNum = currentPage > 1 ? currentPage -1 : currentPage
+        targetPageNum = currentPage > 1 ? currentPage - 1 : currentPage
     }
     targetPageUrl = "/search?q=" + keyword + "&page=" + targetPageNum + "&entity=" + entity + "&country=" + country + "&excludeFeedId=" + excludeFeedId
 
