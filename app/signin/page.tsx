@@ -4,6 +4,7 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import supabase from '@/libs/suapbase'
 import { useEffect } from 'react'
+import { ServerUserInfo, syncToServer } from '@/libs/user'
 
 export default function AuthForm() {
 
@@ -12,6 +13,12 @@ export default function AuthForm() {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/signin'
             } else if (event === 'SIGNED_IN') {
+                const userInfo = session?.user
+                const serverUserInfo: ServerUserInfo = {
+                    id: userInfo?.id as string,
+                    email: userInfo?.email as string,
+                }
+                syncToServer(serverUserInfo)
                 window.location.href = '/'
             }
         })
