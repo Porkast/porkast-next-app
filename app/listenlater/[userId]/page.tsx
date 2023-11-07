@@ -2,6 +2,7 @@ import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Header from "@/components/Header"
 import { convertMillsTimeToDuration } from "@/libs/common"
+import { getUserInfoFromServer } from "@/libs/user"
 import { UserListenLater } from "@/types/feed_item"
 import { Metadata, ResolvingMetadata } from "next"
 import { Author } from "next/dist/lib/metadata/types/metadata-types"
@@ -43,7 +44,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
     } else {
         prePage = parseInt(page)
     }
-    const prevPageUrl = "/listenlater/" + userId + "/"  + "?page=" + prePage
+    const prevPageUrl = "/listenlater/" + userId + "/" + "?page=" + prePage
 
 
     return (
@@ -91,11 +92,23 @@ export default async function Page({ params, searchParams }: { params: { userId:
 }
 
 export async function generateMetadata(
-    { params }: { params: { channelId: string } },
+    { params, searchParams }: { params: { userId: string }, searchParams: { page: string } },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+
+    const serverUserInfo = await getUserInfoFromServer(params.userId)
     const description = ""
-    const title = ""
+    let nickname: string = ""
+    if (!serverUserInfo.data.nickname) {
+        if (serverUserInfo.data.email) {
+            nickname = serverUserInfo.data.email.split('@')[0]
+        } else if (serverUserInfo.data.phone) {
+            nickname = serverUserInfo.data.phone
+        }
+    } else {
+        nickname = serverUserInfo.data.nickname
+    }
+    const title = nickname + "'s Listen Later | Porkast"
     const authorList: Author[] = []
     authorList.push({
         name: "",
