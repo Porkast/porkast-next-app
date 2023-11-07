@@ -42,3 +42,14 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
 
     return resp
 }
+
+export const getUserInfoFromServer = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
+    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/user/info/${userId}`)
+    const respJson = await resp.json()
+
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
+}
