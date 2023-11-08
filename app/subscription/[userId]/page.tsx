@@ -37,7 +37,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                             {
                                 subscriptionList.map((item, index) => {
                                     return (
-                                        <a href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl">
+                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl">
                                             <div className="card-body">
                                                 <h2 className="card-title">#{item.Keyword}</h2>
                                                 <p>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</p>
