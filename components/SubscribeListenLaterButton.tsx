@@ -1,7 +1,6 @@
 'use client'
 
 import { useAppContext } from "./AppContext";
-import { addToPlayList } from "@/libs/playlist";
 import { MsgAlertType } from "./MsgAlert";
 import { useEffect, useState } from "react";
 import { getUserSessionInfo } from "@/libs/suapbase";
