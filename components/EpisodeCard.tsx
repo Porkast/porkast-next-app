@@ -23,6 +23,7 @@ type EpisodeCardProps = {
         audioSrc: string;
         showExcludeBtn?: boolean;
         hideListenLaterBtn?: boolean;
+        hideAddToPlaylistBtn?: boolean;
     }
     onExcludeModalBtnClick?: ExcludeFunction
 }
@@ -129,7 +130,13 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                                 <AddListenLaterButton itemId={data.itemId} channelId={data.channelId} />
                             )
                         }
-                        <AddToPlaylistButton itemId={data.itemId} channelId={data.channelId} playlistId={''} />
+                        {
+                            data.hideAddToPlaylistBtn ? (
+                                <></>
+                            ):(
+                                <AddToPlaylistButton itemId={data.itemId} channelId={data.channelId} playlistId={''} />
+                            )
+                        }
                     </div>
                 </div>
             </div>
