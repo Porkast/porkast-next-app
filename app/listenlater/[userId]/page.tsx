@@ -11,6 +11,8 @@ import Link from "next/link"
 
 export default async function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
+    var isNextBtnClickable = true
+    var isPreBtnClickable = true
     const userId = params.userId;
     var totalCount = 0
     var page = searchParams.page
@@ -46,6 +48,16 @@ export default async function Page({ params, searchParams }: { params: { userId:
     }
     const prevPageUrl = "/listenlater/" + userId + "/" + "?page=" + prePage
 
+    if (parseInt(page) >= totalPage) {
+        isNextBtnClickable = false
+    } else {
+        isNextBtnClickable = true
+    }
+    if (parseInt(page) <= 1) {
+        isPreBtnClickable = false
+    } else {
+        isPreBtnClickable = true
+    }
 
     return (
         <AppProvider>
@@ -78,9 +90,21 @@ export default async function Page({ params, searchParams }: { params: { userId:
 
                             <div className="w-full flex justify-center pt-6 pb-9">
                                 <div className="join">
-                                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                    {
+                                        isPreBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">«</button>
+                                        )
+                                    }
                                     <button className="join-item btn btn-neutral">Page {page}</button>
-                                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                    {
+                                        isNextBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">»</button>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
