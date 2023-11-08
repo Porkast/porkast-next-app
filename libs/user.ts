@@ -11,15 +11,24 @@ export type ServerUserInfo = {
     updateDate?: Date;
     avatar?: string;
 }
+
+export const getTempNickname = (serverUserInfo: ServerUserInfo): string => {
+    let nickname: string = ""
+    if (!serverUserInfo.nickname) {
+        if (serverUserInfo.email) {
+            nickname = serverUserInfo.email.split('@')[0]
+        } else if (serverUserInfo.phone) {
+            nickname = serverUserInfo.phone
+        }
+    } else {
+        nickname = serverUserInfo.nickname
+    }
+
+    return nickname
+}
+
 export const syncToServer = async (userInfo: ServerUserInfo) => {
 
-    if (!userInfo.nickname) {
-        if (userInfo.email) {
-            userInfo.nickname = userInfo.email.split('@')[0]
-        } else if (userInfo.phone) {
-            userInfo.nickname = userInfo.phone
-        }
-    }
 
     const resp = await fetch(`${process.env.API_BASE_URL}v1/api/user/sync`, {
         method: 'POST',

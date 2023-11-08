@@ -4,6 +4,7 @@ import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
 import { getUserSessionInfo } from "@/libs/suapbase"
+import { subscribeSearchKeyword } from "@/libs/subscription"
 
 
 type SubscribeSearchKeywordButtonProps = {
@@ -35,27 +36,8 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
     }, [])
 
     const subscribeByKeyword = async () => {
-        var apiUrl = `${process.env.API_BASE_URL}v1/api/subscription/keyword`
-        var params = {
-            userId: userId,
-            keyword: searchKeyword,
-            country: props.country,
-            source: props.source || 'itunes',
-            excludeFeedId: props.excludeFeedId
-        }
-
         const userInfo = await getUserSessionInfo()
-
-        const resp = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + userInfo?.token
-            },
-            body: JSON.stringify(params)
-        })
-
-        const respJson = await resp.json()
+        const respJson = await subscribeSearchKeyword(userId, searchKeyword, props.country, props.source, props.excludeFeedId, userInfo?.token)
         if (respJson.code === 0) {
             appContext.showMsgAlert('Subscribed Success', MsgAlertType.SUCCESS)
         } else {

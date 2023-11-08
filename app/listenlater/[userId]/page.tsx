@@ -1,8 +1,9 @@
 import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Header from "@/components/Header"
+import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { convertMillsTimeToDuration } from "@/libs/common"
-import { getUserInfoFromServer } from "@/libs/user"
+import { getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserListenLater } from "@/types/feed_item"
 import { Metadata, ResolvingMetadata } from "next"
 import { Author } from "next/dist/lib/metadata/types/metadata-types"
@@ -11,8 +12,6 @@ import Link from "next/link"
 
 export default async function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
-    var isNextBtnClickable = true
-    var isPreBtnClickable = true
     const userId = params.userId;
     var totalCount = 0
     var page = searchParams.page
@@ -21,7 +20,6 @@ export default async function Page({ params, searchParams }: { params: { userId:
     }
 
     var totalPage = 0
-
     var itemList: UserListenLater[] = []
     const resp = await getListenLaterListByUserId(userId, parseInt(page))
     itemList = resp.data
@@ -29,6 +27,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
         totalPage = Math.ceil(itemList[0].Count / 10)
         totalCount = itemList[0].Count
     } else {
+        // TODO: show error page
         return
     }
 
@@ -48,6 +47,8 @@ export default async function Page({ params, searchParams }: { params: { userId:
     }
     const prevPageUrl = "/listenlater/" + userId + "/" + "?page=" + prePage
 
+    var isNextBtnClickable = true
+    var isPreBtnClickable = true
     if (parseInt(page) >= totalPage) {
         isNextBtnClickable = false
     } else {
@@ -59,15 +60,51 @@ export default async function Page({ params, searchParams }: { params: { userId:
         isPreBtnClickable = true
     }
 
+    const userInfoResp = await getUserInfoFromServer(userId)
+    if (userInfoResp.code != 0) {
+        // TODO: show error page
+        return
+    }
+    const userInfo = userInfoResp.data
+    const nickname = getTempNickname(userInfo)
+
     return (
         <AppProvider>
             <div>
                 <Header>
                     <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                         <div className='w-full max-w-2xl pl-6 pr-6'>
-                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
+                            <div className="w-full mb-10">
+                                <div className="flex justify-start mt-4">
+                                    <div className="avatar">
+                                        <div className="w-24 h-24 rounded-xl">
+                                            {
+                                                userInfo.avatar ?
+                                                    <img src={userInfo.avatar} />
+                                                    :
+                                                    <img src="/porkast-logo.png" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="ml-3">
+                                        <div className="text-2xl font-bold">{nickname}'s Porkast Listen Later</div>
+                                        <div className="mt-4 -ml-2 flex justify-start">
+                                            <SubscribeListenLaterBtn creatorId={userId} />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
+                            </div>
+                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} episode</div>
                             {
                                 itemList.map((item, index) => {
+                                    // check if item.Duration contain `:`
+                                    let duration: string
+                                    if (!isNaN(Number(item.Duration))) {
+                                        duration = convertMillsTimeToDuration(parseInt(item.Duration))
+                                    } else {
+                                        duration = item.Duration
+                                    }
                                     return (
                                         <EpisodeCard data={{
                                             itemId: item.GUID,
@@ -80,9 +117,10 @@ export default async function Page({ params, searchParams }: { params: { userId:
                                             channelName: item.ChannelTitle,
                                             authorName: item.Author,
                                             pubDate: item.PubDate,
-                                            audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
+                                            audioLength: duration,
                                             audioSrc: item.EnclosureUrl,
-                                            hideListenLaterBtn: true
+                                            hideListenLaterBtn: true,
+                                            hideAddToPlaylistBtn: true
                                         }} />
                                     )
                                 })
@@ -122,16 +160,7 @@ export async function generateMetadata(
 
     const serverUserInfo = await getUserInfoFromServer(params.userId)
     const description = ""
-    let nickname: string = ""
-    if (!serverUserInfo.data.nickname) {
-        if (serverUserInfo.data.email) {
-            nickname = serverUserInfo.data.email.split('@')[0]
-        } else if (serverUserInfo.data.phone) {
-            nickname = serverUserInfo.data.phone
-        }
-    } else {
-        nickname = serverUserInfo.data.nickname
-    }
+    const nickname = getTempNickname(serverUserInfo.data)
     const title = nickname + "'s Listen Later | Porkast"
     const authorList: Author[] = []
     authorList.push({
