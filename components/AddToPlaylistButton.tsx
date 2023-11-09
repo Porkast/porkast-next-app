@@ -1,32 +1,25 @@
 'use client'
 
-import { useAppContext } from "./AppContext";
-import { addToPlayList } from "@/libs/playlist";
-import { MsgAlertType } from "./MsgAlert";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getUserSessionInfo } from "@/libs/suapbase";
+import { useAppContext } from "./AppContext";
 
 type AddToPlaylistButtonProps = {
     userId?: string;
+    itemTitle: string;
     itemId: string;
     channelId: string;
-    playlistId: string;
 }
 
 
 export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
 
-    const { userId, itemId, channelId, playlistId } = props
+    const { userId, itemTitle: feedTitle, itemId, channelId } = props
     const [currentUserId, setCurrentUserId] = useState('')
     const appContext = useAppContext()
 
     const onAddToPlaylistBtnClick = async () => {
-        const resp = await addToPlayList(userId || '', itemId, channelId, playlistId)
-        if (resp.code === 0) {
-            appContext.showMsgAlert('Added to playlist', MsgAlertType.SUCCESS)
-        } else {
-            appContext.showMsgAlert('Failed to add to playlist', MsgAlertType.FAILED)
-        }
+        appContext.addToPlayListFunction(currentUserId, feedTitle, channelId, itemId, "itunes")
     }
 
     useEffect(() => {
