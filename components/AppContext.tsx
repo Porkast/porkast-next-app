@@ -3,6 +3,7 @@
 import { createContext, useContext, useRef, } from 'react';
 import AudioPlayer, { AudioPlayerRef } from './AudioPlayer';
 import { MsgAlert, MsgAlertRef, MsgAlertType } from './MsgAlert';
+import AddToPlayListDialog, { AddToPlayListDialogRef } from './AddToPlayListDialog';
 
 type AppContextType = {
     updateAudio: (params: AudioPlayerParams) => void;
@@ -10,6 +11,7 @@ type AppContextType = {
     pause: () => void;
     seek: (time: number) => void;
     showMsgAlert: (msg: string, msgType: MsgAlertType) => void;
+    addToPlayListFunction: (userId: string, title: string, feedId: string, guid: string, source: string) => void;
 };
 
 const AppContext = createContext<AppContextType>({
@@ -20,6 +22,8 @@ const AppContext = createContext<AppContextType>({
         throw new Error('Function not implemented.');
     },
     showMsgAlert: function (msg: string, msgType: MsgAlertType): void {
+    },
+    addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
     }
 });
 
@@ -32,6 +36,7 @@ type AppProviderProps = {
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const audioRef = useRef<AudioPlayerRef>(null);
     const msgAlertRef = useRef<MsgAlertRef>(null)
+    const addToPlaylistModalRef = useRef<AddToPlayListDialogRef>(null)
     const appContextValue: AppContextType = {
         play: () => {
             if (audioRef.current) {
@@ -55,6 +60,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         },
         showMsgAlert: function (msg: string, msgType: MsgAlertType): void {
             msgAlertRef.current?.showAlert(msg, msgType)
+        },
+        addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
+            addToPlaylistModalRef.current?.showDialog(userId, title, feedId, guid, source)
         }
     };
 
@@ -63,6 +71,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             {children}
             <AudioPlayer ref={audioRef} data={{ title: 'porkast', artist: 'porkast', cover: 'https://shikwasa.js.org/assets/logo.png', src: 'https://shikwasa.js.org/assets/STS-133_FD11_Mission_Status_Briefing.mp3' }} />
             <MsgAlert ref={msgAlertRef} />
+            <AddToPlayListDialog ref={addToPlaylistModalRef} />
         </AppContext.Provider>
     );
 };

@@ -133,8 +133,8 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                         {
                             data.hideAddToPlaylistBtn ? (
                                 <></>
-                            ):(
-                                <AddToPlaylistButton itemId={data.itemId} channelId={data.channelId} playlistId={''} />
+                            ) : (
+                                <AddToPlaylistButton itemId={data.itemId} itemTitle={data.title} channelId={data.channelId} />
                             )
                         }
                     </div>
