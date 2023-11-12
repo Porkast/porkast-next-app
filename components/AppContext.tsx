@@ -13,7 +13,7 @@ type AppContextType = {
     seek: (time: number) => void;
     showMsgAlert: (msg: string, msgType: MsgAlertType) => void;
     addToPlayListFunction: (userId: string, title: string, feedId: string, guid: string, source: string) => void;
-    createPlaylistFunction: (userId: string) => void
+    createPlaylistFunction: () => void
 };
 
 const AppContext = createContext<AppContextType>({
@@ -27,7 +27,7 @@ const AppContext = createContext<AppContextType>({
     },
     addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
     },
-    createPlaylistFunction: function (userId: string): void {
+    createPlaylistFunction: function (): void {
     }
 });
 
@@ -67,10 +67,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             msgAlertRef.current?.showAlert(msg, msgType)
         },
         addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
-            addToPlaylistModalRef.current?.showDialog(userId, title, feedId, guid, source)
+            addToPlaylistModalRef.current?.showDialog(title, feedId, guid, source)
         },
-        createPlaylistFunction: function (userId: string): void {
-            createPlaylistModalRef.current?.showDialog(userId)
+        createPlaylistFunction: function (): void {
+            createPlaylistModalRef.current?.showDialog()
         }
     };
 

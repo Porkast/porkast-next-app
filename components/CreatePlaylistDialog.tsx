@@ -4,13 +4,14 @@ import { createPlaylist } from "@/libs/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
+import { getUserSessionInfo } from "@/libs/suapbase"
 
 type CreatePlaylistDialogProps = {
 
 }
 
 export type CreatePlaylistDialogRef = {
-    showDialog: (userId: string) => void
+    showDialog: () => void
 }
 
 const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreatePlaylistDialogProps, ref: Ref<CreatePlaylistDialogRef>) => {
@@ -22,6 +23,9 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
     const [playlistDescription, setPlaylistDescription] = useState('')
 
     const onSubmitToCreatePlaylistBtnClick = async () => {
+        if (isloading) {
+            return
+        }
         setIsLoading(true)
         const createResp = await createPlaylist(userId, playlistName, playlistDescription)
         if (createResp && createResp.code == 0) {
@@ -37,7 +41,8 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
         if (ref) {
             (ref as any).current = {
                 showDialog: async function (userId: string) {
-                    setUserId(userId)
+                    const userInfo = await getUserSessionInfo()
+                    setUserId(userInfo.userId)
                     if (dialog) {
                         dialog.showModal();
                     }

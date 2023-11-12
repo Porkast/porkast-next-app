@@ -5,13 +5,14 @@ import { UserPlaylistDto } from "@/types/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
+import { getUserSessionInfo } from "@/libs/suapbase"
 
 export type AddToPlayListDialogProps = {
 
 }
 
 export type AddToPlayListDialogRef = {
-    showDialog: (userId: string, itemTitle: string, feedId: string, guid: string, source: string) => void
+    showDialog: (itemTitle: string, feedId: string, guid: string, source: string) => void
 }
 
 const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlayListDialogProps, ref: Ref<AddToPlayListDialogRef>) => {
@@ -36,15 +37,16 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
         setDialogInstance(dialog)
         if (ref) {
             (ref as any).current = {
-                showDialog: async (userId: string, itemTitle: string, feedId: string, guid: string, source: string = 'itunes') => {
+                showDialog: async (itemTitle: string, feedId: string, guid: string, source: string = 'itunes') => {
                     setTitle(itemTitle)
                     if (dialog) {
                         dialog.showModal();
-                        setCurrentUserId(userId)
+                        const userInfo = await getUserSessionInfo()
+                        setCurrentUserId(userInfo.userId)
                         setGuid(guid)
                         setFeedId(feedId)
                         setSource(source)
-                        const userPlaylistResp = await getUserPlaylistByUserId(userId)
+                        const userPlaylistResp = await getUserPlaylistByUserId(userInfo.userId)
                         if (userPlaylistResp) {
                             setUserPlaylists(userPlaylistResp.data)
                         }
@@ -56,6 +58,9 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
 
     const onSubmitToPlaylistBtnClick = async () => {
         if (!isSubmitParamsValid()) {
+            return
+        }
+        if (isloading) {
             return
         }
         setIsLoading(true)
@@ -78,7 +83,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
     }
 
     const onCreateNewPlaylistBtnClick = () => {
-        appContext.createPlaylistFunction(currentUserId)
+        appContext.createPlaylistFunction()
     }
 
     return (
