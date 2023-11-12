@@ -1,6 +1,9 @@
 'use client'
 
+import { createPlaylist } from "@/libs/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
+import { useAppContext } from "./AppContext"
+import { MsgAlertType } from "./MsgAlert"
 
 type CreatePlaylistDialogProps = {
 
@@ -12,12 +15,21 @@ export type CreatePlaylistDialogRef = {
 
 const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreatePlaylistDialogProps, ref: Ref<CreatePlaylistDialogRef>) => {
 
+    const appContext = useAppContext()
+    const [userId, setUserId] = useState('')
     const [isloading, setIsLoading] = useState(false)
     const [playlistName, setPlaylistName] = useState('')
     const [playlistDescription, setPlaylistDescription] = useState('')
 
-    const onSubmitToCreatePlaylistBtnClick = () => {
+    const onSubmitToCreatePlaylistBtnClick = async () => {
         setIsLoading(true)
+        const createResp = await createPlaylist(userId, playlistName, playlistDescription)
+        if (createResp && createResp.code == 0) {
+            appContext.showMsgAlert(createResp.message, MsgAlertType.SUCCESS)
+        } else {
+            appContext.showMsgAlert(createResp.message, MsgAlertType.FAILED)
+        }
+        setIsLoading(false)
     }
 
     useEffect(() => {
@@ -25,7 +37,7 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
         if (ref) {
             (ref as any).current = {
                 showDialog: async function (userId: string) {
-                    console.log("userId", userId)
+                    setUserId(userId)
                     if (dialog) {
                         dialog.showModal();
                     }
