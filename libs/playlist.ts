@@ -10,7 +10,8 @@ export async function addToPlayList(userId: string, channelId: string, itemId: s
             channelId: channelId,
             guid: itemId,
             playlistId: playlistId,
-            userId: userId
+            userId: userId,
+            source: source
         })
     }).then(resp => resp.json()).catch(err => {
         console.log(err);
