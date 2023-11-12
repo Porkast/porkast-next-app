@@ -1,9 +1,10 @@
 'use client'
 
-import { getUserPlaylistByUserId } from "@/libs/playlist"
+import { addToPlayList, getUserPlaylistByUserId } from "@/libs/playlist"
 import { UserPlaylistDto } from "@/types/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
+import { MsgAlertType } from "./MsgAlert"
 
 export type AddToPlayListDialogProps = {
 
@@ -16,11 +17,15 @@ export type AddToPlayListDialogRef = {
 const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlayListDialogProps, ref: Ref<AddToPlayListDialogRef>) => {
 
     const appContext = useAppContext()
+    const [dialogInstance, setDialogInstance] = useState<HTMLDialogElement>()
     const [title, setTitle] = useState('')
     const [isloading, setIsLoading] = useState(false)
     const [userPlaylists, setUserPlaylists] = useState<UserPlaylistDto[]>()
     const [selectedPlaylistId, setSelectedPlaylistId] = useState('Select a playlist')
     const [currentUserId, setCurrentUserId] = useState('')
+    const [guid, setGuid] = useState('')
+    const [feedId, setFeedId] = useState('')
+    const [source, setSource] = useState('itunes')
 
     const onSelectValueChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedPlaylistId(e.target.value)
@@ -28,6 +33,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
 
     useEffect(() => {
         const dialog = document.getElementById("addToPlaylistModal") as HTMLDialogElement;
+        setDialogInstance(dialog)
         if (ref) {
             (ref as any).current = {
                 showDialog: async (userId: string, itemTitle: string, feedId: string, guid: string, source: string = 'itunes') => {
@@ -35,6 +41,9 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                     if (dialog) {
                         dialog.showModal();
                         setCurrentUserId(userId)
+                        setGuid(guid)
+                        setFeedId(feedId)
+                        setSource(source)
                         const userPlaylistResp = await getUserPlaylistByUserId(userId)
                         if (userPlaylistResp) {
                             setUserPlaylists(userPlaylistResp.data)
@@ -45,8 +54,27 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
         }
     }, [])
 
-    const onSubmitToPlaylistBtnClick = () => {
+    const onSubmitToPlaylistBtnClick = async () => {
+        if (!isSubmitParamsValid()) {
+            return
+        }
         setIsLoading(true)
+        const resp = await addToPlayList(currentUserId, feedId, guid, selectedPlaylistId, source)
+        setIsLoading(false)
+        if (resp && resp.code == 0) {
+            appContext.showMsgAlert(resp.message, MsgAlertType.SUCCESS)
+        } else {
+            appContext.showMsgAlert(resp.message, MsgAlertType.FAILED)
+        }
+        dialogInstance?.close()
+    }
+
+    const isSubmitParamsValid = () => {
+        if (selectedPlaylistId == 'Select a playlist' || selectedPlaylistId == '') {
+            appContext.showMsgAlert('Please select a playlist', MsgAlertType.FAILED)
+            return false
+        }
+        return true
     }
 
     const onCreateNewPlaylistBtnClick = () => {

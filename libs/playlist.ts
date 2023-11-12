@@ -1,5 +1,5 @@
 
-export async function addToPlayList(channelId: string, itemId: string, playlistId: string, userId: string): Promise<JsonResponse> {
+export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
     const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/item`, {
         method: 'POST',
@@ -8,7 +8,7 @@ export async function addToPlayList(channelId: string, itemId: string, playlistI
         },
         body: JSON.stringify({
             channelId: channelId,
-            itemId: itemId,
+            guid: itemId,
             playlistId: playlistId,
             userId: userId
         })
