@@ -2,10 +2,11 @@
 export type UserPlaylistDto = {
     Id: string;
     PlaylistName: string;
-    Description: Uint8Array;
+    Description: string;
     UserId: string;
-    RegDate: Date | null;
+    RegDate: Date;
     Status: number;
     CreatorId: string;
     OrigPlaylistId: string;
+    Count: number;
 }

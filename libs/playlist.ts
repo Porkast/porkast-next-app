@@ -20,9 +20,9 @@ export async function addToPlayList(userId: string, channelId: string, itemId: s
     return respJson;
 }
 
-export async function getUserPlaylistByUserId(userId: string): Promise<JsonResponse> {
+export async function getUserPlaylistByUserId(userId: string, page: number = 1): Promise<JsonResponse> {
 
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}`).then(resp => resp.json()).catch(err => {
+    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}?page=${page}`).then(resp => resp.json()).catch(err => {
         console.log(err);
     })
 
