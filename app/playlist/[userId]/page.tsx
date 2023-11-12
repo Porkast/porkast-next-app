@@ -7,6 +7,7 @@ import { getUserPlaylistByUserId } from "@/libs/playlist"
 import { getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserPlaylistDto } from "@/types/playlist"
 import Link from "next/link"
+import { EditPlaylistInfoBtn } from '@/components/EditPlaylistInfo'
 
 export default async function PlaylistPage({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
@@ -95,15 +96,24 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                     playLists.map((item, index) => {
                                         const encodePlaylistName = encodeURIComponent(item.PlaylistName)
                                         return (
-                                            <a key={index} href={`/playlist/${userId}/${encodePlaylistName}`} className="card w-full bg-base-100 shadow-xl">
+                                            <div key={index} className="card w-full bg-base-100 shadow-xl">
                                                 <div className="card-body">
-                                                    <h2 className="card-title">{item.PlaylistName}</h2>
+                                                    <h2 className="card-title w-full flex justify-start">
+                                                        <div className='w-4/5 flex justify-start'>
+                                                            <a href={`/playlist/${userId}/${encodePlaylistName}`}>{item.PlaylistName}</a>
+                                                        </div>
+                                                        <div className='w-1/5 flex justify-end'>
+                                                            <EditPlaylistInfoBtn CreatorId={userId} PlaylistId={item.Id} />
+                                                        </div>
+                                                    </h2>
                                                     <div className="max-h-24 flex overflow-clip mt-6">
-                                                        <p>{parse(item.Description)}</p>
+                                                        <a href={`/playlist/${userId}/${encodePlaylistName}`}>
+                                                            <p>{parse(item.Description)}</p>
+                                                        </a>
                                                     </div>
                                                     <p className='mt-4'>Create at: {formatDateTime(item.RegDate?.toLocaleString())}</p>
                                                 </div>
-                                            </a>
+                                            </div>
                                         )
                                     })
                                 }
