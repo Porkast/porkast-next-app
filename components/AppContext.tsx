@@ -4,6 +4,7 @@ import { createContext, useContext, useRef, } from 'react';
 import AudioPlayer, { AudioPlayerRef } from './AudioPlayer';
 import { MsgAlert, MsgAlertRef, MsgAlertType } from './MsgAlert';
 import AddToPlayListDialog, { AddToPlayListDialogRef } from './AddToPlayListDialog';
+import CreatePlaylistDialog, { CreatePlaylistDialogRef } from './CreatePlaylistDialog';
 
 type AppContextType = {
     updateAudio: (params: AudioPlayerParams) => void;
@@ -12,6 +13,7 @@ type AppContextType = {
     seek: (time: number) => void;
     showMsgAlert: (msg: string, msgType: MsgAlertType) => void;
     addToPlayListFunction: (userId: string, title: string, feedId: string, guid: string, source: string) => void;
+    createPlaylistFunction: (userId: string) => void
 };
 
 const AppContext = createContext<AppContextType>({
@@ -24,6 +26,8 @@ const AppContext = createContext<AppContextType>({
     showMsgAlert: function (msg: string, msgType: MsgAlertType): void {
     },
     addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
+    },
+    createPlaylistFunction: function (userId: string): void {
     }
 });
 
@@ -37,6 +41,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     const audioRef = useRef<AudioPlayerRef>(null);
     const msgAlertRef = useRef<MsgAlertRef>(null)
     const addToPlaylistModalRef = useRef<AddToPlayListDialogRef>(null)
+    const createPlaylistModalRef = useRef<CreatePlaylistDialogRef>(null)
     const appContextValue: AppContextType = {
         play: () => {
             if (audioRef.current) {
@@ -63,6 +68,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         },
         addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
             addToPlaylistModalRef.current?.showDialog(userId, title, feedId, guid, source)
+        },
+        createPlaylistFunction: function (userId: string): void {
+            createPlaylistModalRef.current?.showDialog(userId)
         }
     };
 
@@ -72,6 +80,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             <AudioPlayer ref={audioRef} data={{ title: 'porkast', artist: 'porkast', cover: 'https://shikwasa.js.org/assets/logo.png', src: 'https://shikwasa.js.org/assets/STS-133_FD11_Mission_Status_Briefing.mp3' }} />
             <MsgAlert ref={msgAlertRef} />
             <AddToPlayListDialog ref={addToPlaylistModalRef} />
+            <CreatePlaylistDialog ref={createPlaylistModalRef} />
         </AppContext.Provider>
     );
 };
