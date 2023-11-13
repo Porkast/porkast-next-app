@@ -1,3 +1,4 @@
+import { FeedItem } from "@/types/feed_item";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
@@ -51,4 +52,17 @@ export async function createPlaylist(userId: string, name: string, description: 
         console.log(err);
     })
     return respJson
+}
+
+export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: FeedItem[] }> => {
+
+    const limit = 10
+    const offset = (page - 1) * limit
+    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`)
+    const respJson = await resp.json()
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
 }

@@ -94,20 +94,19 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} playlist</div>
                                 {
                                     playLists.map((item, index) => {
-                                        const encodePlaylistName = encodeURIComponent(item.PlaylistName)
                                         return (
                                             <div key={index} className="card w-full bg-base-100 shadow-xl">
                                                 <div className="card-body">
                                                     <h2 className="card-title w-full flex justify-start">
                                                         <div className='w-4/5 flex justify-start'>
-                                                            <a href={`/playlist/${userId}/${encodePlaylistName}`}>{item.PlaylistName}</a>
+                                                            <a href={`/playlist/${userId}/${item.Id}`}>{item.PlaylistName}</a>
                                                         </div>
                                                         <div className='w-1/5 flex justify-end'>
                                                             <EditPlaylistInfoBtn CreatorId={userId} PlaylistId={item.Id} />
                                                         </div>
                                                     </h2>
                                                     <div className="max-h-24 flex overflow-clip mt-6">
-                                                        <a href={`/playlist/${userId}/${encodePlaylistName}`}>
+                                                        <a href={`/playlist/${userId}/${item.Id}`}>
                                                             <p>{parse(item.Description)}</p>
                                                         </a>
                                                     </div>
