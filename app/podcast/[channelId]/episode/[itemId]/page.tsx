@@ -64,7 +64,7 @@ export default async function Page({ params }: { params: { channelId: string, it
                                 </div>
                                 <div className="flex justify-start items-center md:mt-0 mt-4">
                                     <AddListenLaterButton userId={''} itemId={episode.GUID} channelId={podcastInfo.Id} />
-                                    <AddToPlaylistButton userId={''} itemTitle={podcastInfo.Title} itemId={episode.GUID} channelId={podcastInfo.Id} playlistId={''} />
+                                    <AddToPlaylistButton itemTitle={podcastInfo.Title} itemId={episode.GUID} channelId={podcastInfo.Id} />
                                 </div>
                             </div>
                             <p className="mt-4 text-xs">{podcastInfo.Copyright}</p>

@@ -5,7 +5,6 @@ import { getUserSessionInfo } from "@/libs/suapbase";
 import { useAppContext } from "./AppContext";
 
 type AddToPlaylistButtonProps = {
-    userId?: string;
     itemTitle: string;
     itemId: string;
     channelId: string;
@@ -14,7 +13,7 @@ type AddToPlaylistButtonProps = {
 
 export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
 
-    const { userId, itemTitle: feedTitle, itemId, channelId } = props
+    const { itemTitle: feedTitle, itemId, channelId } = props
     const [currentUserId, setCurrentUserId] = useState('')
     const appContext = useAppContext()
 
@@ -24,15 +23,15 @@ export default function AddToPlaylistButton(props: AddToPlaylistButtonProps) {
 
     useEffect(() => {
         const getUserInfo = async () => {
-            const usefInfo = await getUserSessionInfo()
-            if (userId) {
-                setCurrentUserId(userId)
+            const userInfo = await getUserSessionInfo()
+            if (userInfo && userInfo.userId) {
+                setCurrentUserId(userInfo.userId)
             } else {
-                setCurrentUserId(usefInfo.userId)
+                // TODO: show login dialog
             }
         }
         getUserInfo()
-    }, [userId, itemId, channelId])
+    }, [itemId, channelId])
 
     return (
         <>
