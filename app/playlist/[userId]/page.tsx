@@ -8,6 +8,7 @@ import { getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserPlaylistDto } from "@/types/playlist"
 import Link from "next/link"
 import { EditPlaylistInfoBtn } from '@/components/EditPlaylistInfo'
+import Footer from '@/components/Footer'
 
 export default async function PlaylistPage({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
@@ -139,6 +140,7 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                             </div>
                         </div>
                     </Header>
+                    <Footer />
                 </div>
             </AppProvider>
         </>

@@ -111,8 +111,8 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                 </div>
                             </div>
                         </div>
-                        <Footer />
                     </Header>
+                    <Footer />
                 </div>
             </AppProvider>
         </>
