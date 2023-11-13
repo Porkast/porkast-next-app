@@ -79,7 +79,7 @@ export default function SearchPage() {
     }, [q, page, entity, country])
 
 
-    useEffect(()=>{
+    useEffect(() => {
         if (parseInt(page) >= searchResultTotalPage) {
             setIsNextBtnClickable(false)
         } else {
@@ -158,8 +158,8 @@ export default function SearchPage() {
                         </div>
                     </div>
                     <AddExcludeFeedIdDialog ref={addExcludeFeedIdDialogRef} />
-                    <Footer />
                 </Header>
+                <Footer />
             </div>
         </AppProvider>
     )

@@ -1,5 +1,6 @@
 import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
+import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { convertMillsTimeToDuration } from "@/libs/common"
@@ -148,6 +149,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                         </div>
                     </div>
                 </Header>
+                <Footer />
             </div>
         </AppProvider>
     )

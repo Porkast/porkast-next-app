@@ -1,4 +1,5 @@
 import { AppProvider } from "@/components/AppContext";
+import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { formatDateTime } from "@/libs/common";
 import { cache } from "react";
@@ -49,6 +50,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                         </div>
                     </div>
                 </Header>
+                <Footer />
             </div>
         </AppProvider>
     )
