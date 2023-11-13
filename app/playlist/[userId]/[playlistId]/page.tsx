@@ -1,11 +1,7 @@
-import AddListenLaterButton from "@/components/AddListenLaterButton"
-import AddToPlaylistButton from "@/components/AddToPlaylistButton"
 import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
-import ShowNotesViewer from "@/components/ShowNotesViewer"
-import { convertMillsTimeToDuration } from "@/libs/common"
 import { getPlaylistItemListByUserId } from "@/libs/playlist"
 import { ResolvingMetadata, Metadata } from "next"
 import Link from "next/link"
@@ -81,9 +77,10 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                                 link: item.Link,
                                                 rssLink: item.FeedLink,
                                                 channelName: item.ChannelTitle,
-                                                authorName: item.Author,
+                                                // authorName: item.Author,
+                                                authorName: "",
                                                 pubDate: item.PubDate,
-                                                audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
+                                                audioLength: item.Duration,
                                                 audioSrc: item.EnclosureUrl
                                             }} />
                                         )
