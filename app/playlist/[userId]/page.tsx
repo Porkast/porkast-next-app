@@ -1,73 +1,93 @@
+'use client'
+
 import parse from 'html-react-parser'
 import { AppProvider } from "@/components/AppContext"
 import Header from "@/components/Header"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { formatDateTime } from "@/libs/common"
 import { getUserPlaylistByUserId } from "@/libs/playlist"
-import { getTempNickname, getUserInfoFromServer } from "@/libs/user"
+import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserPlaylistDto } from "@/types/playlist"
 import Link from "next/link"
 import { EditPlaylistInfoBtn } from '@/components/EditPlaylistInfo'
 import Footer from '@/components/Footer'
+import { useEffect, useState } from 'react'
+import { Helmet } from 'react-helmet'
 
-export default async function PlaylistPage({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
+export default function PlaylistPage({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
     const userId = params.userId;
     const page = searchParams.page || "1"
-    const userInfoResp = await getUserInfoFromServer(userId)
-    if (userInfoResp.code != 0) {
-        // TODO: show error page
-        return
-    }
-    const userInfo = userInfoResp.data
-    const nickname = getTempNickname(userInfo)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState("")
+    const [playlists, setPlaylists] = useState<UserPlaylistDto[]>([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
 
-    let playLists: UserPlaylistDto[] = []
-    let totalPage = 0
-    let totalCount = 0
-    const resp = await getUserPlaylistByUserId(userId, parseInt(page))
-    playLists = resp.data
-    if (playLists && playLists.length > 0) {
-        totalPage = Math.ceil(playLists[0].Count / 10)
-        totalCount = playLists[0].Count
-    } else {
-        // TODO: show error page
-        return
-    }
+    useEffect(() => {
+        async function initPageInfo() {
+            const userInfoResp = await getUserInfoFromServer(userId)
+            if (userInfoResp.code != 0) {
+                return
+            }
+            const userInfoData = userInfoResp.data
+            const nicknameStr = getTempNickname(userInfoData)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/playlist/" + userId + "/" + "?page=" + nextPage
+            const resp = await getUserPlaylistByUserId(userId, parseInt(page))
+            const playListsData = resp.data
+            setPlaylists(playListsData)
+            if (playListsData && playListsData.length > 0) {
+                setTotalPage(Math.ceil(playListsData[0].Count / 10))
+                setTotalCount(playListsData[0].Count)
+            }
+        }
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/playlist/" + userId + "/" + "?page=" + prePage
+        initPageInfo()
+    }, [userId, page])
 
-    var isNextBtnClickable = true
-    var isPreBtnClickable = true
-    if (parseInt(page) >= totalPage) {
-        isNextBtnClickable = false
-    } else {
-        isNextBtnClickable = true
-    }
-    if (parseInt(page) <= 1) {
-        isPreBtnClickable = false
-    } else {
-        isPreBtnClickable = true
-    }
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/playlist/" + userId + "/" + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/playlist/" + userId + "/" + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [totalCount, totalPage])
+
 
     return (
         <>
             <AppProvider>
                 <div>
+                    <Helmet>
+                        <title>Porkast-{nickname}</title>
+                    </Helmet>
                     <Header>
                         <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                             <div className='w-full max-w-2xl pl-6 pr-6'>
@@ -76,7 +96,7 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                         <div className="avatar">
                                             <div className="w-24 h-24 rounded-xl">
                                                 {
-                                                    userInfo.avatar ?
+                                                    userInfo?.avatar ?
                                                         <img src={userInfo.avatar} />
                                                         :
                                                         <img src="/porkast-logo.png" />
@@ -94,7 +114,7 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
                                 </div>
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} playlist</div>
                                 {
-                                    playLists.map((item, index) => {
+                                    playlists?.map((item, index) => {
                                         return (
                                             <div key={index} className="card w-full bg-base-100 shadow-xl">
                                                 <div className="card-body">
