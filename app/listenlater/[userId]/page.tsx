@@ -1,73 +1,93 @@
+'use client'
+
 import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { convertMillsTimeToDuration } from "@/libs/common"
-import { getTempNickname, getUserInfoFromServer } from "@/libs/user"
+import { getListenLaterListByUserId } from "@/libs/listen_later"
+import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserListenLater } from "@/types/feed_item"
-import { Metadata, ResolvingMetadata } from "next"
-import { Author } from "next/dist/lib/metadata/types/metadata-types"
 import Link from "next/link"
+import { useEffect, useState } from "react"
 
 
-export default async function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
+export default function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
     const userId = params.userId;
-    var totalCount = 0
     var page = searchParams.page
     if (!page) {
         page = "1"
     }
 
-    var totalPage = 0
-    var itemList: UserListenLater[] = []
-    const resp = await getListenLaterListByUserId(userId, parseInt(page))
-    itemList = resp.data
-    if (itemList && itemList.length > 0) {
-        totalPage = Math.ceil(itemList[0].Count / 10)
-        totalCount = itemList[0].Count
-    } else {
-        // TODO: show error page
-        return
-    }
+    const [itemList, setItemList] = useState<UserListenLater[]>([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState("")
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/listenlater/" + userId + "/" + "?page=" + nextPage
+    useEffect(() => {
+        async function initPageInfo() {
+            const userInfoResp = await getUserInfoFromServer(userId)
+            if (userInfoResp.code != 0) {
+                // TODO: show error page
+                return
+            }
+            const userInfoData = userInfoResp.data
+            const nicknameStr = getTempNickname(userInfoData)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/listenlater/" + userId + "/" + "?page=" + prePage
+            const resp = await getListenLaterListByUserId(userId, parseInt(page))
+            const itemDataList = resp.data
+            setItemList(itemDataList)
+            if (itemDataList && itemDataList.length > 0) {
+                setTotalPage(Math.ceil(itemDataList[0].Count / 10))
+                setTotalCount(itemDataList[0].Count)
+            } else {
+                // TODO: show error page
+                return
+            }
+        }
 
-    var isNextBtnClickable = true
-    var isPreBtnClickable = true
-    if (parseInt(page) >= totalPage) {
-        isNextBtnClickable = false
-    } else {
-        isNextBtnClickable = true
-    }
-    if (parseInt(page) <= 1) {
-        isPreBtnClickable = false
-    } else {
-        isPreBtnClickable = true
-    }
+        initPageInfo()
+    }, [])
 
-    const userInfoResp = await getUserInfoFromServer(userId)
-    if (userInfoResp.code != 0) {
-        // TODO: show error page
-        return
-    }
-    const userInfo = userInfoResp.data
-    const nickname = getTempNickname(userInfo)
+
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/listenlater/" + userId + "/" + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/listenlater/" + userId + "/" + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [totalCount, totalPage])
+
 
     return (
         <AppProvider>
@@ -80,7 +100,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                                     <div className="avatar">
                                         <div className="w-24 h-24 rounded-xl">
                                             {
-                                                userInfo.avatar ?
+                                                userInfo?.avatar ?
                                                     <img src={userInfo.avatar} />
                                                     :
                                                     <img src="/porkast-logo.png" />
@@ -153,38 +173,4 @@ export default async function Page({ params, searchParams }: { params: { userId:
             </div>
         </AppProvider>
     )
-}
-
-export async function generateMetadata(
-    { params, searchParams }: { params: { userId: string }, searchParams: { page: string } },
-    parent: ResolvingMetadata
-): Promise<Metadata> {
-
-    const serverUserInfo = await getUserInfoFromServer(params.userId)
-    const description = ""
-    const nickname = getTempNickname(serverUserInfo.data)
-    const title = nickname + "'s Listen Later | Porkast"
-    const authorList: Author[] = []
-    authorList.push({
-        name: "",
-        url: ""
-    })
-    return {
-        title: title,
-        description: description,
-        authors: authorList,
-    }
-}
-
-const getListenLaterListByUserId = async (userId: string, page: number): Promise<{ code: number, message: string, data: UserListenLater[] }> => {
-
-    const limit = 10
-    const offset = (page - 1) * limit
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`)
-    const respJson = await resp.json()
-    return {
-        code: respJson.code,
-        message: respJson.message,
-        data: respJson.data
-    }
 }

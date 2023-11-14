@@ -1,87 +1,89 @@
+'use client'
+
 import { AppProvider } from "@/components/AppContext";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
 import { formatDateTime } from "@/libs/common";
-import { getUserInfoFromServer, getTempNickname } from "@/libs/user";
+import { SubscriptionData, getUserSubscriptionList } from "@/libs/subscription";
+import { getUserInfoFromServer, getTempNickname, ServerUserInfo } from "@/libs/user";
 import Link from "next/link";
-import { cache } from "react";
+import { useEffect, useState } from "react";
 
 
-type SubscriptionData = {
-    Id: string;
-    UserId: string;
-    CreateTime: Date;
-    Status: number;
-    Keyword: string;
-    OrderByDate: number;
-    Lang: string;
-    Country: string;
-    ExcludeFeedId: string;
-    Source: string;
-    RefId: string;
-    RefName: string;
-    Type: string;
-    Count: number;
-}
 
-export default async function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
+export default function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
     const userId = params.userId;
     var page = searchParams.page
     if (!page) {
         page = "1"
     }
 
-    const userInfoResp = await getUserInfoFromServer(userId)
-    if (userInfoResp.code != 0) {
-        // TODO: show error page
-        return
-    }
-    const userInfo = userInfoResp.data
-    const nickname = getTempNickname(userInfo)
+    const [subscriptionList, setSubscriptionList] = useState<SubscriptionData[]>([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState("")
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
 
-    var subscriptionList: SubscriptionData[] = []
-    const resp = await getUserSubscriptionList(userId)
-    subscriptionList = resp.data
 
-    let totalPage = 0
-    let totalCount = 0
-    if (subscriptionList && subscriptionList.length > 0) {
-        totalPage = Math.ceil(subscriptionList[0].Count / 10)
-        totalCount = subscriptionList[0].Count
-    } else {
-        // TODO: show error page
-        return
-    }
+    useEffect(() => {
+        async function initPageInfo() {
+            const userInfoResp = await getUserInfoFromServer(userId)
+            if (userInfoResp.code != 0) {
+                return
+            }
+            const userInfoData = userInfoResp.data
+            const nicknameStr = getTempNickname(userInfoData)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/subscription/" + userId + "/" + "?page=" + nextPage
+            var subscriptionDataList: SubscriptionData[] = []
+            const resp = await getUserSubscriptionList(userId)
+            subscriptionDataList = resp.data
+            setSubscriptionList(subscriptionDataList)
+            if (subscriptionDataList && subscriptionDataList.length > 0) {
+                setTotalPage(Math.ceil(subscriptionDataList[0].Count / 10))
+                setTotalCount(subscriptionDataList[0].Count)
+            } else {
+                return
+            }
+        }
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/subscription/" + userId + "/" + "?page=" + prePage
+        initPageInfo()
+    }, [])
 
-    var isNextBtnClickable = true
-    var isPreBtnClickable = true
-    if (parseInt(page) >= totalPage) {
-        isNextBtnClickable = false
-    } else {
-        isNextBtnClickable = true
-    }
-    if (parseInt(page) <= 1) {
-        isPreBtnClickable = false
-    } else {
-        isPreBtnClickable = true
-    }
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/subscription/" + userId + "/" + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/subscription/" + userId + "/" + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [totalCount, totalPage])
 
     return (
         <AppProvider>
@@ -94,7 +96,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                                     <div className="avatar">
                                         <div className="w-24 h-24 rounded-xl">
                                             {
-                                                userInfo.avatar ?
+                                                userInfo?.avatar ?
                                                     <img src={userInfo.avatar} />
                                                     :
                                                     <img src="/porkast-logo.png" />
@@ -112,7 +114,7 @@ export default async function Page({ params, searchParams }: { params: { userId:
                             </div>
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                             {
-                                subscriptionList.map((item, index) => {
+                                subscriptionList?.map((item, index) => {
                                     return (
                                         <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl">
                                             <div className="card-body">
@@ -157,16 +159,3 @@ export default async function Page({ params, searchParams }: { params: { userId:
     )
 }
 
-const getUserSubscriptionList = cache(async (userId: string): Promise<{ code: number, message: string, data: SubscriptionData[] }> => {
-    const subscriptionList: SubscriptionData[] = []
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/subscription/list?userId=${userId}`)
-    const respJson = await resp.json()
-    if (respJson && respJson.data) {
-        subscriptionList.push(...respJson.data)
-    }
-    return {
-        code: respJson.code,
-        message: respJson.message,
-        data: subscriptionList
-    }
-})

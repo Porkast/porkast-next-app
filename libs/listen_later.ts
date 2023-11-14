@@ -1,3 +1,4 @@
+import { UserListenLater } from "@/types/feed_item";
 import { getUserSessionInfo } from "./suapbase";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
@@ -20,4 +21,17 @@ export async function addToListenLater(channelId: string, itemId: string, userId
     });
 
     return respJson;
+}
+
+export const getListenLaterListByUserId = async (userId: string, page: number): Promise<{ code: number, message: string, data: UserListenLater[] }> => {
+
+    const limit = 10
+    const offset = (page - 1) * limit
+    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`)
+    const respJson = await resp.json()
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
 }

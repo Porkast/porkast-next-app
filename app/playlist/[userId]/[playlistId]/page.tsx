@@ -1,66 +1,99 @@
+'use client'
+
 import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { getPlaylistItemListByUserId } from "@/libs/playlist"
-import { ResolvingMetadata, Metadata } from "next"
+import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
+import { FeedItem } from "@/types/feed_item"
 import Link from "next/link"
+import { useEffect, useState } from "react"
+import { Helmet } from "react-helmet"
 
 
-export default async function PlaylistPage({ params, searchParams }: { params: { userId: string, playlistId: string }, searchParams: { page: string } }) {
+export default function PlaylistPage({ params, searchParams }: { params: { userId: string, playlistId: string }, searchParams: { page: string } }) {
 
     const userId = params.userId
     const playlistId = params.playlistId
     const page = searchParams.page || "1"
-    const data = await getPlaylistItemListByUserId(params.userId, params.playlistId, parseInt(page))
-    if (data.code != 0) {
-        // TODO: show error page
-        return
-    }
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState("")
+    const [itemList, setItemList] = useState<FeedItem[]>([])
+    const [totalPage, setTotalPage] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
 
-    const itemList = data.data
-    let totalCount = 0
-    var totalPage = 0
-    if (itemList && itemList.length > 0) {
-        totalCount = itemList[0].Count
-        totalPage = Math.ceil(itemList[0].Count / 10)
-    } else {
-        return
-    }
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/playlist/" + userId + "/" + playlistId + "?page=" + nextPage
+    useEffect(() => {
+        async function initPageInfo() {
+            const userInfoResp = await getUserInfoFromServer(userId)
+            if (userInfoResp.code != 0) {
+                return
+            }
+            const userInfoData = userInfoResp.data
+            const nicknameStr = getTempNickname(userInfoData)
+            console.log('nicknameStr', nicknameStr)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/playlist/" + userId + "/" + playlistId + "?page=" + prePage
+            const data = await getPlaylistItemListByUserId(params.userId, params.playlistId, parseInt(page))
+            if (data.code != 0) {
+                return
+            }
+            const itemDataList = data.data
+            setItemList(itemDataList)
+            if (itemDataList && itemDataList.length > 0) {
+                setTotalCount(itemDataList[0].Count)
+                setTotalPage(Math.ceil(itemDataList[0].Count / 10))
+            } else {
+                return
+            }
+        }
 
-    var isNextBtnClickable = true
-    var isPreBtnClickable = true
-    if (parseInt(page) >= totalPage) {
-        isNextBtnClickable = false
-    } else {
-        isNextBtnClickable = true
-    }
-    if (parseInt(page) <= 1) {
-        isPreBtnClickable = false
-    } else {
-        isPreBtnClickable = true
-    }
+        initPageInfo()
+
+    }, [])
+
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/playlist/" + userId + "/" + playlistId + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/playlist/" + userId + "/" + playlistId + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [totalCount, totalPage])
 
     return (
         <>
             <AppProvider>
                 <div>
+                    <Helmet>
+                        <title>Porkast-{nickname}</title>
+                    </Helmet>
                     <Header>
                         <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                             <div className='w-full max-w-2xl pl-6 pr-6'>
@@ -114,15 +147,4 @@ export default async function PlaylistPage({ params, searchParams }: { params: {
             </AppProvider>
         </>
     )
-}
-
-export async function generateMetadata(
-    { params, searchParams }: { params: { userId: string, playlistId: string }, searchParams: { page: string } },
-    parent: ResolvingMetadata
-): Promise<Metadata> {
-
-
-    return {
-        title: "Playlist",
-    }
 }

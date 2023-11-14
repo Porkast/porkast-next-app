@@ -1,51 +1,91 @@
+'use client'
 import { AppProvider } from "@/components/AppContext";
 import EpisodeCard from "@/components/EpisodeCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { convertMillsTimeToDuration } from "@/libs/common";
+import { getUserKeywordSubscriptionItemList } from "@/libs/subscription";
+import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
 import { FeedItem } from "@/types/feed_item";
-import { Metadata, ResolvingMetadata } from "next";
 import Link from "next/link";
-import { cache } from "react";
+import { useEffect, useState } from "react";
 
 
-export default async function Page({ params, searchParams }: { params: { userId: string, keyword: string }, searchParams: { page: string } }) {
+export default function Page({ params, searchParams }: { params: { userId: string, keyword: string }, searchParams: { page: string } }) {
 
     const userId = params.userId;
     const keyword = params.keyword
-    var totalCount = 0
     var page = searchParams.page
     if (!page) {
         page = "1"
     }
 
-    var totalPage = 0
+    const [totalPage, setTotalPage] = useState(0)
+    const [totalCount, setTotalCount] = useState(0)
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState("")
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
+    const [itemList, setItemList] = useState<FeedItem[]>([])
 
-    var itemList: FeedItem[] = []
-    const resp = await getUserKeywordSubscriptionItemList(userId, keyword, page)
-    itemList = resp.data
-    if (itemList && itemList.length > 0) {
-        totalPage = Math.ceil(itemList[0].Count / 10)
-        totalCount = itemList[0].Count
-    } else {
-        return
-    }
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/subscription/" + userId + "/" + keyword + "?page=" + nextPage
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/subscription/" + userId + "/" + keyword + "?page=" + prePage
+    useEffect(() => {
+        async function initPageInfo() {
+            const userInfoResp = await getUserInfoFromServer(userId)
+            if (userInfoResp.code != 0) {
+                return
+            }
+            const userInfoData = userInfoResp.data
+            const nicknameStr = getTempNickname(userInfoData)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
+
+            var itemDataList: FeedItem[] = []
+            const resp = await getUserKeywordSubscriptionItemList(userId, keyword, page)
+            itemDataList = resp.data
+            setItemList(itemDataList)
+            if (itemDataList && itemDataList.length > 0) {
+                setTotalPage(Math.ceil(itemDataList[0].Count / 10))
+                setTotalCount(itemDataList[0].Count)
+            } else {
+                return
+            }
+        }
+
+        initPageInfo()
+    }, [])
+
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/subscription/" + userId + "/" + keyword + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/subscription/" + userId + "/" + keyword + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [totalCount, totalPage])
 
     return (
         <AppProvider>
@@ -77,9 +117,21 @@ export default async function Page({ params, searchParams }: { params: { userId:
 
                             <div className="w-full flex justify-center pt-6 pb-9">
                                 <div className="join">
-                                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                    {
+                                        isPreBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">«</button>
+                                        )
+                                    }
                                     <button className="join-item btn btn-neutral">Page {page}</button>
-                                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                    {
+                                        isNextBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">»</button>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -89,34 +141,4 @@ export default async function Page({ params, searchParams }: { params: { userId:
             </div>
         </AppProvider>
     )
-}
-
-const getUserKeywordSubscriptionItemList = cache(async (userId: string, keyword: string, page: string): Promise<{ code: number, message: string, data: FeedItem[] }> => {
-
-    var requestAPI = `${process.env.API_BASE_URL}v1/api/subscription/${userId}/${keyword}`
-    if (page) {
-        requestAPI = `${requestAPI}?page=${page}`
-    }
-
-    const resp = await fetch(requestAPI)
-    const respJson = await resp.json()
-
-    return {
-        code: respJson.code,
-        message: respJson.message,
-        data: respJson.data
-    }
-})
-
-export async function generateMetadata(
-    { params, searchParams }: { params: { userId: string, keyword: string }, searchParams: { page: string } },
-    parent: ResolvingMetadata
-): Promise<Metadata> {
-
-    const title = 'Porkast-#' + decodeURIComponent(params.keyword)
-
-    return {
-        title: title,
-        description: "",
-    }
 }
