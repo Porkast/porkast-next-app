@@ -9,7 +9,6 @@ import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/u
 import { FeedItem } from "@/types/feed_item"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Helmet } from "react-helmet"
 
 
 export default function PlaylistPage({ params, searchParams }: { params: { userId: string, playlistId: string }, searchParams: { page: string } }) {
@@ -91,9 +90,6 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
         <>
             <AppProvider>
                 <div>
-                    <Helmet>
-                        <title>Porkast-{nickname}</title>
-                    </Helmet>
                     <Header>
                         <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                             <div className='w-full max-w-2xl pl-6 pr-6'>
