@@ -3,7 +3,6 @@
 import parse from 'html-react-parser'
 import { AppProvider } from "@/components/AppContext"
 import Header from "@/components/Header"
-import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { formatDateTime } from "@/libs/common"
 import { getUserPlaylistByUserId } from "@/libs/playlist"
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
@@ -102,7 +101,6 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                         <div className="ml-3">
                                             <div className="text-2xl font-bold">{nickname}'s Porkast Playlist</div>
                                             <div className="mt-4 -ml-2 flex justify-start">
-                                                <SubscribeListenLaterBtn creatorId={userId} />
                                             </div>
                                         </div>
                                     </div>
@@ -122,7 +120,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                                             <EditPlaylistInfoBtn CreatorId={userId} PlaylistId={item.Id} />
                                                         </div>
                                                     </h2>
-                                                    <div className="max-h-24 flex overflow-clip mt-6">
+                                                    <div className="max-h-24 flex overflow-clip mt-4">
                                                         <a href={`/playlist/${userId}/${item.Id}`}>
                                                             <p>{parse(item.Description)}</p>
                                                         </a>

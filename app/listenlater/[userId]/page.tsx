@@ -4,9 +4,11 @@ import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
+import { SharedListenLaterBtn } from "@/components/Share"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { convertMillsTimeToDuration } from "@/libs/common"
 import { getListenLaterListByUserId } from "@/libs/listen_later"
+import { getUserSessionInfo } from "@/libs/suapbase"
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { UserListenLater } from "@/types/feed_item"
 import Link from "next/link"
@@ -26,6 +28,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
     const [totalCount, setTotalCount] = useState(0)
     const [userInfo, setUserInfo] = useState<ServerUserInfo>()
     const [nickname, setNickname] = useState("")
+    const [isMyPage, setIsMyPage] = useState(false)
     const [nextPageUrl, setNextPageUrl] = useState("")
     const [prevPageUrl, setPrevPageUrl] = useState("")
     const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
@@ -57,6 +60,17 @@ export default function Page({ params, searchParams }: { params: { userId: strin
 
         initPageInfo()
     }, [])
+
+    useEffect(() => {
+        const getUserInfoFromSession = async () => {
+            const sessionUser = await getUserSessionInfo()
+            if (userId == sessionUser.userId) {
+                setIsMyPage(true)
+            }
+        }
+
+        getUserInfoFromSession()
+    }, [userId])
 
 
     useEffect(() => {
@@ -109,9 +123,17 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                     </div>
                                     <div className="ml-3">
                                         <div className="text-2xl font-bold">{nickname}'s Porkast Listen Later</div>
-                                        <div className="mt-4 -ml-2 flex justify-start">
-                                            <SubscribeListenLaterBtn creatorId={userId} />
-                                        </div>
+                                        {
+                                            isMyPage ? (
+                                                <div className="mt-4 -ml-2 flex justify-start">
+                                                    <SharedListenLaterBtn creatorId={userId} />
+                                                </div>
+                                            ) : (
+                                                <div className="mt-4 -ml-2 flex justify-start">
+                                                    <SubscribeListenLaterBtn creatorId={userId} />
+                                                </div>
+                                            )
+                                        }
                                     </div>
                                 </div>
                                 <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
@@ -140,8 +162,8 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                             pubDate: item.PubDate,
                                             audioLength: duration,
                                             audioSrc: item.EnclosureUrl,
-                                            hideListenLaterBtn: true,
-                                            hideAddToPlaylistBtn: true
+                                            hideListenLaterBtn: isMyPage,
+                                            hideAddToPlaylistBtn: false
                                         }} />
                                     )
                                 })

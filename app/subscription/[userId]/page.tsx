@@ -105,9 +105,6 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                     </div>
                                     <div className="ml-3">
                                         <div className="text-2xl font-bold">{nickname}'s Subscription</div>
-                                        <div className="mt-4 -ml-2 flex justify-start">
-                                            <SubscribeListenLaterBtn creatorId={userId} />
-                                        </div>
                                     </div>
                                 </div>
                                 <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>

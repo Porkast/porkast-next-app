@@ -3,7 +3,10 @@ import { AppProvider } from "@/components/AppContext";
 import EpisodeCard from "@/components/EpisodeCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { SharedListenLaterBtn } from "@/components/Share";
+import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
 import { convertMillsTimeToDuration } from "@/libs/common";
+import { getUserSessionInfo } from "@/libs/suapbase";
 import { getUserKeywordSubscriptionItemList } from "@/libs/subscription";
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
 import { FeedItem } from "@/types/feed_item";
@@ -15,6 +18,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
 
     const userId = params.userId;
     const keyword = params.keyword
+    const decodedKeyword = decodeURIComponent(keyword)
     var page = searchParams.page
     if (!page) {
         page = "1"
@@ -24,6 +28,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
     const [totalCount, setTotalCount] = useState(0)
     const [userInfo, setUserInfo] = useState<ServerUserInfo>()
     const [nickname, setNickname] = useState("")
+    const [isMyPage, setIsMyPage] = useState(false)
     const [nextPageUrl, setNextPageUrl] = useState("")
     const [prevPageUrl, setPrevPageUrl] = useState("")
     const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
@@ -57,6 +62,17 @@ export default function Page({ params, searchParams }: { params: { userId: strin
 
         initPageInfo()
     }, [])
+
+    useEffect(() => {
+        const getUserInfoFromSession = async () => {
+            const sessionUser = await getUserSessionInfo()
+            if (userId == sessionUser.userId) {
+                setIsMyPage(true)
+            }
+        }
+
+        getUserInfoFromSession()
+    }, [userId])
 
     useEffect(() => {
         let nextPage = 0
@@ -93,6 +109,36 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                 <Header>
                     <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                         <div className='w-full max-w-2xl pl-6 pr-6'>
+                            <div className="w-full mb-10">
+                                <div className="flex justify-start mt-4">
+                                    <div className="avatar">
+                                        <div className="w-28 h-28 rounded-xl">
+                                            {
+                                                userInfo?.avatar ?
+                                                    <img src={userInfo.avatar} />
+                                                    :
+                                                    <img src="/porkast-logo.png" />
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="ml-3">
+                                        <div className="text-2xl font-bold">#{decodedKeyword}</div>
+                                        <div className="text-sm font-medium text-gray-500 mt-2">Search keyword subscription #{decodedKeyword} from {nickname}</div>
+                                        {
+                                            isMyPage ? (
+                                                <div className="mt-4 -ml-2 flex justify-start">
+                                                    <SharedListenLaterBtn creatorId={userId} />
+                                                </div>
+                                            ) : (
+                                                <div className="mt-4 -ml-2 flex justify-start">
+                                                    <SubscribeListenLaterBtn creatorId={userId} />
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                </div>
+                                <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
+                            </div>
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                             {
                                 itemList.map((item, index) => {
