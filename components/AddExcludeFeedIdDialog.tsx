@@ -21,6 +21,8 @@ const AddExcludeFeedIdDialog = forwardRef<AddExcludeFeedIdDialogRef>((props, ref
             if (excludeFeedId) {
                 var newExcludeId = excludeFeedId + ',' + feedId;
                 urlParams.set('excludeFeedId', newExcludeId);
+            } else {
+                urlParams.set('excludeFeedId', feedId);
             }
         } else {
             urlParams.set('excludeFeedId', feedId);
