@@ -1,4 +1,5 @@
 import { FeedItem } from "@/types/feed_item";
+import { UserPlaylistDto } from "@/types/playlist";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
@@ -49,6 +50,13 @@ export async function createPlaylist(userId: string, name: string, description: 
             description: description
         })
     }).then(resp => resp.json()).catch(err => {
+        console.log(err);
+    })
+    return respJson
+}
+
+export async function getPlaylistInfoById(playlistId: string): Promise<{ code: number, message: string, data: UserPlaylistDto }> {
+    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/${playlistId}`).then(resp => resp.json()).catch(err => {
         console.log(err);
     })
     return respJson

@@ -4,9 +4,13 @@ import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
-import { getPlaylistItemListByUserId } from "@/libs/playlist"
+import { SharedListenLaterBtn } from "@/components/Share"
+import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
+import { getPlaylistInfoById, getPlaylistItemListByUserId } from "@/libs/playlist"
+import { getUserSessionInfo } from "@/libs/suapbase"
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
 import { FeedItem } from "@/types/feed_item"
+import { UserPlaylistDto } from "@/types/playlist"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -18,6 +22,8 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
     const page = searchParams.page || "1"
     const [userInfo, setUserInfo] = useState<ServerUserInfo>()
     const [nickname, setNickname] = useState("")
+    const [isMyPage, setIsMyPage] = useState(false)
+    const [playlistInfo, setPlaylistInfo] = useState<UserPlaylistDto>()
     const [itemList, setItemList] = useState<FeedItem[]>([])
     const [totalPage, setTotalPage] = useState(0)
     const [totalCount, setTotalCount] = useState(0)
@@ -35,7 +41,6 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
             }
             const userInfoData = userInfoResp.data
             const nicknameStr = getTempNickname(userInfoData)
-            console.log('nicknameStr', nicknameStr)
             setUserInfo(userInfoData)
             setNickname(nicknameStr)
 
@@ -51,11 +56,29 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
             } else {
                 return
             }
+
+            const playlistInfoResp = await getPlaylistInfoById(playlistId)
+            if (playlistInfoResp.code != 0) {
+                // TODO: show error page
+                return
+            }
+            setPlaylistInfo(playlistInfoResp.data)
         }
 
         initPageInfo()
 
     }, [])
+
+    useEffect(() => {
+        const getUserInfoFromSession = async () => {
+            const sessionUser = await getUserSessionInfo()
+            if (userId == sessionUser.userId) {
+                setIsMyPage(true)
+            }
+        }
+
+        getUserInfoFromSession()
+    }, [userId])
 
     useEffect(() => {
         let nextPage = 0
@@ -93,6 +116,36 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                     <Header>
                         <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                             <div className='w-full max-w-2xl pl-6 pr-6'>
+                                <div className="w-full mb-10">
+                                    <div className="flex justify-start mt-4">
+                                        <div className="avatar">
+                                            <div className="w-28 h-28 rounded-xl">
+                                                {
+                                                    userInfo?.avatar ?
+                                                        <img src={userInfo.avatar} />
+                                                        :
+                                                        <img src="/porkast-logo.png" />
+                                                }
+                                            </div>
+                                        </div>
+                                        <div className="ml-3">
+                                            <div className="text-2xl font-bold">{playlistInfo?.PlaylistName}</div>
+                                            <div className="text-sm font-medium text-gray-500 mt-2">By {nickname}</div>
+                                            {
+                                                isMyPage ? (
+                                                    <div className="mt-4 -ml-2 flex justify-start">
+                                                        <SharedListenLaterBtn creatorId={userId} />
+                                                    </div>
+                                                ) : (
+                                                    <div className="mt-4 -ml-2 flex justify-start">
+                                                        <SubscribeListenLaterBtn creatorId={userId} />
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    </div>
+                                    <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
+                                </div>
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                                 {
                                     itemList.map((item, index) => {
@@ -110,7 +163,9 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                                 authorName: "",
                                                 pubDate: item.PubDate,
                                                 audioLength: item.Duration,
-                                                audioSrc: item.EnclosureUrl
+                                                audioSrc: item.EnclosureUrl,
+                                                hideAddToPlaylistBtn: isMyPage,
+                                                hideListenLaterBtn: isMyPage
                                             }} />
                                         )
                                     })

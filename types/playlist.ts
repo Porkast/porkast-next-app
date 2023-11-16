@@ -1,3 +1,4 @@
+import { ServerUserInfo } from "@/libs/user";
 
 export type UserPlaylistDto = {
     Id: string;
@@ -9,4 +10,5 @@ export type UserPlaylistDto = {
     CreatorId: string;
     OrigPlaylistId: string;
     Count: number;
+    UserInfo: ServerUserInfo
 }
