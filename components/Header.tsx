@@ -7,6 +7,7 @@ import { useEffect, useState } from "react"
 
 type HeaderProps = {
     keyword?: string
+    hideSearchBtn?: boolean
     children?: React.ReactNode
 }
 
@@ -115,7 +116,7 @@ export default function Header(props: HeaderProps) {
                             <div className="flex-none hidden lg:block">
                                 <ul className="menu menu-horizontal">
                                     {/* Navbar menu content here */}
-                                    <li><a className="text-base btn btn-ghost">Trending</a></li>
+                                    {/* <li><a className="text-base btn btn-ghost">Trending</a></li> */}
                                     {
                                         isLogin ? (
                                             <>
@@ -127,7 +128,13 @@ export default function Header(props: HeaderProps) {
                                             <></>
                                         )
                                     }
-                                    <li><a className="text-base btn btn-primary mr-2 ml-2" onClick={showSearchModal}>Search</a></li>
+                                    {
+                                        props.hideSearchBtn ? (
+                                            <></>
+                                        ) : (
+                                            <li><a className="text-base btn btn-primary mr-2 ml-2" onClick={showSearchModal}>Search</a></li>
+                                        )
+                                    }
                                     {
                                         isLogin ? (
                                             <div className="dropdown dropdown-end">
@@ -172,7 +179,7 @@ export default function Header(props: HeaderProps) {
                     <label htmlFor="header-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
                     <ul className="menu p-4 w-80 min-h-full bg-base-200">
                         {/* Sidebar content here */}
-                        <li><a className="text-base font-bold">Trending</a></li>
+                        {/* <li><a className="text-base font-bold">Trending</a></li> */}
                         {
                             isLogin ? (
                                 <>
