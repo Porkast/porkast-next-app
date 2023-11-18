@@ -108,7 +108,7 @@ export default function SearchPage() {
                                 ) : (
                                     <>
                                         {
-                                            searchResultData?.map((item: any) => {
+                                            searchResultData?.map((item: FeedItem) => {
                                                 return (
                                                     <EpisodeCard key={item.Id} data={{
                                                         itemId: item.GUID,
