@@ -99,7 +99,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                             </div>
                                         </div>
                                         <div className="ml-3">
-                                            <div className="text-2xl font-bold">{nickname}'s Porkast Playlist</div>
+                                            <div className="text-2xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
                                             <div className="mt-4 -ml-2 flex justify-start">
                                             </div>
                                         </div>

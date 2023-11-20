@@ -143,7 +143,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             {
                                 itemList.map((item, index) => {
                                     return (
-                                        <EpisodeCard data={{
+                                        <EpisodeCard key={index} data={{
                                             itemId: item.GUID,
                                             channelId: item.FeedId,
                                             title: item.Title,
