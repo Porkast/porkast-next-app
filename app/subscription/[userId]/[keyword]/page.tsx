@@ -106,7 +106,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
     return (
         <AppProvider>
             <div>
-                <Header>
+                <Header title="Subscription">
                     <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                         <div className='w-full max-w-2xl pl-6 pr-6'>
                             <div className="w-full mb-10">
