@@ -122,7 +122,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         </div>
                                     </div>
                                     <div className="ml-3">
-                                        <div className="text-2xl font-bold">{nickname}'s Porkast Listen Later</div>
+                                        <div className="text-2xl font-bold">{nickname}{`'s Porkast Listen Later`}</div>
                                         {
                                             isMyPage ? (
                                                 <div className="mt-4 -ml-2 flex justify-start">
@@ -149,7 +149,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         duration = item.Duration
                                     }
                                     return (
-                                        <EpisodeCard data={{
+                                        <EpisodeCard key={index} data={{
                                             itemId: item.GUID,
                                             channelId: item.FeedId,
                                             title: item.Title,
