@@ -162,8 +162,11 @@ export default function Header(props: HeaderProps) {
                     {props.children}
                     {/* Search Modal */}
                     <dialog id="search_modal" className="modal">
-                        <div className="modal-box">
-                            <div className="flex justify-end w-full">
+                        <div className="modal-box border-t-4 border-b-4 border-indigo-500">
+                            <label className="label mb-4">
+                                <span className="label-text">Explore Podcast</span>
+                            </label>
+                            <div className="flex justify-end w-full mb-4">
                                 <div className="relative w-full">
                                     <input id="search_input" type="text" placeholder={inputPlaceholderVal} value={searchInputVal} className="w-full px-4 py-2 rounded-lg input input-bordered" onChange={onSearchInputChanged} />
                                     <form id="search_form" method="dialog">
