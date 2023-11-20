@@ -97,7 +97,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                         {
                             userPlaylists?.map((playlist) => {
                                 return (
-                                    <option value={playlist.Id}>{playlist.PlaylistName}</option>
+                                    <option key={playlist.Id} value={playlist.Id}>{playlist.PlaylistName}</option>
                                 )
                             })
                         }
