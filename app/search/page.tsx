@@ -98,7 +98,7 @@ export default function SearchPage() {
                 <Helmet>
                     <title>Porkast-{q}</title>
                 </Helmet>
-                <Header keyword={q ? q : ""}>
+                <Header keyword={q ? q : ""} title='Search'>
                     <div className="w-full flex justify-center pl-6 pr-6 pt-20">
                         <div className="w-full max-w-2xl">
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results</div>
