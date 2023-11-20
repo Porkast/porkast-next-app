@@ -69,4 +69,6 @@ const AddExcludeFeedIdDialog = forwardRef<AddExcludeFeedIdDialogRef>((props, ref
     )
 })
 
+AddExcludeFeedIdDialog.displayName = 'AddExcludeFeedIdDialog';
+
 export default AddExcludeFeedIdDialog;

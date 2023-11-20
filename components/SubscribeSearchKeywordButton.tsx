@@ -87,4 +87,6 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
     )
 })
 
+SubscribeSearchKeywordButton.displayName = 'SubscribeSearchKeywordButton';
+
 export default SubscribeSearchKeywordButton;

@@ -89,5 +89,6 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
     )
 })
 
+CreatePlaylistDialog.displayName = 'CreatePlaylistDialog'
 
 export default CreatePlaylistDialog;

@@ -80,4 +80,6 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
     );
 })
 
+AudioPlayer.displayName = 'AudioPlayer';
+
 export default AudioPlayer;
