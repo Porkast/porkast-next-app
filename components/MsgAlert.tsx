@@ -56,6 +56,8 @@ export const MsgAlert = forwardRef<MsgAlertRef, MsgAlertProps>((props, ref: Ref<
     )
 })
 
+MsgAlert.displayName = 'MsgAlert'
+
 const SuccessMsgAlert = ({ msg }: { msg: string }) => {
 
     return (

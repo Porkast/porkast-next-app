@@ -125,4 +125,6 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
     )
 })
 
+AddToPlayListDialog.displayName = 'AddToPlayListDialog'
+
 export default AddToPlayListDialog;
