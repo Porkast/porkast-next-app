@@ -3,7 +3,6 @@
 import { AppProvider } from "@/components/AppContext";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
 import { formatDateTime } from "@/libs/common";
 import { SubscriptionData, getUserSubscriptionList } from "@/libs/subscription";
 import { getUserInfoFromServer, getTempNickname, ServerUserInfo } from "@/libs/user";
@@ -104,7 +103,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         </div>
                                     </div>
                                     <div className="ml-3">
-                                        <div className="text-2xl font-bold">{nickname}'s Subscription</div>
+                                        <div className="text-2xl font-bold">{nickname}{`'s Subscription`}</div>
                                     </div>
                                 </div>
                                 <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
