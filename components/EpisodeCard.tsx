@@ -4,6 +4,7 @@ import parse from 'html-react-parser'
 import AudioPlayButton from './AudioPlayButton';
 import AddListenLaterButton from './AddListenLaterButton';
 import AddToPlaylistButton from './AddToPlaylistButton';
+import { AvatarImage } from './PorkastImage';
 
 type ExcludeFunction = (channelTitle: string, feedId: string) => void
 
@@ -66,14 +67,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 <a href={podcastEpisodeLink} className="text-2xl font-medium mt-9">{parse(data.title)}</a>
                 <div className="w-full flex justify-start mt-4">
                     <a href={podcastChannelLink} className="avatar">
-                        <div className="w-24 h-24 rounded-xl">
-                            {
-                                data.image == "" || data.image == "null" ?
-                                    <img src="/porkast-logo.png" />
-                                    :
-                                    <img src={data.image} />
-                            }
-                        </div>
+                        <AvatarImage imageUrl={data.image} />
                     </a>
                     <div className="ml-3">
                         <div className='md:flex md:justify-start md:items-center'>
