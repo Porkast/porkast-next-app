@@ -113,7 +113,10 @@ export default function Header(props: HeaderProps) {
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                                 </label>
                             </div>
-                            <div className="flex-1 md:px-2 md:mx-2"><Link className="btn btn-xs sm:btn-sm md:btn-md btn-ghost md:text-2xl" href={"/"}>{headerTitle}</Link></div>
+                            <div className="flex-1 md:px-2 md:mx-2">
+                                <Link className="hidden lg:block" href={"/"}><img className="w-16" src="/porkast-logo.png" alt="logo" /></Link>
+                                <div className="md:text-2xl uppercase font-bold">{headerTitle}</div>
+                            </div>
                             <div className="flex-none lg:hidden">
                                 <button className="btn btn-xs sm:btn-sm md:btn-md btn-active btn-primary mr-4" onClick={showSearchModal}>Search</button>
                             </div>
@@ -121,17 +124,9 @@ export default function Header(props: HeaderProps) {
                                 <ul className="menu menu-horizontal">
                                     {/* Navbar menu content here */}
                                     {/* <li><a className="text-base btn btn-ghost">Trending</a></li> */}
-                                    {
-                                        isLogin ? (
-                                            <>
-                                                <li><Link href={`/listenlater/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Listen Later</Link></li>
-                                                <li><Link href={`/playlist/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Playlist</Link></li>
-                                                <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Subscription</Link></li>
-                                            </>
-                                        ) : (
-                                            <></>
-                                        )
-                                    }
+                                    <li><Link href={`/listenlater/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Listen Later</Link></li>
+                                    <li><Link href={`/playlist/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Playlist</Link></li>
+                                    <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Subscription</Link></li>
                                     {
                                         props.hideSearchBtn ? (
                                             <></>
@@ -187,37 +182,30 @@ export default function Header(props: HeaderProps) {
                     <ul className="menu p-4 w-80 min-h-full bg-base-200">
                         {/* Sidebar content here */}
                         {/* <li><a className="text-base font-bold">Trending</a></li> */}
-                        <div className="w-full flex justify-start items-center">
-                            <Link href={'/' + userInfo?.userId} className="text-base font-bold w-full">
-                                <img className="w-28 ml-4 mb-4 mt-4" src="/porkast-text-logo.png" alt="logl" />
+                        <div className="w-full">
+                            <Link href={'/'} className="text-base font-bold w-full flex justify-start items-center">
+                                <img className="w-16 -ml-1 mb-4 mt-4" src="/porkast-logo.png" alt="logo" />
+                                <div className="text-2xl font-bold">Porkast</div>
                             </Link>
                         </div>
-                        {
-                            isLogin ? (
-                                <>
-                                    <li>
-                                        <Link href={'/listenlater/' + userInfo?.userId} className="text-base font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-cassette-tape"><rect width="20" height="16" x="2" y="4" rx="2" /><circle cx="8" cy="10" r="2" /><path d="M8 12h8" /><circle cx="16" cy="10" r="2" /><path d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3" /></svg>
-                                            Listen Later
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href={'/playlist/' + userInfo?.userId} className="text-base font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-list-music"><path d="M21 15V6" /><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /><path d="M12 12H3" /><path d="M16 6H3" /><path d="M12 18H3" /></svg>
-                                            Playlist
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-cast"><path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6" /><path d="M2 12a9 9 0 0 1 8 8" /><path d="M2 16a5 5 0 0 1 4 4" /><line x1="2" x2="2.01" y1="20" y2="20" /></svg>
-                                            Subscription
-                                        </Link>
-                                    </li>
-                                </>
-                            ) : (
-                                <></>
-                            )
-                        }
+                        <li>
+                            <Link href={'/listenlater/' + userInfo?.userId} className="text-base font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-cassette-tape"><rect width="20" height="16" x="2" y="4" rx="2" /><circle cx="8" cy="10" r="2" /><path d="M8 12h8" /><circle cx="16" cy="10" r="2" /><path d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3" /></svg>
+                                Listen Later
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href={'/playlist/' + userInfo?.userId} className="text-base font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-list-music"><path d="M21 15V6" /><path d="M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" /><path d="M12 12H3" /><path d="M16 6H3" /><path d="M12 18H3" /></svg>
+                                Playlist
+                            </Link>
+                        </li>
+                        <li>
+                            <Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base font-bold">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" stroke-linecap="round" strokeLinejoin="round" className="lucide lucide-cast"><path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6" /><path d="M2 12a9 9 0 0 1 8 8" /><path d="M2 16a5 5 0 0 1 4 4" /><line x1="2" x2="2.01" y1="20" y2="20" /></svg>
+                                Subscription
+                            </Link>
+                        </li>
                         {
                             isLogin ? (
                                 <li onClick={handleLogout}>
