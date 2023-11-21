@@ -70,13 +70,14 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                         <AvatarImage imageUrl={data.image} />
                     </a>
                     <div className="ml-3">
-                        <div className='md:flex md:justify-start md:items-center'>
+                        <div className='flex justify-start items-center'>
                             <a href={podcastChannelLink} className="text-lg font-medium">{parse(data.channelName)}</a>
                             {
                                 props.data.showExcludeBtn ? (
-                                    <button className="btn btn-xs btn-neutral items-center rounded-lg md:ml-2 md:mt-0 mt-2" onClick={onExcludeModalBtnClick}>Exclude</button>
+                                    <button className="btn btn-xs btn-neutral items-center rounded-lg ml-2 mt-0" onClick={onExcludeModalBtnClick}>Exclude</button>
                                 ) : (
-                                    <></>
+                                    <>
+                                    </>
                                 )
                             }
                         </div>
