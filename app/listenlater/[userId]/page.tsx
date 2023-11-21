@@ -4,6 +4,7 @@ import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
+import { AvatarImage } from "@/components/PorkastImage"
 import { SharedListenLaterBtn } from "@/components/Share"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { convertMillsTimeToDuration } from "@/libs/common"
@@ -112,14 +113,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             <div className="w-full mb-10">
                                 <div className="flex justify-start mt-4">
                                     <div className="avatar">
-                                        <div className="w-24 h-24 rounded-xl">
-                                            {
-                                                userInfo?.avatar ?
-                                                    <img src={userInfo.avatar} />
-                                                    :
-                                                    <img src="/porkast-logo.png" />
-                                            }
-                                        </div>
+                                        <AvatarImage imageUrl={userInfo?.avatar} />
                                     </div>
                                     <div className="ml-3">
                                         <div className="text-2xl font-bold">{nickname}{`'s Porkast Listen Later`}</div>

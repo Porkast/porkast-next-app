@@ -8,6 +8,7 @@ import parse from 'html-react-parser'
 import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
 import { getPodcastInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
+import { AvatarImage } from '@/components/PorkastImage';
 
 export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
@@ -60,16 +61,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                     <div className='w-full'>
                                         <div className='text-3xl font-bold'>{channelInfoData.Title}</div>
                                         <div className="w-full flex justify-start mt-4">
-                                            <div className="avatar">
-                                                <div className="w-24 rounded-xl">
-                                                    {
-                                                        channelInfoData.ImageUrl == "" || channelInfoData.ImageUrl == "null" ?
-                                                            <img src="/porkast-logo.png" />
-                                                            :
-                                                            <img src={channelInfoData.ImageUrl} />
-                                                    }
-                                                </div>
-                                            </div>
+                                            <AvatarImage imageUrl={channelInfoData.ImageUrl} />
                                             <div className="ml-3">
                                                 <div className="text-sm font-medium text-gray-500 mt-2">By {channelInfoData.Author}</div>
                                                 <div className="flex justify-start mt-4">
