@@ -41,7 +41,7 @@ export default function HorizontalPodcastListView(props: ScrollPodcastListViewPr
                                 <div className="w-24 h-24 rounded">
                                     {
                                         podcastChannelInfo.ImageUrl == "" || podcastChannelInfo.ImageUrl == null || podcastChannelInfo.ImageUrl == "null" ?
-                                            <img src="/porkast-logo.png" alt="podcast cover" />
+                                            <img src="/porkast-text-logo.png" alt="podcast cover" />
                                             :
                                             <img src={podcastChannelInfo.ImageUrl} alt="podcast" />
                                     }
