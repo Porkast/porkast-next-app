@@ -112,7 +112,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                         <div className='w-full max-w-2xl pl-6 pr-6'>
                             <div className="w-full mb-10">
                                 <div className="flex justify-start mt-4">
-                                    <div className="avatar">
+                                    <div className="avatar w-24">
                                         <AvatarImage imageUrl={userInfo?.avatar} />
                                     </div>
                                     <div className="ml-3">
