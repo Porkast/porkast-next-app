@@ -4,7 +4,7 @@ import { addToListenLater } from "@/libs/listen_later";
 import { useAppContext } from "./AppContext";
 import { MsgAlertType } from "./MsgAlert";
 import { useEffect, useState } from "react";
-import { getUserSessionInfo } from "@/libs/suapbase";
+import { getUserSessionInfo, isUserLoggedIn } from "@/libs/suapbase";
 
 type AddListenLaterButtonProps = {
     userId?: string;
@@ -37,6 +37,11 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
             return
         }
         setIsLoading(true)
+        if (currentUserId == '') {
+            appContext.showMsgAlert('Please login first', MsgAlertType.FAILED)
+            return
+        }
+
         const resp = await addToListenLater(channelId, itemId, currentUserId, "itunes")
         if (resp.code === 0) {
             appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
