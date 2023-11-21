@@ -89,7 +89,9 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                             <div className='w-full max-w-2xl pl-6 pr-6'>
                                 <div className="w-full mb-10">
                                     <div className="flex justify-start mt-4">
-                                        <AvatarImage imageUrl={userInfo?.avatar} />
+                                        <div className="w-24">
+                                            <AvatarImage imageUrl={userInfo?.avatar} />
+                                        </div>
                                         <div className="ml-3">
                                             <div className="text-2xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
                                             <div className="mt-4 -ml-2 flex justify-start">

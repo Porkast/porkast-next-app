@@ -19,7 +19,7 @@ export const AvatarImage = ({ imageUrl }: AvatarImageProps) => {
     return (
         <>
             <div className="avatar">
-                <div className="w-24 h-24 rounded-xl">
+                <div className="w-full rounded-xl">
                     {
                         avatarUrl ?
                             <img src={avatarUrl} />

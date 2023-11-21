@@ -61,7 +61,9 @@ export default async function Page({ params, searchParams }: { params: { channel
                                     <div className='w-full'>
                                         <div className='text-3xl font-bold'>{channelInfoData.Title}</div>
                                         <div className="w-full flex justify-start mt-4">
-                                            <AvatarImage imageUrl={channelInfoData.ImageUrl} />
+                                            <div className="w-24">
+                                                <AvatarImage imageUrl={channelInfoData.ImageUrl} />
+                                            </div>
                                             <div className="ml-3">
                                                 <div className="text-sm font-medium text-gray-500 mt-2">By {channelInfoData.Author}</div>
                                                 <div className="flex justify-start mt-4">

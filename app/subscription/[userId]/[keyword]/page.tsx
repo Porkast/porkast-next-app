@@ -112,7 +112,9 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                         <div className='w-full max-w-2xl pl-6 pr-6'>
                             <div className="w-full mb-10">
                                 <div className="flex justify-start mt-4">
-                                    <AvatarImage imageUrl={userInfo?.avatar} />
+                                    <div className="w-28">
+                                        <AvatarImage imageUrl={userInfo?.avatar} />
+                                    </div>
                                     <div className="ml-3">
                                         <div className="text-2xl font-bold">#{decodedKeyword}</div>
                                         <div className="text-sm font-medium text-gray-500 mt-2">Search keyword subscription #{decodedKeyword} from {nickname}</div>
