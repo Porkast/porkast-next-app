@@ -5,7 +5,7 @@ import { UserPlaylistDto } from "@/types/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
-import { getUserSessionInfo } from "@/libs/suapbase"
+import { getUserSessionInfo, isUserLoggedIn } from "@/libs/suapbase"
 
 export type AddToPlayListDialogProps = {
 
@@ -64,6 +64,10 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
             return
         }
         setIsLoading(true)
+        if (currentUserId == '') {
+            appContext.showMsgAlert('Please login first', MsgAlertType.FAILED)
+            return
+        }
         const resp = await addToPlayList(currentUserId, feedId, guid, selectedPlaylistId, source)
         setIsLoading(false)
         if (resp && resp.code == 0) {
