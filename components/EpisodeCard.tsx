@@ -66,7 +66,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 {/* Header information */}
                 <a href={podcastEpisodeLink} className="text-2xl font-medium mt-9">{parse(data.title)}</a>
                 <div className="w-full flex justify-start mt-4">
-                    <a href={podcastChannelLink} className="avatar">
+                    <a href={podcastChannelLink} className="avatar w-24 h-24">
                         <AvatarImage imageUrl={data.image} />
                     </a>
                     <div className="ml-3">
