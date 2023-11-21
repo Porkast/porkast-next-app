@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import SearchInput from "@/components/SearchInput";
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata } from "next";
 
 export default function Home() {
 
@@ -27,7 +27,7 @@ export default function Home() {
     )
 }
 
-export async function generateMetadata(parent: ResolvingMetadata): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
     const title = "Porkast | Discover, Subscribe, Share Your Personalized Podcast"
     const description = "You can Subscribe search keyword, build your own podcast playlist by yourself, and share the playlist as RSS feed."
 
