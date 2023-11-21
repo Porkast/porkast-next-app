@@ -5,6 +5,8 @@ import { ThemeSupa } from '@supabase/auth-ui-shared'
 import supabase from '@/libs/suapbase'
 import { useEffect } from 'react'
 import { ServerUserInfo, syncToServer } from '@/libs/user'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default function AuthForm() {
 
@@ -25,22 +27,26 @@ export default function AuthForm() {
     })
 
     return (
-
-        <div className="w-full min-h-screen flex justify-center">
-            <div data-theme="light" className="w-full max-w-md pt-32 pl-6 pr-6">
-                <Auth
-                    supabaseClient={supabase}
-                    magicLink={true}
-                    appearance={{
-                        theme: ThemeSupa,
-                        className: {
-                            input: 'text-accent-content',
-                        }
-                    }}
-                    providers={['google', 'github']}
-                    redirectTo='/'
-                />
-            </div>
-        </div>
+        <>
+            <Header hideSearchBtn={true} >
+                <div className="w-full flex justify-center min-h-screen mt-20">
+                    <div data-theme="light" className="w-full max-w-md pt-32 pl-6 pr-6">
+                        <Auth
+                            supabaseClient={supabase}
+                            magicLink={true}
+                            appearance={{
+                                theme: ThemeSupa,
+                                className: {
+                                    input: 'text-accent-content',
+                                }
+                            }}
+                            providers={['google']}
+                            redirectTo='/'
+                        />
+                    </div>
+                </div>
+            </Header>
+            <Footer />
+        </>
     )
 }
