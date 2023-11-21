@@ -144,10 +144,10 @@ export default function Header(props: HeaderProps) {
                                                 </label>
                                                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
                                                     {/* <li><a>Settings</a></li> */}
-                                                    <li><a className="text-base btn btn-ghost">Sign Out</a></li>
+                                                    <li onClick={handleLogout}><a className="text-base btn btn-ghost">Sign Out</a></li>
                                                 </ul>
                                             </div>
-                                        ) : <li><Link className="text-base btn btn-ghost" href={"/signin"}>Sign In</Link></li>
+                                        ) : <li><Link className="text-base btn btn-primary" href={"/signin"}>Sign In</Link></li>
                                     }
                                 </ul>
                             </div>
