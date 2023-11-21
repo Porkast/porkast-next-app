@@ -4,6 +4,7 @@ import { AppProvider } from "@/components/AppContext"
 import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
+import { AvatarImage } from "@/components/PorkastImage"
 import { SharedListenLaterBtn } from "@/components/Share"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { getPlaylistInfoById, getPlaylistItemListByUserId } from "@/libs/playlist"
@@ -118,15 +119,8 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                             <div className='w-full max-w-2xl pl-6 pr-6'>
                                 <div className="w-full mb-10">
                                     <div className="flex justify-start mt-4">
-                                        <div className="avatar">
-                                            <div className="w-28 h-28 rounded-xl">
-                                                {
-                                                    userInfo?.avatar ?
-                                                        <img src={userInfo.avatar} />
-                                                        :
-                                                        <img src="/porkast-logo.png" />
-                                                }
-                                            </div>
+                                        <div className="w-28 ">
+                                            <AvatarImage imageUrl={userInfo?.avatar} />
                                         </div>
                                         <div className="ml-3">
                                             <div className="text-2xl font-bold">{playlistInfo?.PlaylistName}</div>

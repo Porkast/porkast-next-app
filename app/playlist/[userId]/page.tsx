@@ -11,6 +11,7 @@ import Link from "next/link"
 import { EditPlaylistInfoBtn } from '@/components/EditPlaylistInfo'
 import Footer from '@/components/Footer'
 import { useEffect, useState } from 'react'
+import { AvatarImage } from '@/components/PorkastImage'
 
 export default function PlaylistPage({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
 
@@ -88,15 +89,8 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                             <div className='w-full max-w-2xl pl-6 pr-6'>
                                 <div className="w-full mb-10">
                                     <div className="flex justify-start mt-4">
-                                        <div className="avatar">
-                                            <div className="w-24 h-24 rounded-xl">
-                                                {
-                                                    userInfo?.avatar ?
-                                                        <img src={userInfo.avatar} />
-                                                        :
-                                                        <img src="/porkast-logo.png" />
-                                                }
-                                            </div>
+                                        <div className="w-24">
+                                            <AvatarImage imageUrl={userInfo?.avatar} />
                                         </div>
                                         <div className="ml-3">
                                             <div className="text-2xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
