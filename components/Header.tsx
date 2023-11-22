@@ -1,6 +1,7 @@
 'use client'
 
 import supabase, { SupabaseSessionInfo, getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/suapbase"
+import { ServerUserInfo, syncToServer } from "@/libs/user"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
@@ -20,6 +21,22 @@ export default function Header(props: HeaderProps) {
     const [headerTitle, setHeaderTitle] = useState('Porkast')
     const [isLogin, setIsLogin] = useState(false);
     const [userInfo, setUserInfo] = useState<SupabaseSessionInfo>();
+
+    useEffect(() => {
+        supabase.auth.onAuthStateChange((event, session) => {
+            if (event === 'SIGNED_OUT') {
+                window.location.href = '/signin'
+            } else if (event === 'SIGNED_IN') {
+                const userInfo = session?.user
+                const serverUserInfo: ServerUserInfo = {
+                    id: userInfo?.id as string,
+                    email: userInfo?.email as string,
+                }
+                syncToServer(serverUserInfo)
+            }
+        })
+    })
+
 
     const showSearchModal = () => {
         const dialog = document.getElementById('search_modal') as HTMLDialogElement;
