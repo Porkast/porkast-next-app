@@ -93,11 +93,9 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                         <div className='w-full max-w-2xl pl-6 pr-6 mb-9'>
                             <div className="w-full mb-10">
                                 <div className="flex justify-start mt-4">
-                                    <div className="w-24">
-                                        <AvatarImage imageUrl={userInfo?.avatar} />
-                                    </div>
+                                    <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
                                     <div className="ml-3">
-                                        <div className="text-2xl font-bold">{nickname}{`'s Subscription`}</div>
+                                        <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Subscription`}</div>
                                     </div>
                                 </div>
                                 <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>

@@ -4,9 +4,10 @@ import { useEffect, useState } from "react"
 
 type AvatarImageProps = {
     imageUrl?: string
+    className?: string
 }
 
-export const AvatarImage = ({ imageUrl }: AvatarImageProps) => {
+export const AvatarImage = ({ imageUrl, className }: AvatarImageProps) => {
 
     const [avatarUrl, setAvatarUrl] = useState("")
 
@@ -19,7 +20,7 @@ export const AvatarImage = ({ imageUrl }: AvatarImageProps) => {
     return (
         <>
             <div className="avatar">
-                <div className="w-full rounded-xl">
+                <div className={`rounded-xl ${className}`}>
                     {
                         avatarUrl ?
                             <img src={avatarUrl} />
