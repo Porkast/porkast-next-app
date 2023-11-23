@@ -32,7 +32,6 @@ export default function SearchPage() {
     const subBtnRef = useRef<SubscribeSearchKeywordButtonRef>(null)
     const q = searhcParam.get('q')
     const excludeFeedId = searhcParam.get('excludeFeedId')
-    const source = searhcParam.get('source')
     const searchTotalCount = 200
     const limit = 10
 
@@ -44,6 +43,10 @@ export default function SearchPage() {
     let country = searhcParam.get('country')
     if (!country) {
         country = "US"
+    }
+    let source = searhcParam.get('source')
+    if (!source) {
+        source = "itunes"
     }
 
     const prevPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.PrePage)
