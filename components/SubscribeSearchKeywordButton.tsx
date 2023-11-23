@@ -22,7 +22,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
 
     const [searchKeyword, setSearchKeyword] = useState('')
     const [userId, setUserId] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const appContext = useAppContext()
 
     useEffect(() => {
@@ -36,6 +36,10 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
     }, [])
 
     const subscribeByKeyword = async () => {
+        if (isLoading) {
+            return
+        }
+        setIsLoading(true)
         const userInfo = await getUserSessionInfo()
         const respJson = await subscribeSearchKeyword(userId, searchKeyword, props.country, props.source, props.excludeFeedId, userInfo?.token)
         if (respJson.code === 0) {
@@ -43,7 +47,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
         } else {
             appContext.showMsgAlert(respJson.message, MsgAlertType.FAILED)
         }
-
+        setIsLoading(false)
     }
 
     const onSubscribeByKeywordBtnClick = () => {
@@ -51,12 +55,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
             appContext.showMsgAlert('Please login first', MsgAlertType.FAILED)
             return
         }
-        if (isLoading) {
-            return
-        }
-        setIsLoading(true)
         subscribeByKeyword()
-        setIsLoading(false)
     }
 
     useEffect(() => {
