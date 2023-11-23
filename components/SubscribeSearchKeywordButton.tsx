@@ -22,7 +22,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
 
     const [searchKeyword, setSearchKeyword] = useState('')
     const [userId, setUserId] = useState('')
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
     const appContext = useAppContext()
 
     useEffect(() => {
