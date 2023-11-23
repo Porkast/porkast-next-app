@@ -119,11 +119,9 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                             <div className='w-full max-w-2xl pl-6 pr-6'>
                                 <div className="w-full mb-10">
                                     <div className="flex justify-start mt-4">
-                                        <div className="w-28 ">
-                                            <AvatarImage imageUrl={userInfo?.avatar} />
-                                        </div>
+                                        <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
                                         <div className="ml-3">
-                                            <div className="text-2xl font-bold">{playlistInfo?.PlaylistName}</div>
+                                            <div className="md:text-2xl text-xl font-bold">{playlistInfo?.PlaylistName}</div>
                                             <div className="text-sm font-medium text-gray-500 mt-2">By {nickname}</div>
                                             {
                                                 isMyPage ? (
