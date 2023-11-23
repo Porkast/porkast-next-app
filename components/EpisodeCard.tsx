@@ -5,6 +5,7 @@ import AudioPlayButton from './AudioPlayButton';
 import AddListenLaterButton from './AddListenLaterButton';
 import AddToPlaylistButton from './AddToPlaylistButton';
 import { AvatarImage } from './PorkastImage';
+import { parseHtmlStrinText } from '@/libs/common';
 
 type ExcludeFunction = (channelTitle: string, feedId: string) => void
 
@@ -38,7 +39,8 @@ export default function EpisodeCard(props: EpisodeCardProps) {
     data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
     data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
     data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
-    data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
+    // data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
+    data.description = parseHtmlStrinText(data.description)
 
     var artist = ''
     if (!data.authorName) {

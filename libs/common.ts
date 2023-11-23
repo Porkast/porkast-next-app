@@ -28,3 +28,10 @@ export const formatDateTime = (dateTime: string): string => {
     const date = new Date(dateTime)
     return date.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-')
 }
+
+export const parseHtmlStrinText = (htmlString: string): string => {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlString, 'text/html');
+    const textContent = doc.body.textContent;
+    return textContent ?? '';
+}
