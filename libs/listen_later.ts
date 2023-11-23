@@ -8,7 +8,7 @@ export async function addToListenLater(channelId: string, itemId: string, userId
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + userInfo?.token
+            'Authorization': userInfo?.token
         },
         body: JSON.stringify({
             channelId: channelId,
@@ -27,7 +27,13 @@ export const getListenLaterListByUserId = async (userId: string, page: number): 
 
     const limit = 10
     const offset = (page - 1) * limit
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`)
+    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/listenlater/list?userId=${userId}&limit=${limit}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    })
     const respJson = await resp.json()
     return {
         code: respJson.code,
