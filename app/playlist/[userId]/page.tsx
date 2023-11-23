@@ -89,11 +89,9 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                             <div className='w-full max-w-2xl pl-6 pr-6'>
                                 <div className="w-full mb-10">
                                     <div className="flex justify-start mt-4">
-                                        <div className="w-24">
-                                            <AvatarImage imageUrl={userInfo?.avatar} />
-                                        </div>
+                                        <AvatarImage className='w-28' imageUrl={userInfo?.avatar} />
                                         <div className="ml-3">
-                                            <div className="text-2xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
+                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
                                             <div className="mt-4 -ml-2 flex justify-start">
                                             </div>
                                         </div>
@@ -114,7 +112,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                                             <EditPlaylistInfoBtn CreatorId={userId} PlaylistId={item.Id} />
                                                         </div>
                                                     </h2>
-                                                    <div className="max-h-24 flex overflow-clip mt-4">
+                                                    <div className="max-h-24 flex overflow-clip mt-2 text-sm neutral-content">
                                                         <a href={`/playlist/${userId}/${item.Id}`}>
                                                             <p>{parse(item.Description)}</p>
                                                         </a>
