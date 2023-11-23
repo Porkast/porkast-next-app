@@ -68,15 +68,15 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                 {/* Header information */}
                 <a href={podcastEpisodeLink} className="md:text-2xl text-xl font-medium mt-9">{parse(data.title)}</a>
                 <div className="w-full flex justify-start mt-4">
-                    <a href={podcastChannelLink} className="avatar w-24 h-24">
-                        <AvatarImage imageUrl={data.image} />
+                    <a href={podcastChannelLink} >
+                        <AvatarImage className='w-24 h-24' imageUrl={data.image} />
                     </a>
                     <div className="ml-3">
-                        <div className='flex justify-start items-center'>
-                            <a href={podcastChannelLink} className="text-base font-medium">{parse(data.channelName)}</a>
+                        <div className='md:flex md:justify-start items-center'>
+                            <a href={podcastChannelLink} className="text-base font-medium mr-2">{parse(data.channelName)}</a>
                             {
                                 props.data.showExcludeBtn ? (
-                                    <button className="btn btn-xs btn-neutral items-center rounded-lg ml-2 mt-0" onClick={onExcludeModalBtnClick}>Exclude</button>
+                                    <button className="btn btn-xs btn-neutral items-center rounded-lg mt-0" onClick={onExcludeModalBtnClick}>Exclude</button>
                                 ) : (
                                     <>
                                     </>
