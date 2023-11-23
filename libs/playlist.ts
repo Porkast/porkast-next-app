@@ -1,12 +1,14 @@
 import { FeedItem } from "@/types/feed_item";
 import { UserPlaylistDto } from "@/types/playlist";
+import { getUserSessionInfo } from "./suapbase";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
     const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/item`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
         },
         body: JSON.stringify({
             channelId: channelId,
@@ -27,7 +29,13 @@ export async function getUserPlaylistByUserId(userId: string, page: number = 1):
     const limit = 10
     const offset = (page - 1) * limit
 
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}?limit=${limit}&offset=${offset}`).then(resp => resp.json()).catch(err => {
+    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}?limit=${limit}&offset=${offset}`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    }).then(resp => resp.json()).catch(err => {
         console.log(err);
     })
 
@@ -42,7 +50,8 @@ export async function createPlaylist(userId: string, name: string, description: 
     const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
         },
         body: JSON.stringify({
             userId: userId,
@@ -56,7 +65,13 @@ export async function createPlaylist(userId: string, name: string, description: 
 }
 
 export async function getPlaylistInfoById(playlistId: string): Promise<{ code: number, message: string, data: UserPlaylistDto }> {
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/${playlistId}`).then(resp => resp.json()).catch(err => {
+    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/${playlistId}`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    }).then(resp => resp.json()).catch(err => {
         console.log(err);
     })
     return respJson
@@ -66,7 +81,13 @@ export const getPlaylistItemListByUserId = async (userId: string, playlistId: st
 
     const limit = 10
     const offset = (page - 1) * limit
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`)
+    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    })
     const respJson = await resp.json()
     return {
         code: respJson.code,
