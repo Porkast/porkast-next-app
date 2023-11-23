@@ -1,4 +1,5 @@
 import { FeedItem } from "@/types/feed_item";
+import { getUserSessionInfo } from "./suapbase";
 
 export type SubscriptionData = {
     Id: string;
@@ -31,7 +32,7 @@ export const subscribeSearchKeyword = async (userId: string, searchKeyword: stri
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            'Authorization': token
         },
         body: JSON.stringify(params)
     })
@@ -51,7 +52,7 @@ export const subscribeUserListenLater = async (userId: string, creatorId: string
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + token
+            'Authorization': token
         },
         body: JSON.stringify(params)
     })
@@ -81,7 +82,13 @@ export const getUserKeywordSubscriptionItemList = async (userId: string, keyword
         requestAPI = `${requestAPI}?page=${page}`
     }
 
-    const resp = await fetch(requestAPI)
+    const resp = await fetch(requestAPI, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': (await getUserSessionInfo()).token
+        }
+    })
     const respJson = await resp.json()
 
     return {

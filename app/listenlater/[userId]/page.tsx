@@ -49,7 +49,9 @@ export default function Page({ params, searchParams }: { params: { userId: strin
 
             const resp = await getListenLaterListByUserId(userId, parseInt(page))
             const itemDataList = resp.data
-            setItemList(itemDataList)
+            if (itemDataList) {
+                setItemList(itemDataList)
+            }
             if (itemDataList && itemDataList.length > 0) {
                 setTotalPage(Math.ceil(itemDataList[0].Count / 10))
                 setTotalCount(itemDataList[0].Count)
