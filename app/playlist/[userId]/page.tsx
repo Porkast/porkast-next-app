@@ -77,7 +77,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
         } else {
             setIsNextBtnClickable(true)
         }
-    }, [totalCount, totalPage])
+    }, [totalCount, totalPage, page])
 
 
     return (

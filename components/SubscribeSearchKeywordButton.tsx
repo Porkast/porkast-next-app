@@ -41,7 +41,9 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
         }
         setIsLoading(true)
         const userInfo = await getUserSessionInfo()
-        const respJson = await subscribeSearchKeyword(userId, searchKeyword, props.country, props.source, props.excludeFeedId, userInfo?.token)
+        const respJson = await subscribeSearchKeyword(userId, searchKeyword, props.country, props.source, props.excludeFeedId, userInfo?.token).finally(() => {
+            setIsLoading(false)
+        })
         if (respJson.code === 0) {
             appContext.showMsgAlert('Subscribed Success', MsgAlertType.SUCCESS)
         } else {

@@ -62,7 +62,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         }
 
         initPageInfo()
-    }, [])
+    }, [page])
 
     useEffect(() => {
         const getUserInfoFromSession = async () => {
@@ -103,7 +103,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         } else {
             setIsNextBtnClickable(true)
         }
-    }, [totalCount, totalPage])
+    }, [totalCount, totalPage, page])
 
 
     return (

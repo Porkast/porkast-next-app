@@ -68,7 +68,9 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
             appContext.showMsgAlert('Please login first', MsgAlertType.FAILED)
             return
         }
-        const resp = await addToPlayList(currentUserId, feedId, guid, selectedPlaylistId, source)
+        const resp = await addToPlayList(currentUserId, feedId, guid, selectedPlaylistId, source).finally(() => {
+            setIsLoading(false)
+        })
         setIsLoading(false)
         if (resp && resp.code == 0) {
             appContext.showMsgAlert(resp.message, MsgAlertType.SUCCESS)
