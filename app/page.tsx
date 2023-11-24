@@ -26,13 +26,3 @@ export default function Home() {
         </div>
     )
 }
-
-export async function generateMetadata(): Promise<Metadata> {
-    const title = "Porkast | Discover, Subscribe, Share Your Personalized Podcast"
-    const description = "You can Subscribe search keyword, build your own podcast playlist by yourself, and share the playlist as RSS feed."
-
-    return {
-        title: title,
-        description: description,
-    }
-}
