@@ -104,7 +104,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             {
                                 subscriptionList?.map((item, index) => {
                                     return (
-                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl">
+                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
                                             <div className="card-body">
                                                 {
                                                     item.Keyword ? (
