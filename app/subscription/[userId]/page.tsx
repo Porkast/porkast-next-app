@@ -54,7 +54,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         }
 
         initPageInfo()
-    }, [])
+    }, [page])
 
     useEffect(() => {
         let nextPage = 0
@@ -83,7 +83,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         } else {
             setIsNextBtnClickable(true)
         }
-    }, [totalCount, totalPage])
+    }, [totalCount, totalPage, page])
 
     return (
         <AppProvider>
@@ -104,7 +104,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             {
                                 subscriptionList?.map((item, index) => {
                                     return (
-                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl">
+                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
                                             <div className="card-body">
                                                 {
                                                     item.Keyword ? (
