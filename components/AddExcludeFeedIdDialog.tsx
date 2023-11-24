@@ -53,7 +53,8 @@ const AddExcludeFeedIdDialog = forwardRef<AddExcludeFeedIdDialogRef>((props, ref
             {/* Open the modal using document.getElementById('ID').showModal() method */}
             <dialog id="exclude_feed_id_modal" className="modal">
                 <div className="modal-box">
-                    <h3 className="font-bold text-lg">Exclude Podcast `{channelTitle}` from search result?</h3>
+                    <h3 className="font-bold text-lg">Exclude Channel</h3>
+                    <p className="py-4">Are you sure you want to exclude channel `{channelTitle}` from search result?</p>
                     <div className="modal-action">
                         <form method="dialog">
                             {/* if there is a button in form, it will close the modal */}
