@@ -42,7 +42,9 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
             return
         }
 
-        const resp = await addToListenLater(channelId, itemId, currentUserId, "itunes")
+        const resp = await addToListenLater(channelId, itemId, currentUserId, "itunes").finally(() => {
+            setIsLoading(false)
+        })
         if (resp.code === 0) {
             appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
         } else {
