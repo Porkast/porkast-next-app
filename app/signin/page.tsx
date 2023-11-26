@@ -32,7 +32,6 @@ export default function AuthForm() {
                 <div className="w-full flex justify-center min-h-screen mt-20">
                     <div className="w-full max-w-md pt-32 pl-6 pr-6">
                         <Auth
-                            theme="dark"
                             supabaseClient={supabase}
                             magicLink={true}
                             appearance={{
