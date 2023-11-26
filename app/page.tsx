@@ -1,6 +1,5 @@
 import Header from "@/components/Header";
 import SearchInput from "@/components/SearchInput";
-import { Metadata } from "next";
 
 export default function Home() {
 
@@ -8,10 +7,10 @@ export default function Home() {
         <div>
             <Header hideSearchBtn={true} >
                 <div className="mt-28">
-                    <div className="lg:text-7xl text-6xl font-semibold flex justify-center w-full italic text-center">
+                    <div className="md:text-5xl text-2xl font-semibold flex justify-center w-full italic text-center">
                         Discover, Subscribe, Share
                     </div>
-                    <div className="lg:text-6xl text-5xl text-primary font-bold flex justify-center w-full italic text-center mt-9">
+                    <div className="md:text-4xl text-xl text-primary font-bold flex justify-center w-full italic text-center mt-9">
                         Your Personalized Podcast
                     </div>
                 </div>
