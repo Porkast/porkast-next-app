@@ -30,7 +30,7 @@ export default function AuthForm() {
         <>
             <Header hideSearchBtn={true} >
                 <div className="w-full flex justify-center min-h-screen mt-20">
-                    <div data-theme="light" className="w-full max-w-md pt-32 pl-6 pr-6">
+                    <div className="w-full max-w-md pt-32 pl-6 pr-6">
                         <Auth
                             supabaseClient={supabase}
                             magicLink={true}
@@ -38,6 +38,14 @@ export default function AuthForm() {
                                 theme: ThemeSupa,
                                 className: {
                                     input: 'text-accent-content',
+                                },
+                                variables: {
+                                    default: {
+                                        colors: {
+                                            brand: '#404040',
+                                            brandAccent: '#52525b'
+                                        }
+                                    }
                                 }
                             }}
                             providers={['google']}
