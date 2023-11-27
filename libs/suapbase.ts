@@ -33,6 +33,9 @@ export const userSignout = async (): Promise<boolean> => {
 
 export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { session } } = await supabase.auth.getSession()
+    const { data: { user } } = await supabase.auth.getUser()
+    console.log('user info from supabase', user)
+    console.log('session info from supabase', session)
     if (session) {
         return {
             userId: session.user.id,
