@@ -28,7 +28,7 @@ export default function Header(props: HeaderProps) {
             const serverUserInfo: ServerUserInfo = {
                 id: userInfo?.userId,
                 email: userInfo?.email,
-                username: userInfo?.username,
+                nickname: userInfo?.username,
                 avatar: userInfo?.avatar
             }
             setUserInfo(userInfo)
