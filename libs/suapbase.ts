@@ -12,6 +12,8 @@ export type SupabaseSessionInfo = {
     userId: string
     email: string
     token: string
+    username?: string
+    avatar?: string
 }
 
 const supabase = createClientComponentClient<Database>()
@@ -36,11 +38,20 @@ export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { user } } = await supabase.auth.getUser()
     console.log('user info from supabase', user)
     console.log('session info from supabase', session)
+    let username: string = ''
+    let avatar: string = ''
+    console.log('user.app_metadata', user?.app_metadata)
+    if (session?.user.app_metadata.provider === 'google') {
+        username = user?.identities?.[0]?.identity_data?.name
+        avatar = user?.identities?.[0]?.identity_data?.avatar_url
+    }
     if (session) {
         return {
             userId: session.user.id,
             email: session.user.email as string,
             token: session.access_token,
+            username: username,
+            avatar: avatar
         }
     } else {
         return {
