@@ -23,19 +23,32 @@ export default function Header(props: HeaderProps) {
     const [userInfo, setUserInfo] = useState<SupabaseSessionInfo>();
 
     useEffect(() => {
-        supabase.auth.onAuthStateChange((event, session) => {
+        const syncUserInfo = async () => {
+            const userInfo = await getUserSessionInfo()
+            const serverUserInfo: ServerUserInfo = {
+                id: userInfo?.userId,
+                email: userInfo?.email,
+                username: userInfo?.username,
+                avatar: userInfo?.avatar
+            }
+            setUserInfo(userInfo)
+            syncToServer(serverUserInfo)
+        }
+        supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_OUT') {
                 window.location.href = '/signin'
             } else if (event === 'SIGNED_IN') {
-                const userInfo = session?.user
-                const serverUserInfo: ServerUserInfo = {
-                    id: userInfo?.id as string,
-                    email: userInfo?.email as string,
-                }
-                syncToServer(serverUserInfo)
+                syncUserInfo()
             }
         })
-    })
+
+        const checkUserLogin = async () => {
+            const isUserLogin = await isUserLoggedIn()
+            setIsLogin(isUserLogin)
+        }
+
+        checkUserLogin()
+    }, [])
 
 
     const showSearchModal = () => {
@@ -90,20 +103,6 @@ export default function Header(props: HeaderProps) {
             setHeaderTitle(props.title)
         }
     }, [])
-
-    useEffect(() => {
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = '/signin'
-            }
-        })
-        const checkUserLogin = async () => {
-            const isUserLogin = await isUserLoggedIn()
-            setIsLogin(isUserLogin)
-        }
-        checkUserLogin()
-    }, [])
-
 
     useEffect(() => {
         const getUserInfo = async () => {
