@@ -23,18 +23,24 @@ export default function Header(props: HeaderProps) {
     const [userInfo, setUserInfo] = useState<SupabaseSessionInfo>();
 
     useEffect(() => {
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = '/signin'
-            } else if (event === 'SIGNED_IN') {
-                const userInfo = session?.user
-                const serverUserInfo: ServerUserInfo = {
-                    id: userInfo?.id as string,
-                    email: userInfo?.email as string,
+        const onAuthChange = async () => {
+            supabase.auth.onAuthStateChange(async (event, session) => {
+                if (event === 'SIGNED_OUT') {
+                    window.location.href = '/signin'
+                } else if (event === 'SIGNED_IN') {
+                    const userInfo = await getUserSessionInfo()
+                    const serverUserInfo: ServerUserInfo = {
+                        id: userInfo?.userId,
+                        email: userInfo?.email,
+                        username: userInfo?.username,
+                        avatar: userInfo?.avatar
+                    }
+                    syncToServer(serverUserInfo)
                 }
-                syncToServer(serverUserInfo)
-            }
-        })
+            })
+        }
+
+        onAuthChange()
     })
 
 
