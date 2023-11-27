@@ -2,7 +2,7 @@
 
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
-import supabase from '@/libs/suapbase'
+import supabase, { getUserSessionInfo } from '@/libs/suapbase'
 import { useEffect } from 'react'
 import { ServerUserInfo, syncToServer } from '@/libs/user'
 import Header from '@/components/Header'
@@ -11,19 +11,26 @@ import Footer from '@/components/Footer'
 export default function AuthForm() {
 
     useEffect(() => {
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = '/signin'
-            } else if (event === 'SIGNED_IN') {
-                const userInfo = session?.user
-                const serverUserInfo: ServerUserInfo = {
-                    id: userInfo?.id as string,
-                    email: userInfo?.email as string,
+
+        const onAuthChange = async () => {
+            supabase.auth.onAuthStateChange(async (event, session) => {
+                if (event === 'SIGNED_OUT') {
+                    window.location.href = '/signin'
+                } else if (event === 'SIGNED_IN') {
+                    const userInfo = await getUserSessionInfo()
+                    const serverUserInfo: ServerUserInfo = {
+                        id: userInfo?.userId,
+                        email: userInfo?.email,
+                        username: userInfo?.username,
+                        avatar: userInfo?.avatar
+                    }
+                    syncToServer(serverUserInfo)
+                    window.location.href = '/'
                 }
-                syncToServer(serverUserInfo)
-                window.location.href = '/'
-            }
-        })
+            })
+        }
+
+        onAuthChange()
     })
 
     return (
