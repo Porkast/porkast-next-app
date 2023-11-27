@@ -36,11 +36,8 @@ export const userSignout = async (): Promise<boolean> => {
 export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { session } } = await supabase.auth.getSession()
     const { data: { user } } = await supabase.auth.getUser()
-    console.log('user info from supabase', user)
-    console.log('session info from supabase', session)
     let username: string = ''
     let avatar: string = ''
-    console.log('user.app_metadata', user?.app_metadata)
     if (session?.user.app_metadata.provider === 'google') {
         username = user?.identities?.[0]?.identity_data?.name
         avatar = user?.identities?.[0]?.identity_data?.avatar_url
