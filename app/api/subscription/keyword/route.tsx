@@ -1,6 +1,10 @@
+import { searchPodcastEpisodeFromItunes } from "@/libs/itunes";
 import prisma from "@/libs/prisma";
 import { JsonResponse } from "@/types/api";
+import { FeedItem } from "@/types/feed_item";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import { v4 as uuidv4 } from 'uuid';
 
 
 export async function POST(request: NextRequest) {
@@ -17,6 +21,11 @@ export async function POST(request: NextRequest) {
         return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
     }
 
+    let resp: JsonResponse = {
+        code: 0,
+        message: '',
+        data: null
+    }
     const userSubscriptionRecord = await prisma.user_subscription.findFirst({
         where: {
             user_id: userId,
@@ -27,13 +36,67 @@ export async function POST(request: NextRequest) {
     })
 
     if (userSubscriptionRecord?.id) {
-        console.log('userSubscriptionRecord', userSubscriptionRecord)
+        resp.code = 1
+        resp.message = 'Already subscribed'
+        return NextResponse.json(resp);
     }
 
-    let resp: JsonResponse = {
-        code: 0,
-        message: 'parameter is ok',
-        data: null
+    const subscribedCount = await prisma.user_subscription.count({
+        where: {
+            user_id: userId,
+            status: 1
+        }
+    })
+
+    if (subscribedCount >= 5) {
+        resp.code = 1
+        resp.message = 'Subscription limit reached'
+        return NextResponse.json(resp);
     }
+
+    try {
+        await prisma.user_subscription.create({
+            data: {
+                id: uuidv4(),
+                user_id: userId,
+                keyword: keyword,
+                country: country,
+                source: source,
+                exclude_feed_id: excludeFeedId,
+                order_by_date: parseInt(sortByDate),
+                status: 1,
+                create_time: new Date(),
+                type: 'searchKeyword'
+            }
+        })
+    } catch (error) {
+
+        if (error instanceof Prisma.PrismaClientKnownRequestError) {
+            if (error.code == 'P2002') {
+                resp.code = 1
+                resp.message = 'Already subscribed'
+                return NextResponse.json(resp);
+            }
+            resp.code = 1
+            resp.message = error.message
+            return NextResponse.json(resp);
+        }
+
+        resp.code = 1
+        resp.message = 'Error occurred'
+        return NextResponse.json(resp);
+    }
+
+    // TODO: send the Subscription to Queue
+    let searchResultItemList: FeedItem[] = [];
+    if (source == 'itunes' || source == '') {
+        const searchResult = await searchPodcastEpisodeFromItunes(keyword, 'podcast', country, excludeFeedId, 0, 0, 200)
+        searchResultItemList.push(...searchResult);
+    } else {
+        // TODO: implement other sources
+    }
+
+    resp.code = 0
+    resp.message = 'done'
     return NextResponse.json(resp);
 }
