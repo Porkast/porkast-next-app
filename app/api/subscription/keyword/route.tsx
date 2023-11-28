@@ -1,7 +1,5 @@
-import { searchPodcastEpisodeFromItunes } from "@/libs/itunes";
 import prisma from "@/libs/prisma";
 import { JsonResponse } from "@/types/api";
-import { FeedItem } from "@/types/feed_item";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
@@ -12,10 +10,11 @@ export async function POST(request: NextRequest) {
     const reqBody = await request.json();
     const userId = reqBody.userId;
     const keyword = reqBody.keyword;
-    const country = reqBody.country;
-    const source = reqBody.source;
-    const excludeFeedId = reqBody.excludeFeedId;
+    const country = reqBody.country || 'US';
+    const source = reqBody.source || 'itunes';
+    const excludeFeedId = reqBody.excludeFeedId || '';
     const sortByDate = reqBody.sortByDate;
+
 
     if (!userId || !keyword || !country || !source) {
         return new Response(JSON.stringify({ error: 'Missing required fields' }), { status: 400 });
@@ -88,13 +87,6 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: send the Subscription to Queue
-    let searchResultItemList: FeedItem[] = [];
-    if (source == 'itunes' || source == '') {
-        const searchResult = await searchPodcastEpisodeFromItunes(keyword, 'podcast', country, excludeFeedId, 0, 0, 200)
-        searchResultItemList.push(...searchResult);
-    } else {
-        // TODO: implement other sources
-    }
 
     resp.code = 0
     resp.message = 'done'
