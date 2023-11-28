@@ -87,16 +87,18 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                     <Header title='Playlist'>
                         <div className="w-full flex justify-center mb-9 min-h-screen pt-20">
                             <div className='w-full max-w-2xl pl-6 pr-6'>
-                                <div className="w-full mb-10">
-                                    <div className="flex justify-start mt-4">
-                                        <AvatarImage className='w-28' imageUrl={userInfo?.avatar} />
-                                        <div className="ml-3">
-                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
-                                            <div className="mt-4 -ml-2 flex justify-start">
-                                            </div>
+                                <div className="flex justify-center mt-4">
+                                    <div className="w-full">
+                                        <div className="flex justify-center">
+                                            <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
+                                        </div>
+                                        <div className="flex justify-center mt-4">
+                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s playlist`}</div>
+                                        </div>
+                                        <div className="flex justify-center mt-4">
+                                            <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
                                         </div>
                                     </div>
-                                    <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
                                 </div>
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} playlist</div>
                                 {
