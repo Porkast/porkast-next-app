@@ -9,7 +9,7 @@ const authAPIRoutes = ['/api/subscription/keyword']
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next()
 
-    if (authAPIRoutes.includes(req.nextUrl.pathname)) {
+    if (authAPIRoutes.includes(req.nextUrl.pathname) && process.env.NODE_ENV == 'production') {
         const verifiedToken = await verifyAuth(req).catch((err) => {
             console.error(err.message)
         })
