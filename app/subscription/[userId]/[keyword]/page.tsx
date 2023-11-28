@@ -129,7 +129,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         }
                                     </div>
                                 </div>
-                                <div className="mt-4 text-sm text-gray-500">@{nickname} Porkast</div>
+                                <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
                             </div>
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                             {
