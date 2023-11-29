@@ -1,4 +1,5 @@
 import { v5 as uuidv5 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
 
 export const replaceWithBr = (text: string): string => {
@@ -39,6 +40,11 @@ export const parseHtmlStrinText = (htmlString: string): string => {
 }
 
 export const generateFeedItemId = async (feedUrl: string, title: string): Promise<string> => {
-    const uniqueId = uuidv5(feedUrl+title, uuidv5.DNS);
+    const uniqueId = uuidv5(feedUrl + title, uuidv5.DNS);
+    return uniqueId
+}
+
+export const generateID = async (): Promise<string> => {
+    const uniqueId = uuidv4();
     return uniqueId
 }
