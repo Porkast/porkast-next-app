@@ -8,7 +8,7 @@ export type UserPlaylistDto = {
     RegDate: Date;
     Status: number;
     CreatorId: string;
-    OrigPlaylistId: string;
+    OrigPlaylistId?: string;
     Count: number;
-    UserInfo: ServerUserInfo
+    UserInfo?: ServerUserInfo
 }
