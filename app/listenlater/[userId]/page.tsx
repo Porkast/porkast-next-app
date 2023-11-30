@@ -11,7 +11,7 @@ import { convertMillsTimeToDuration } from "@/libs/common"
 import { getListenLaterListByUserId } from "@/libs/listen_later"
 import { getUserSessionInfo } from "@/libs/suapbase"
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user"
-import { UserListenLater } from "@/types/feed_item"
+import { UserListenLaterDto } from "@/types/listen_later"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -24,7 +24,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         page = "1"
     }
 
-    const [itemList, setItemList] = useState<UserListenLater[]>([])
+    const [itemList, setItemList] = useState<UserListenLaterDto[]>([])
     const [totalPage, setTotalPage] = useState(0)
     const [totalCount, setTotalCount] = useState(0)
     const [userInfo, setUserInfo] = useState<ServerUserInfo>()
@@ -53,8 +53,8 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                 setItemList(itemDataList)
             }
             if (itemDataList && itemDataList.length > 0) {
-                setTotalPage(Math.ceil(itemDataList[0].Count / 10))
-                setTotalCount(itemDataList[0].Count)
+                setTotalPage(Math.ceil(itemDataList[0].count / 10))
+                setTotalCount(itemDataList[0].count)
             } else {
                 // TODO: show error page
                 return
@@ -138,33 +138,37 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             </div>
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} episode</div>
                             {
-                                itemList.map((item, index) => {
-                                    // check if item.Duration contain `:`
-                                    let duration: string
-                                    if (!isNaN(Number(item.Duration))) {
-                                        duration = convertMillsTimeToDuration(parseInt(item.Duration))
-                                    } else {
-                                        duration = item.Duration
-                                    }
-                                    return (
-                                        <EpisodeCard key={index} data={{
-                                            itemId: item.GUID,
-                                            channelId: item.FeedId,
-                                            title: item.Title,
-                                            description: item.Description,
-                                            image: item.ImageUrl,
-                                            link: item.Link,
-                                            rssLink: item.FeedLink,
-                                            channelName: item.ChannelTitle,
-                                            authorName: item.Author,
-                                            pubDate: item.PubDate,
-                                            audioLength: duration,
-                                            audioSrc: item.EnclosureUrl,
-                                            hideListenLaterBtn: isMyPage,
-                                            hideAddToPlaylistBtn: false
-                                        }} />
-                                    )
-                                })
+                                itemList && itemList.length > 0 ? (
+                                   itemList.map((item, index) => {
+                                        // check if item.Duration contain `:`
+                                        let duration: string
+                                        if (!isNaN(Number(item.duration))) {
+                                            duration = convertMillsTimeToDuration(parseInt(item.duration))
+                                        } else {
+                                            duration = item.duration
+                                        }
+                                        return (
+                                            <EpisodeCard key={index} data={{
+                                                itemId: item.guid,
+                                                channelId: item.feedId,
+                                                title: item.title,
+                                                description: item.description,
+                                                image: item.image_url,
+                                                link: item.link,
+                                                rssLink: item.feed_link,
+                                                channelName: item.channel_title,
+                                                authorName: item.author,
+                                                pubDate: item.pub_date,
+                                                audioLength: duration,
+                                                audioSrc: item.enclosure_url,
+                                                hideListenLaterBtn: isMyPage,
+                                                hideAddToPlaylistBtn: false
+                                            }} />
+                                        )
+                                    })
+                                ) : (
+                                    <></>
+                                )
                             }
 
                             <div className="w-full flex justify-center pt-6 pb-9">

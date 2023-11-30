@@ -1,25 +1,10 @@
 import { FeedItem } from "@/types/feed_item";
 import { getUserSessionInfo } from "./suapbase";
+import { SubscriptionDataDto } from "@/types/subscription";
 
-export type SubscriptionData = {
-    Id: string;
-    UserId: string;
-    CreateTime: Date;
-    Status: number;
-    Keyword: string;
-    OrderByDate: number;
-    Lang: string;
-    Country: string;
-    ExcludeFeedId: string;
-    Source: string;
-    RefId: string;
-    RefName: string;
-    Type: string;
-    Count: number;
-}
 
 export const subscribeSearchKeyword = async (userId: string, searchKeyword: string, country: string = 'US', source: string = 'itunes', excludeFeedId: string = '', token: string): Promise<JsonResponse> => {
-    var apiUrl = `${process.env.API_BASE_URL}v1/api/subscription/keyword`
+    var apiUrl = `${process.env.API_BASE_URL}api/subscription/keyword`
     var params = {
         userId: userId,
         keyword: searchKeyword,
@@ -42,7 +27,7 @@ export const subscribeSearchKeyword = async (userId: string, searchKeyword: stri
 }
 
 export const subscribeUserListenLater = async (userId: string, creatorId: string, token: string): Promise<JsonResponse> => {
-    var apiUrl = `${process.env.API_BASE_URL}v1/api/subscription/listenlater`
+    var apiUrl = `${process.env.API_BASE_URL}api/subscription/listenlater`
     var params = {
         userId: userId,
         creatorId: creatorId
@@ -61,9 +46,9 @@ export const subscribeUserListenLater = async (userId: string, creatorId: string
     return respJson
 }
 
-export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionData[] }> => {
-    const subscriptionList: SubscriptionData[] = []
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/subscription/list?userId=${userId}`)
+export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> => {
+    const subscriptionList: SubscriptionDataDto[] = []
+    const resp = await fetch(`${process.env.API_BASE_URL}api/subscription/list?userId=${userId}`)
     const respJson = await resp.json()
     if (respJson && respJson.data) {
         subscriptionList.push(...respJson.data)
@@ -77,7 +62,7 @@ export const getUserSubscriptionList = async (userId: string): Promise<{ code: n
 
 export const getUserKeywordSubscriptionItemList = async (userId: string, keyword: string, page: string): Promise<{ code: number, message: string, data: FeedItem[] }> => {
 
-    var requestAPI = `${process.env.API_BASE_URL}v1/api/subscription/${userId}/${keyword}`
+    var requestAPI = `${process.env.API_BASE_URL}api/subscription/${userId}/${keyword}`
     if (page) {
         requestAPI = `${requestAPI}?page=${page}`
     }

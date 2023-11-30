@@ -146,7 +146,8 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                             channelName: item.ChannelTitle,
                                             authorName: item.Author,
                                             pubDate: item.PubDate,
-                                            audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
+                                            // audioLength: convertMillsTimeToDuration(parseInt(item.Duration)),
+                                            audioLength: item.Duration,
                                             audioSrc: item.EnclosureUrl
                                         }} />
                                     )
