@@ -139,30 +139,34 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                     <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
                                 </div>
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
+                                        
                                 {
-                                    itemList.map((item, index) => {
-                                        return (
-                                            <EpisodeCard key={index} data={{
-                                                itemId: item.GUID,
-                                                channelId: item.FeedId,
-                                                title: item.Title,
-                                                description: item.Description,
-                                                image: item.ImageUrl,
-                                                link: item.Link,
-                                                rssLink: item.FeedLink,
-                                                channelName: item.ChannelTitle,
-                                                // authorName: item.Author,
-                                                authorName: "",
-                                                pubDate: item.PubDate,
-                                                audioLength: item.Duration,
-                                                audioSrc: item.EnclosureUrl,
-                                                hideAddToPlaylistBtn: isMyPage,
-                                                hideListenLaterBtn: isMyPage
-                                            }} />
-                                        )
-                                    })
-                                }
-
+                                    itemList && itemList.length > 0 ? (
+                                        itemList.map((item, index) => {
+                                            return (
+                                                <EpisodeCard key={index} data={{
+                                                    itemId: item.GUID,
+                                                    channelId: item.FeedId,
+                                                    title: item.Title,
+                                                    description: item.Description,
+                                                    image: item.ImageUrl,
+                                                    link: item.Link,
+                                                    rssLink: item.FeedLink,
+                                                    channelName: item.ChannelTitle,
+                                                    // authorName: item.Author,
+                                                    authorName: "",
+                                                    pubDate: item.PubDate,
+                                                    audioLength: item.Duration,
+                                                    audioSrc: item.EnclosureUrl,
+                                                    hideAddToPlaylistBtn: isMyPage,
+                                                    hideListenLaterBtn: isMyPage
+                                                }} />
+                                            )
+                                        })
+                                    ) : (
+                                        <></>
+                                    )
+                                } 
                                 <div className="w-full flex justify-center pt-6 pb-9">
                                     <div className="join">
                                         {
