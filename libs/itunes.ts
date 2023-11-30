@@ -59,7 +59,7 @@ export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, 
         item.Count = items.length
     })
 
-    if (offset == 0) {
+    if (limit == 0) {
         return items
     }
 
