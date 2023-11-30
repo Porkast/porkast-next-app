@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
 
     const reqBody = await request.json();
-    const userId = reqBody.userId;
     const keyword = reqBody.keyword;
     const country = reqBody.country || 'US';
     const source = reqBody.source || 'itunes';
@@ -21,6 +20,21 @@ export async function POST(request: NextRequest) {
         data: null
     }
 
+    try {
+        doSearchSubscription(keyword, country, source, excludeFeedId)
+    } catch (error) {
+        resp.code = 1
+        resp.message = "Subscribe failed: " + error
+        return NextResponse.json(resp);
+    }
+
+    resp.code = 0
+    resp.message = 'done'
+    return NextResponse.json(resp);
+}
+
+
+export async function doSearchSubscription(keyword: string, country: string, source: string, excludeFeedId: string) {
     let searchResultItemList: FeedItem[] = [];
     if (source == 'itunes' || source == '') {
         const searchResult = await searchPodcastEpisodeFromItunes(keyword, 'podcastEpisode', country, excludeFeedId, 0, 0, 200)
@@ -91,8 +105,9 @@ export async function POST(request: NextRequest) {
                     'There is a unique constraint violation, a new record cannot be created with prisma for keyword_subscription, ignore it',
                 )
             }
+        } else {
+            throw e
         }
-        // console.log('Error happened when creating keyword_subscription', e)
     }
     try {
         await prisma.feed_item.createMany({
@@ -106,13 +121,9 @@ export async function POST(request: NextRequest) {
                     'There is a unique constraint violation, a new record cannot be created with prisma for feed_item, ignore it',
                 )
             }
+        } else {
+            throw e
         }
-        // console.log('Error happened when creating feed_item', e)
     }
 
-
-    resp.code = 0
-    resp.message = 'done'
-    resp.data = ksManyInput
-    return NextResponse.json(resp);
 }
