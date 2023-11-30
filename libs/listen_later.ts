@@ -1,4 +1,4 @@
-import { UserListenLater } from "@/types/feed_item";
+import { UserListenLaterDto } from "@/types/listen_later";
 import { getUserSessionInfo } from "./suapbase";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
@@ -23,7 +23,7 @@ export async function addToListenLater(channelId: string, itemId: string, userId
     return respJson;
 }
 
-export const getListenLaterListByUserId = async (userId: string, page: number): Promise<{ code: number, message: string, data: UserListenLater[] }> => {
+export const getListenLaterListByUserId = async (userId: string, page: number): Promise<{ code: number, message: string, data: UserListenLaterDto[] }> => {
 
     const limit = 10
     const offset = (page - 1) * limit
