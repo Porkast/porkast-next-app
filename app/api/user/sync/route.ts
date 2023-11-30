@@ -1,4 +1,5 @@
 import prisma from "@/libs/prisma";
+import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -43,18 +44,26 @@ export async function POST(request: NextRequest) {
 
 
     if (queryData) {
+        const userInfoUpdate: Prisma.user_infoUpdateInput = {}
+        if (requestData.nickname) {
+            userInfoUpdate.nickname = requestData.nickname
+        }
+        if (requestData.avatar) {
+            userInfoUpdate.avatar = requestData.avatar
+        }
+        if (requestData.phone) {
+            userInfoUpdate.phone = requestData.phone
+        }
+        if (requestData.password) {
+            userInfoUpdate.password = requestData.password
+        }
+        userInfoUpdate.email = requestData.email
+        userInfoUpdate.update_date = new Date()
         await prisma.user_info.update({
             where: {
                 id: requestData.userId
             },
-            data: {
-                nickname: requestData.nickname,
-                password: requestData.password,
-                email: requestData.email,
-                phone: requestData.phone,
-                avatar: requestData.avatar,
-                update_date: new Date()
-            }
+            data: userInfoUpdate
         })
     } else {
         await prisma.user_info.create({
