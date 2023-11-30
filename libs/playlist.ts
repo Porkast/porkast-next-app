@@ -1,6 +1,7 @@
 import { FeedItem } from "@/types/feed_item";
 import { UserPlaylistDto } from "@/types/playlist";
 import { getUserSessionInfo } from "./suapbase";
+import { ServerUserInfo } from "./user";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
@@ -77,7 +78,7 @@ export async function getPlaylistInfoById(playlistId: string): Promise<{ code: n
     return respJson
 }
 
-export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: FeedItem[] }> => {
+export const getPlaylistItemListByUserId = async (userId: string, playlistId: string, page: number): Promise<{ code: number, message: string, data: { userInfo: ServerUserInfo, playlist: FeedItem[] } }> => {
 
     const limit = 10
     const offset = (page - 1) * limit
