@@ -1,6 +1,6 @@
 'use client'
 
-import supabase, { SupabaseSessionInfo, getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/suapbase"
+import supabase, { SupabaseSessionInfo, getUserSessionInfo, isUserLoggedIn, updateUserSessionInfo, userSignout } from "@/libs/suapbase"
 import { ServerUserInfo, syncToServer } from "@/libs/user"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -39,6 +39,7 @@ export default function Header(props: HeaderProps) {
                 window.location.href = '/signin'
             } else if (event === 'SIGNED_IN') {
                 syncUserInfo()
+                updateUserSessionInfo()
             }
         })
 
