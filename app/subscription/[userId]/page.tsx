@@ -5,9 +5,9 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { AvatarImage } from "@/components/PorkastImage";
 import { formatDateTime } from "@/libs/common";
-import { getUserSessionInfo } from "@/libs/suapbase";
-import { SubscriptionData, getUserSubscriptionList } from "@/libs/subscription";
+import { getUserSubscriptionList } from "@/libs/subscription";
 import { getUserInfoFromServer, getTempNickname, ServerUserInfo } from "@/libs/user";
+import { SubscriptionDataDto } from "@/types/subscription";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -20,7 +20,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         page = "1"
     }
 
-    const [subscriptionList, setSubscriptionList] = useState<SubscriptionData[]>([])
+    const [subscriptionList, setSubscriptionList] = useState<SubscriptionDataDto[]>([])
     const [totalPage, setTotalPage] = useState(0)
     const [totalCount, setTotalCount] = useState(0)
     const [userInfo, setUserInfo] = useState<ServerUserInfo>()
@@ -42,7 +42,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
             setUserInfo(userInfoData)
             setNickname(nicknameStr)
 
-            var subscriptionDataList: SubscriptionData[] = []
+            var subscriptionDataList: SubscriptionDataDto[] = []
             const resp = await getUserSubscriptionList(userId)
             subscriptionDataList = resp.data
             setSubscriptionList(subscriptionDataList)
