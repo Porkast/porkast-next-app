@@ -135,6 +135,12 @@ export async function queryPlaylistItemsByPlaylistId(playlistId: string): Promis
         `
     )
 
+    const totalCount = await prisma.user_playlist_item.count({
+        where: {
+            playlist_id: playlistId
+        }
+    })
+
     for (let result of queryResult) {
         resultList.push({
             Id: result.id,
@@ -162,7 +168,7 @@ export async function queryPlaylistItemsByPlaylistId(playlistId: string): Promis
             ChannelTitle: result.channel_title || '',
             HighlightChannelTitle: "",
             FeedLink: result.feed_link || '',
-            Count: 0,
+            Count: totalCount,
             Source: result.source || '',
             ExcludeFeedId: '',
             Country: result.country || '',
