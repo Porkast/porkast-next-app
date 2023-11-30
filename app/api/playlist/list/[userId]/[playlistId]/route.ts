@@ -1,4 +1,4 @@
-import { queryPlaylistItemsByPlaylistId, queryUserPlaylistListByUserId } from "@/libs/db/playlist";
+import { queryPlaylistItemsByPlaylistId } from "@/libs/db/playlist";
 import prisma from "@/libs/prisma";
 import { ServerUserInfo } from "@/libs/user";
 import { NextRequest, NextResponse } from "next/server";

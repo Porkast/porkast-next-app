@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
                 id: await generatePlaylistId(playlistNmae, userId),
                 user_id: userId,
                 playlist_name: playlistNmae,
-                description: description,
+                description: Buffer.from(description),
             }
         })
     } catch (error) {
