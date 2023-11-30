@@ -110,8 +110,9 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
                             {
                                 subscriptionList?.map((item, index) => {
+                                    const encodeKeyword = encodeURIComponent(item.Keyword)
                                     return (
-                                        <a key={index} href={`/subscription/${userId}/${item.Keyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
+                                        <a key={index} href={`/subscription/${userId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
                                             <div className="card-body">
                                                 {
                                                     item.Keyword ? (
