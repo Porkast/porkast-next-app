@@ -45,7 +45,7 @@ const SubscribeSearchKeywordButton = forwardRef((props: SubscribeSearchKeywordBu
             setIsLoading(false)
         })
         if (respJson.code === 0) {
-            appContext.showMsgAlert('Subscribed Success', MsgAlertType.SUCCESS)
+            appContext.showMsgAlert('Done', MsgAlertType.SUCCESS)
         } else {
             appContext.showMsgAlert(respJson.message, MsgAlertType.FAILED)
         }
