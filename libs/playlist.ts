@@ -4,7 +4,7 @@ import { getUserSessionInfo } from "./suapbase";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {
 
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/item`, {
+    const respJson = await fetch(`${process.env.API_BASE_URL}api/playlist/item`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ export async function getUserPlaylistByUserId(userId: string, page: number = 1):
     const limit = 10
     const offset = (page - 1) * limit
 
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}?limit=${limit}&offset=${offset}`,{
+    const respJson = await fetch(`${process.env.API_BASE_URL}api/playlist/list/${userId}?limit=${limit}&offset=${offset}`,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -47,7 +47,7 @@ export async function getUserPlaylistByUserId(userId: string, page: number = 1):
 }
 
 export async function createPlaylist(userId: string, name: string, description: string = ''): Promise<JsonResponse> {
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist`, {
+    const respJson = await fetch(`${process.env.API_BASE_URL}api/playlist`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -65,7 +65,7 @@ export async function createPlaylist(userId: string, name: string, description: 
 }
 
 export async function getPlaylistInfoById(playlistId: string): Promise<{ code: number, message: string, data: UserPlaylistDto }> {
-    const respJson = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/${playlistId}`,{
+    const respJson = await fetch(`${process.env.API_BASE_URL}api/playlist/${playlistId}`,{
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ export const getPlaylistItemListByUserId = async (userId: string, playlistId: st
 
     const limit = 10
     const offset = (page - 1) * limit
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`, {
+    const resp = await fetch(`${process.env.API_BASE_URL}api/playlist/list/${userId}/${playlistId}?limit=${limit}&offset=${offset}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
