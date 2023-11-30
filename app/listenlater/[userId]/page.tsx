@@ -138,33 +138,38 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             </div>
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} episode</div>
                             {
-                                itemList.map((item, index) => {
-                                    // check if item.Duration contain `:`
-                                    let duration: string
-                                    if (!isNaN(Number(item.Duration))) {
-                                        duration = convertMillsTimeToDuration(parseInt(item.Duration))
-                                    } else {
-                                        duration = item.Duration
-                                    }
-                                    return (
-                                        <EpisodeCard key={index} data={{
-                                            itemId: item.GUID,
-                                            channelId: item.FeedId,
-                                            title: item.Title,
-                                            description: item.Description,
-                                            image: item.ImageUrl,
-                                            link: item.Link,
-                                            rssLink: item.FeedLink,
-                                            channelName: item.ChannelTitle,
-                                            authorName: item.Author,
-                                            pubDate: item.PubDate,
-                                            audioLength: duration,
-                                            audioSrc: item.EnclosureUrl,
-                                            hideListenLaterBtn: isMyPage,
-                                            hideAddToPlaylistBtn: false
-                                        }} />
-                                    )
-                                })
+                                itemList?.length == 0 ? (
+                                    <></>
+                                ) : (
+
+                                    itemList?.map((item, index) => {
+                                        // check if item.Duration contain `:`
+                                        let duration: string
+                                        if (!isNaN(Number(item.Duration))) {
+                                            duration = convertMillsTimeToDuration(parseInt(item.Duration))
+                                        } else {
+                                            duration = item.Duration
+                                        }
+                                        return (
+                                            <EpisodeCard key={index} data={{
+                                                itemId: item.GUID,
+                                                channelId: item.FeedId,
+                                                title: item.Title,
+                                                description: item.Description,
+                                                image: item.ImageUrl,
+                                                link: item.Link,
+                                                rssLink: item.FeedLink,
+                                                channelName: item.ChannelTitle,
+                                                authorName: item.Author,
+                                                pubDate: item.PubDate,
+                                                audioLength: duration,
+                                                audioSrc: item.EnclosureUrl,
+                                                hideListenLaterBtn: isMyPage,
+                                                hideAddToPlaylistBtn: false
+                                            }} />
+                                        )
+                                    })
+                                )
                             }
 
                             <div className="w-full flex justify-center pt-6 pb-9">
