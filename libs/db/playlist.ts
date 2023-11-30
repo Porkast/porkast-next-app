@@ -13,7 +13,7 @@ type UserPlaylistEntity = {
     status: number | 0
     creator_id: string | ''
     orig_playlist_id: string | ''
-    count: number | 0
+    count: string | '0'
 }
 
 type UserPLaylistItemEntity = {
@@ -88,18 +88,17 @@ export async function queryPlaylistTotalCount(playlistId: string): Promise<numbe
 
 export async function queryUserPlaylistListByUserId(userId: string, offset: number, limit: number): Promise<UserPlaylistDto[]> {
     const resultDtos: UserPlaylistDto[] = []
-
     const queryResult: UserPlaylistEntity[] = await prisma.$queryRaw<UserPlaylistEntity[]>(
         Prisma.sql`
             SELECT up.* ,COUNT(upi.id) as count 
             FROM user_playlist up 
-            INNER JOIN user_playlist_item upi ON upi.playlist_id = up.id
+            LEFT JOIN user_playlist_item upi ON upi.playlist_id = up.id
             WHERE up.user_id = ${userId} AND up.status = 1
             GROUP BY up.id, up.creator_id, up.reg_date, up.orig_playlist_id, up.playlist_name, up.status, up.user_id
             ORDER BY up.reg_date DESC
             LIMIT ${limit}
             OFFSET ${offset};
-        `
+        `,
     )
 
     for (let result of queryResult) {
@@ -112,7 +111,7 @@ export async function queryUserPlaylistListByUserId(userId: string, offset: numb
             CreatorId: result.creator_id || '',
             OrigPlaylistId: result.orig_playlist_id || '',
             RegDate: result.reg_date || new Date(),
-            Count: result.count
+            Count: parseInt(result.count)
         })
     }
 
