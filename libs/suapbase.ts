@@ -33,6 +33,11 @@ export const userSignout = async (): Promise<boolean> => {
     }
 }
 
+export const updateUserSessionInfo = async () => {
+    const { data: { user } } = await supabase.auth.getUser()
+    localStorage.setItem('supabase_user', JSON.stringify(user))
+}
+
 export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { session } } = await supabase.auth.getSession()
     let username: string = ''
