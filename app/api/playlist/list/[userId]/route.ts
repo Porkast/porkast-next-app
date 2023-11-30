@@ -1,7 +1,5 @@
 import { queryUserPlaylistListByUserId } from "@/libs/db/playlist";
-import prisma from "@/libs/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { useId } from "react";
 
 
 export async function GET(request: NextRequest, { params }: { params: { userId: string } }) {
@@ -16,21 +14,9 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
         data: null
     }
 
-    if (!useId) {
+    if (!userId) {
         resp.code = 1
         resp.message = 'Missing required fields'
-        return NextResponse.json(resp)
-    }
-
-    const playlistList = await prisma.user_playlist.findMany({
-        where: {
-            user_id: userId
-        }
-    })
-
-    if (!playlistList) {
-        resp.code = 1
-        resp.message = 'Playlist not found'
         return NextResponse.json(resp)
     }
 
