@@ -115,7 +115,7 @@ const buildFeedItemModel = (rssFeed: RSS, feedLink: string, episodeId: string, p
             // convert item.guid to string
             guid = item.guid as unknown as string
         }
-        if (encodeURIComponent(guid) === episodeId) {
+        if (encodeURIComponent(guid) === episodeId || guid === episodeId) {
             return true
         }
     })
