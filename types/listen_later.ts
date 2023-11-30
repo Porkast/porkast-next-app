@@ -1,5 +1,5 @@
 
-type UserListenLaterDto = {
+export type UserListenLaterDto = {
     id: string;
     guid: string;
     channel_id: string;
