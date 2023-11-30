@@ -29,7 +29,7 @@ export async function GET(request: NextRequest, { params }: { params: { playlist
     }
     const creatorInfo = await prisma.user_info.findUnique({
         where: {
-            id: playlistInfoDto.CreatorId
+            id: creatorId
         }
     })
 
