@@ -46,7 +46,7 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
             setIsLoading(false)
         })
         if (resp.code === 0) {
-            appContext.showMsgAlert('Added to listen later', MsgAlertType.SUCCESS)
+            appContext.showMsgAlert('Done', MsgAlertType.SUCCESS)
         } else {
             appContext.showMsgAlert(resp.message, MsgAlertType.FAILED)
         }
