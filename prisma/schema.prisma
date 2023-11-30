@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model feed_channel {
+  id           String  @id @db.VarChar(64)
+  title        String? @db.VarChar(128)
+  channel_desc String? @db.MediumText
+  image_url    String? @db.VarChar(128)
+  link         String? @db.VarChar(128)
+  feed_link    String? @db.VarChar(128)
+  copyright    String? @db.VarChar(128)
+  language     String? @db.VarChar(128)
+  author       String? @db.VarChar(128)
+  owner_name   String? @db.VarChar(128)
+  owner_email  String? @db.VarChar(128)
+  feed_type    String? @db.VarChar(128)
+  categories   String? @db.VarChar(128)
+  source       String? @db.VarChar(64)
+  feed_id      String? @db.VarChar(64)
+}
+
+model feed_item {
+  id               String    @id @db.VarChar(64)
+  channel_id       String    @db.VarChar(64)
+  guid             String?   @db.VarChar(256)
+  title            String?   @db.MediumText
+  link             String?   @db.MediumText
+  pub_date         DateTime? @db.Date
+  author           String?   @db.VarChar(128)
+  input_date       DateTime? @db.DateTime(0)
+  image_url        String?   @db.VarChar(256)
+  enclosure_url    String?   @db.MediumText
+  enclosure_type   String?   @db.VarChar(256)
+  enclosure_length String?   @db.VarChar(256)
+  duration         String?   @db.VarChar(256)
+  episode          String?   @db.VarChar(64)
+  explicit         String?   @db.VarChar(64)
+  season           String?   @db.VarChar(64)
+  episodeType      String?   @db.VarChar(64)
+  description      Bytes?    @db.Blob
+  channel_title    String?   @db.MediumText
+  feed_id          String    @db.VarChar(64)
+  feed_link        String?   @db.VarChar(255)
+  source           String?   @db.VarChar(255)
+
+  @@index([channel_id], map: "rfi_idx_channel_id")
+  @@index([pub_date], map: "rfi_idx_pub_date")
+}
+
+model keyword_subscription {
+  id              Int       @id @default(autoincrement())
+  keyword         String    @db.VarChar(128)
+  feed_channel_id String    @db.VarChar(128)
+  feed_item_id    String    @db.VarChar(128)
+  create_time     DateTime? @db.DateTime(0)
+  country         String?   @db.VarChar(64)
+  source          String?   @db.VarChar(64)
+  exclude_feed_id String?   @db.VarChar(64)
+
+  @@index([keyword, country, source, exclude_feed_id], map: "ks_idx_kcse")
+  @@index([keyword], map: "ks_idx_keyword")
+}
+
+model user_info {
+  id          String    @id @db.VarChar(64)
+  username    String?   @db.VarChar(128)
+  nickname    String?   @db.VarChar(128)
+  password    String?   @db.VarChar(128)
+  email       String?   @db.VarChar(128)
+  phone       String?   @db.VarChar(128)
+  reg_date    DateTime? @db.Date
+  update_date DateTime? @db.Date
+  avatar      String?   @db.VarChar(256)
+}
+
+model user_listen_later {
+  id         String    @id @db.VarChar(64)
+  user_id    String?   @db.VarChar(128)
+  item_id    String?   @db.VarChar(128)
+  channel_id String?   @db.VarChar(128)
+  reg_date   DateTime? @db.DateTime(0)
+  status     Int?      @default(1)
+
+  @@index([item_id], map: "ull_idx_item_id")
+  @@index([user_id], map: "ull_idx_user_id")
+}
+
+model user_playlist {
+  id               String    @id @db.VarChar(64)
+  playlist_name    String?   @db.VarChar(128)
+  description      Bytes?    @db.Blob
+  user_id          String?   @db.VarChar(128)
+  reg_date         DateTime? @db.DateTime(0)
+  status           Int?      @default(1)
+  creator_id       String?   @db.VarChar(128)
+  orig_playlist_id String?   @db.VarChar(64)
+
+  @@unique([user_id, playlist_name], map: "up_idx_uid_name")
+  @@index([user_id], map: "up_idx_user_id")
+}
+
+model user_playlist_item {
+  id          String    @id @db.VarChar(64)
+  playlist_id String    @db.VarChar(128)
+  item_id     String    @db.VarChar(128)
+  channel_id  String?   @db.VarChar(128)
+  reg_date    DateTime? @db.DateTime(0)
+  status      Int?      @default(1)
+
+  @@index([playlist_id], map: "upi_idx_playlist_id")
+}
+
+model user_subscription {
+  id              String    @id @db.VarChar(64)
+  user_id         String?   @db.VarChar(128)
+  create_time     DateTime? @db.DateTime(0)
+  status          Int?      @default(1)
+  keyword         String?   @db.VarChar(128)
+  order_by_date   Int?
+  lang            String?   @db.VarChar(64)
+  country         String?   @db.VarChar(64)
+  exclude_feed_id String?   @db.VarChar(64)
+  source          String?   @db.VarChar(64)
+  ref_id          String?   @db.VarChar(64)
+  ref_name        String?   @db.VarChar(255)
+  type            String?   @default("searchKeyword") @db.VarChar(128)
+
+  @@index([keyword], map: "usk_idx_keyword")
+  @@index([user_id], map: "usk_idx_user_id")
+  @@index([user_id, keyword, source], map: "usk_user_id_keyword")
+}

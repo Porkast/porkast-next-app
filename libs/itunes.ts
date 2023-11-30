@@ -2,10 +2,10 @@ import { FeedItem } from "@/types/feed_item"
 import { cache } from "react"
 import { convertMillsTimeToDuration } from "./common"
 import { FeedChannel } from "@/types/feed_channel"
-import xml2js, { parseString } from 'xml2js';
+import xml2js from 'xml2js';
 import { RSS } from "@/types/feed";
 
-export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: string, country: string, excludeFeedId: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
+export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, country: string, excludeFeedId: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
     const res = await fetch(`https://itunes.apple.com/search?term=${q}&entity=${entity}&media=podcast&country=${country}&limit=${totalCount}`)
     const jsonResp = await res.json()
     var items: FeedItem[] = []
@@ -59,8 +59,12 @@ export const searchPodcastEpisodeFromItunes = cache(async (q: string, entity: st
         item.Count = items.length
     })
 
+    if (offset == 0) {
+        return items
+    }
+
     return items.slice(offset, offset + limit)
-})
+}
 
 export const getPodcastInfo = cache(async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
     const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
@@ -87,7 +91,7 @@ export const getPodcastInfo = cache(async (podcastId: string): Promise<{ podcast
     }
 })
 
-export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: string): Promise<{ podcast: FeedChannel, episode: FeedItem }> => {
+export const getPodcastEpisodeInfo = async (podcastId: string, episodeId: string): Promise<{ podcast: FeedChannel, episode: FeedItem }> => {
     const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
     const jsonResp = await res.json()
     const podcastInfo = jsonResp.results[0]
@@ -100,7 +104,7 @@ export const getPodcastEpisodeInfo = cache(async (podcastId: string, episodeId: 
         podcast: channelInfo,
         episode: episodeInfo
     }
-})
+}
 
 const buildFeedItemModel = (rssFeed: RSS, feedLink: string, episodeId: string, podcastId: string): FeedItem => {
     const rssChannelInfo = rssFeed.rss.channel;
@@ -188,11 +192,11 @@ const buildFeedChannelModel = (rssFeed: RSS, feedLink: string, podcastId: string
     return channelInfo
 }
 
-export const getRSSFeed = cache(async (feedUrl: string): Promise<RSS> => {
+export const getRSSFeed = async (feedUrl: string): Promise<RSS> => {
     const res = await fetch(feedUrl);
     const respStr = await res.text();
     const parser = new xml2js.Parser({ explicitArray: false });
     const result = await parser.parseStringPromise(respStr);
 
     return result
-})
+}

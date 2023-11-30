@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import EpisodeCard from "@/components/EpisodeCard"
 import Header from "@/components/Header"
 import { useSearchParams } from "next/navigation"
-import { cache, useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
@@ -57,7 +57,7 @@ export default function SearchPage() {
     }
 
     useEffect(() => {
-        const fetchData = cache(async () => {
+        const fetchData = (async () => {
             setIsLoading(true)
             const offest = (parseInt(page || '1') - 1) * limit
             const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)

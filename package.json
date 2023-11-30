@@ -4,23 +4,27 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
     "update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > types/supabase.ts"
   },
   "dependencies": {
+    "@prisma/client": "^5.6.0",
     "@supabase/auth-helpers-nextjs": "^0.8.1",
     "@supabase/auth-ui-react": "^0.4.5",
     "@supabase/auth-ui-shared": "^0.1.7",
     "@supabase/supabase-js": "^2.38.0",
+    "@types/uuid": "^9.0.7",
     "@types/xml2js": "^0.4.12",
+    "@vercel/analytics": "^1.1.1",
     "html-react-parser": "^4.2.2",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
     "react-helmet": "^6.1.0",
     "shikwasa": "^2.2.1",
+    "uuid": "^9.0.1",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
@@ -33,6 +37,7 @@
     "eslint": "latest",
     "eslint-config-next": "latest",
     "postcss": "latest",
+    "prisma": "^5.6.0",
     "tailwindcss": "latest",
     "typescript": "latest"
   }
