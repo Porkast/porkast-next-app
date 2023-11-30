@@ -31,3 +31,31 @@ export type FeedItem = {
     TookTime: number;
     HasThumbnail: boolean;
 }
+
+export type FeedItemDto = {
+    id: string
+    channel_id: string
+    guid?: string | null
+    title?: string | null
+    link?: string | null
+    pub_date?: Date | null
+    author?: string | null
+    input_date?: Date | null
+    image_url?: string | null
+    enclosure_url?: string | null
+    enclosure_type?: string | null
+    enclosure_length?: string | null
+    duration?: string | null
+    episode?: string | null
+    explicit?: string | null
+    season?: string | null
+    episodeType?: string | null
+    description?: Buffer | null
+    channel_title?: string | null
+    feed_id: string
+    feed_link?: string | null
+    source?: string | null
+    count: number;
+    exclude_feed_id: string
+    country: string
+}
