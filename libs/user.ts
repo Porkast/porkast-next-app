@@ -30,7 +30,7 @@ export const getTempNickname = (serverUserInfo: ServerUserInfo): string => {
 export const syncToServer = async (userInfo: ServerUserInfo) => {
 
 
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/user/sync`, {
+    const resp = await fetch(`${process.env.API_BASE_URL}api/user/sync`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -53,7 +53,7 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
 }
 
 export const getUserInfoFromServer = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
-    const resp = await fetch(`${process.env.API_BASE_URL}v1/api/user/info/${userId}`)
+    const resp = await fetch(`${process.env.API_BASE_URL}api/user/info/${userId}`)
     const respJson = await resp.json()
 
     return {
