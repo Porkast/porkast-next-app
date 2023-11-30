@@ -1,6 +1,6 @@
 
 import { Database } from '@/types/supabase'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { User, createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 
 type SupabaseJsonResponse = {
     code: number
@@ -35,12 +35,22 @@ export const userSignout = async (): Promise<boolean> => {
 
 export const getUserSessionInfo = async (): Promise<SupabaseSessionInfo> => {
     const { data: { session } } = await supabase.auth.getSession()
-    const { data: { user } } = await supabase.auth.getUser()
     let username: string = ''
     let avatar: string = ''
+    const cacheSupabaseUserData = localStorage.getItem('supabase_user')
+    let supabaseUserData: User
+    if (!cacheSupabaseUserData) {
+        console.log('no cache supabase user')
+        const { data: { user } } = await supabase.auth.getUser()
+        supabaseUserData = user as User
+        localStorage.setItem('supabase_user', JSON.stringify(supabaseUserData))
+    } else {
+        console.log('cache supabase user')
+        supabaseUserData = JSON.parse(cacheSupabaseUserData)
+    }
     if (session?.user.app_metadata.provider === 'google') {
-        username = user?.identities?.[0]?.identity_data?.name
-        avatar = user?.identities?.[0]?.identity_data?.avatar_url
+        username = supabaseUserData?.identities?.[0]?.identity_data?.name
+        avatar = supabaseUserData?.identities?.[0]?.identity_data?.avatar_url
     }
     if (session) {
         return {
