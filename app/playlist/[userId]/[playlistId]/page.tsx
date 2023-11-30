@@ -36,20 +36,16 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
 
     useEffect(() => {
         async function initPageInfo() {
-            const userInfoResp = await getUserInfoFromServer(userId)
-            if (userInfoResp.code != 0) {
-                return
-            }
-            const userInfoData = userInfoResp.data
-            const nicknameStr = getTempNickname(userInfoData)
-            setUserInfo(userInfoData)
-            setNickname(nicknameStr)
 
             const data = await getPlaylistItemListByUserId(params.userId, params.playlistId, parseInt(page))
             if (data.code != 0) {
                 return
             }
-            const itemDataList = data.data
+            const itemDataList = data.data.playlist
+            const userInfoData = data.data.userInfo
+            const nicknameStr = getTempNickname(userInfoData)
+            setUserInfo(userInfoData)
+            setNickname(nicknameStr)
             setItemList(itemDataList)
             if (itemDataList && itemDataList.length > 0) {
                 setTotalCount(itemDataList[0].Count)
