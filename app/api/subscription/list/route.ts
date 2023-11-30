@@ -1,4 +1,5 @@
 import { queryUserKeywordSubscriptionList } from "@/libs/db/subscription";
+import { SubscriptionDataDto } from "@/types/subscription";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(resp)
     }
 
-    let queryListData: KeywordSubscription[] = await queryUserKeywordSubscriptionList(userId, Number(limit), Number(offset))
+    let queryListData: SubscriptionDataDto[] = await queryUserKeywordSubscriptionList(userId, Number(offset), Number(limit))
 
     resp.code = 0
     resp.message = 'OK'

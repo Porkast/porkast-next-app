@@ -1,16 +1,17 @@
 
-type KeywordSubscription = {
-    id: string
-    userId: string | null
-    createTime: Date | null
-    status: number | null
-    keyword: string | null
-    orderByDdate: number | null
-    lang: string | null
-    country: string | null
-    excludeFeedId: string | null
-    source: string | null
-    refId: string | null
-    refName: string | null
-    type: string | null
-};
+export type SubscriptionDataDto = {
+    Id: string;
+    UserId: string;
+    CreateTime: Date;
+    Status: number;
+    Keyword: string;
+    OrderByDate: number;
+    Lang: string;
+    Country: string;
+    ExcludeFeedId: string;
+    Source: string;
+    RefId: string;
+    RefName: string;
+    Type: string;
+    Count: number;
+}

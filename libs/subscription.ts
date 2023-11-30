@@ -1,22 +1,7 @@
 import { FeedItem } from "@/types/feed_item";
 import { getUserSessionInfo } from "./suapbase";
+import { SubscriptionDataDto } from "@/types/subscription";
 
-export type SubscriptionData = {
-    Id: string;
-    UserId: string;
-    CreateTime: Date;
-    Status: number;
-    Keyword: string;
-    OrderByDate: number;
-    Lang: string;
-    Country: string;
-    ExcludeFeedId: string;
-    Source: string;
-    RefId: string;
-    RefName: string;
-    Type: string;
-    Count: number;
-}
 
 export const subscribeSearchKeyword = async (userId: string, searchKeyword: string, country: string = 'US', source: string = 'itunes', excludeFeedId: string = '', token: string): Promise<JsonResponse> => {
     var apiUrl = `${process.env.API_BASE_URL}api/subscription/keyword`
@@ -61,8 +46,8 @@ export const subscribeUserListenLater = async (userId: string, creatorId: string
     return respJson
 }
 
-export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionData[] }> => {
-    const subscriptionList: SubscriptionData[] = []
+export const getUserSubscriptionList = async (userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> => {
+    const subscriptionList: SubscriptionDataDto[] = []
     const resp = await fetch(`${process.env.API_BASE_URL}api/subscription/list?userId=${userId}`)
     const respJson = await resp.json()
     if (respJson && respJson.data) {
