@@ -4,12 +4,12 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { verifyAuth } from './libs/auth'
 
-const authAPIRoutes = ['/api/subscription/keyword']
+const authAPIRoutes = ['/api/subscription/keyword', '/api/user/sync', '/api/listenlater/item', '/api/playlist/']
 
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next()
 
-    if (authAPIRoutes.includes(req.nextUrl.pathname)) {
+    if (authAPIRoutes.includes(req.nextUrl.pathname) && process.env.NODE_ENV == 'production') {
         const verifiedToken = await verifyAuth(req).catch((err) => {
             console.error(err.message)
         })
