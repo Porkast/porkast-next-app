@@ -3,6 +3,7 @@ import { JsonResponse } from "@/types/api";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
+import { doSearchSubscription } from "./search/route";
 
 
 export async function POST(request: NextRequest) {
@@ -87,6 +88,14 @@ export async function POST(request: NextRequest) {
     }
 
     // TODO: send the Subscription to Queue
+    try {
+        await doSearchSubscription(keyword, country, source, excludeFeedId)
+    } catch (error) {
+        console.log(error)
+        resp.code = 1
+        resp.message = "Something went wrong, please try again later"
+        return NextResponse.json(resp);
+    }
 
     resp.code = 0
     resp.message = 'done'
