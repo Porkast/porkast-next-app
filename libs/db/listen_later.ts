@@ -17,7 +17,7 @@ export const queryUserListenLaterList = async (userId: string, limit: number, of
     )
 
     for (let listenLaterDto of listenLaterDtoList) {
-        listenLaterDto.description = String(listenLaterDto.description)
+        listenLaterDto.description = String(listenLaterDto.description || '')
     }
 
     return listenLaterDtoList
