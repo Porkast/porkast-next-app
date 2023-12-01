@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         const country = userSubscription.country
         const excludeFeedIds = userSubscription.exclude_feed_id
         const source = userSubscription.source
-        const apiUrl = `https://zeplo.to/https://porkast.com/api/jobs/subscription/searchkeyword/updat?_trace=ada8aea9-c8c8-4311-8b23-03b3d77b68ad-iow&_token=${process.env.ZEPLO_TOKEN}`
+        const apiUrl = `https://zeplo.to/https://porkast.com/api/jobs/subscription/searchkeyword/update?_trace=ada8aea9-c8c8-4311-8b23-03b3d77b68ad-iow&_token=${process.env.ZEPLO_TOKEN}`
         const resp = await fetch(apiUrl, {
             method: 'POST',
             headers: {
