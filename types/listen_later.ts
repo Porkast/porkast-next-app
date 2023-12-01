@@ -3,7 +3,7 @@ export type UserListenLaterDto = {
     id: string;
     guid: string;
     channel_id: string;
-    feedId: string;
+    feed_id: string;
     title: string;
     highlightTitle: string;
     link: string;
