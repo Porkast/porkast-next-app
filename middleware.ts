@@ -14,10 +14,16 @@ export async function middleware(req: NextRequest) {
             console.error(err.message)
         })
         if (!verifiedToken) {
-            return NextResponse.json({
-                code: 401,
+            const resp: JsonResponse = {
+                code: 1,
                 message: 'Unauthorized',
                 data: null
+            }
+            return new Response(JSON.stringify(resp), {
+                status: 401,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             })
         }
     }
