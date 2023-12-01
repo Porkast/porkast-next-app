@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     }
 
 
-    const model = await buildFeedItemAndKeywordInputList(keyword, feedItemList)
+    const model = await buildFeedItemAndKeywordInputList(keyword, country, excludeFeedIds, source, feedItemList)
 
     try {
         await prisma.keyword_subscription.createMany({
@@ -87,7 +87,7 @@ export async function GET(request: NextRequest) {
     })
 }
 
-const buildFeedItemAndKeywordInputList = async (keyword: string, feedItemList: FeedItem[]): Promise<{ feedItemList: Prisma.feed_itemCreateManyInput[], keywordSubscriptionList: Prisma.keyword_subscriptionCreateManyInput[] }> => {
+const buildFeedItemAndKeywordInputList = async (keyword: string, country: string, excludeFeedIds: string, source: string, feedItemList: FeedItem[]): Promise<{ feedItemList: Prisma.feed_itemCreateManyInput[], keywordSubscriptionList: Prisma.keyword_subscriptionCreateManyInput[] }> => {
     const feedItemCreateInputList: Prisma.feed_itemCreateManyInput[] = []
     const keywordSubscriptionInputList: Prisma.keyword_subscriptionCreateManyInput[] = []
 
@@ -125,9 +125,9 @@ const buildFeedItemAndKeywordInputList = async (keyword: string, feedItemList: F
             feed_channel_id: channelId,
             feed_item_id: itemId,
             create_time: new Date(),
-            country: item.Country,
-            source: item.Source,
-            exclude_feed_id: item.ExcludeFeedId
+            country: country,
+            source: source,
+            exclude_feed_id: excludeFeedIds
         }
 
         feedItemCreateInputList.push(feedItemInput)
