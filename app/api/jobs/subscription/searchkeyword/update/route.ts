@@ -5,7 +5,6 @@ import { FeedItem } from "@/types/feed_item";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
 
-
 export async function GET(request: NextRequest) {
 
     const resp: JsonResponse = {
@@ -13,7 +12,7 @@ export async function GET(request: NextRequest) {
         message: '',
         data: null
     }
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get('Authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         resp.code = 1
         resp.message = 'Unauthorized'
@@ -22,12 +21,65 @@ export async function GET(request: NextRequest) {
         })
     }
 
-    const searchParams = request.nextUrl.searchParams
-    const keyword = searchParams.get('keyword')
-    const country = searchParams.get('country') || 'US'
-    const excludeFeedIds = searchParams.get('excludeFeedIds') || ''
-    const source = searchParams.get('source') || 'itunes'
+    const allUserSubscriptionList = await prisma.user_subscription.findMany({
+        where: {
+            status: 1
+        }
+    })
 
+    console.log('start trigger search keyword subscription update jobs, total: ' + allUserSubscriptionList.length)
+    for (const userSubscription of allUserSubscriptionList) {
+        const keyword = userSubscription.keyword
+        const country = userSubscription.country
+        const excludeFeedIds = userSubscription.exclude_feed_id
+        const source = userSubscription.source
+        const apiUrl = `https://zeplo.to/https://porkast.com/api/jobs/subscription/searchkeyword/updat?_trace=ada8aea9-c8c8-4311-8b23-03b3d77b68ad-iow&_token=${process.env.ZEPLO_TOKEN}`
+        const resp = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.CRON_SECRET}`
+            },
+            body: JSON.stringify({
+                "keyword": keyword,
+                "country": country,
+                "excludeFeedIds": excludeFeedIds,
+                "source": source
+            })
+        })
+        console.log('trigger search keyword subscription update jobs, keyword: ' + keyword + ', country: ' + country + ', excludeFeedIds: ' + excludeFeedIds + ', source: ' + source)
+        console.log('trigger search keyword subscription update jobs, zeplo response: ' + JSON.stringify(await resp.json()))
+    }
+
+    resp.code = 0
+    resp.message = 'OK'
+    return new Response(JSON.stringify(resp), {
+        status: 200
+    })
+}
+
+
+export async function POST(request: NextRequest) {
+
+    const resp: JsonResponse = {
+        code: 0,
+        message: '',
+        data: null
+    }
+    const authHeader = request.headers.get('Authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        resp.code = 1
+        resp.message = 'Unauthorized'
+        return new Response(JSON.stringify(resp), {
+            status: 401
+        })
+    }
+
+    const body = await request.json();
+    const keyword = body.keyword
+    const country = body.country
+    const excludeFeedIds = body.excludeFeedIds
+    const source = body.source
     if (!keyword) {
         resp.code = 1
         resp.message = 'Missing parameters'
