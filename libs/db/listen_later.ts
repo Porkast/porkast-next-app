@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client"
 import prisma from "../prisma"
+import { UserListenLaterDto } from "@/types/listen_later"
 
 export const queryUserListenLaterList = async (userId: string, limit: number, offset: number): Promise<UserListenLaterDto[]> => {
 

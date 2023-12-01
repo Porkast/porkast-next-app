@@ -150,7 +150,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         return (
                                             <EpisodeCard key={index} data={{
                                                 itemId: item.guid,
-                                                channelId: item.feedId,
+                                                channelId: item.feed_id,
                                                 title: item.title,
                                                 description: item.description,
                                                 image: item.image_url,
