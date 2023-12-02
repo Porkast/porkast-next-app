@@ -13,6 +13,11 @@ export const addLinkTagToUrl = (text: string): string => {
     )
 }
 
+export const removeTextColorStyles = (html: string): string => {
+    const updatedHtml = html.replace(/color:[^;]*;/g, '');
+    return updatedHtml;
+}
+
 export const convertMillsTimeToDuration = (mills: number): string => {
     // Check if the duration is in the thousands digits
     if (mills >= 1000 && mills < 10000) {
