@@ -11,8 +11,8 @@ import { AppProvider } from '@/components/AppContext';
 import { FeedItem } from '@/types/feed_item';
 import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
 import Loading from '@/components/Loading';
-import SubscribeSearchKeywordButton, { SubscribeSearchKeywordButtonRef } from '@/components/SubscribeSearchKeywordButton';
 import AddExcludeFeedIdDialog, { AddExcludeFeedIdDialogRef } from '@/components/AddExcludeFeedIdDialog';
+import SubscribeKeywrodDialog, { SubscribeKeywrodDialogRef } from '@/components/SubscribeKeywrodDialog';
 
 enum Page {
     NextPage,
@@ -29,7 +29,7 @@ export default function SearchPage() {
     const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
     const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
     const addExcludeFeedIdDialogRef = useRef<AddExcludeFeedIdDialogRef>(null)
-    const subBtnRef = useRef<SubscribeSearchKeywordButtonRef>(null)
+    const subscribeSearchKeywordDialogRef = useRef<SubscribeKeywrodDialogRef>(null)
     const q = searhcParam.get('q')
     const excludeFeedId = searhcParam.get('excludeFeedId')
     const searchTotalCount = 200
@@ -40,20 +40,18 @@ export default function SearchPage() {
     if (!entity) {
         entity = "item"
     }
-    let country = searhcParam.get('country')
-    if (!country) {
-        country = "US"
-    }
-    let source = searhcParam.get('source')
-    if (!source) {
-        source = "itunes"
-    }
+    let country = searhcParam.get('country') || 'US'
+    let source = searhcParam.get('source') || 'itunes'
 
     const prevPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.PrePage)
     const nextPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.NextPage)
 
     const showExcludeDialog = (channelTitle: string, feedId: string) => {
         addExcludeFeedIdDialogRef.current?.showModal(channelTitle, feedId)
+    }
+
+    const showSubscribeSearchKeywordDialog = () => {
+        subscribeSearchKeywordDialogRef.current?.showDialog(q || '', excludeFeedId || '', country, source)
     }
 
     useEffect(() => {
@@ -71,7 +69,6 @@ export default function SearchPage() {
             } else {
                 setSearchResultCount(0)
             }
-            subBtnRef.current?.updateSearchKeyword(q || '')
         })
 
         if (!q || q.length == 0) {
@@ -137,7 +134,9 @@ export default function SearchPage() {
                                 )
                             }
                             <div className='flex justify-start w-full'>
-                                <SubscribeSearchKeywordButton ref={subBtnRef} keyword={q || ''} excludeFeedId={excludeFeedId || ''} country={country} source={source || ''} />
+                                <button className="btn btn-primary rounded-lg ml-4" onClick={showSubscribeSearchKeywordDialog}>
+                                    <span className="font-bold text-base">Subscribe {q}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -161,6 +160,7 @@ export default function SearchPage() {
                         </div>
                     </div>
                     <AddExcludeFeedIdDialog ref={addExcludeFeedIdDialogRef} />
+                    <SubscribeKeywrodDialog ref={subscribeSearchKeywordDialogRef} />
                 </Header>
                 <Footer />
             </div>
