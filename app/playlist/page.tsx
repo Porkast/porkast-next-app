@@ -16,14 +16,17 @@ export default function PlaylistPage() {
                         <div className="w-full flex justify-center pt-28">
                             <div>
                                 <div className="text-2xl font-semibold flex justify-center w-full italic text-center dark:text-white text-black mt-4">
-                                    Create a podcast playlist
+                                    Create a Podcast Playlist
                                 </div>
                                 <div className="text-xl font-bold flex justify-center w-full italic text-center mt-4">
-                                    Save to your<span className="text-primary">&nbsp;Playlist&nbsp;</span> list
+                                    Save to Your<span className="text-primary">&nbsp;Playlist&nbsp;</span>
+                                </div>
+                                <div className="text-xl font-bold flex justify-center w-full italic text-center mt-4">
+                                    Just Like Music Playlist
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full flex justify-center pt-9">
+                        <div className="w-full flex justify-center pt-2">
                             <div className="w-full max-w-2xl flex justify-center ">
                                 <SkeletonListenPlaylistView />
                             </div>
