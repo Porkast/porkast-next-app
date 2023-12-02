@@ -131,4 +131,6 @@ const SubscribeKeywrodDialog = forwardRef<SubscribeKeywrodDialogRef>((props, ref
     )
 })
 
+SubscribeKeywrodDialog.displayName = 'SubscribeKeywrodDialog'
+
 export default SubscribeKeywrodDialog;
