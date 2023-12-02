@@ -44,7 +44,7 @@ export default function SubscriptionPage() {
                             </button>
                         </div>
                     </div>
-                    <div className="w-full flex justify-center pt-2">
+                    <div className="w-full flex justify-center pt-2 pb-4 pl-4 pr-4">
                         <div className="md:text-xl text-base font-bold flex justify-center w-full italic text-center mt-4">
                             Once new podcasts about Elon Musk is released, you will be notified.
                         </div>
