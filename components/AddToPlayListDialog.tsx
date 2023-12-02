@@ -27,6 +27,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
     const [guid, setGuid] = useState('')
     const [feedId, setFeedId] = useState('')
     const [source, setSource] = useState('itunes')
+    const [isMockData, setIsMockData] = useState(false)
 
     const onSelectValueChanged = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedPlaylistId(e.target.value)
@@ -46,6 +47,10 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
                         setGuid(guid)
                         setFeedId(feedId)
                         setSource(source)
+                        if (!guid || !feedId) {
+                            setIsMockData(true)
+                            return
+                        }
                         const userPlaylistResp = await getUserPlaylistByUserId(userInfo.userId)
                         if (userPlaylistResp) {
                             setUserPlaylists(userPlaylistResp.data)
@@ -89,7 +94,7 @@ const AddToPlayListDialog = forwardRef<AddToPlayListDialogRef>((props: AddToPlay
     }
 
     const onCreateNewPlaylistBtnClick = () => {
-        appContext.createPlaylistFunction()
+        appContext.createPlaylistFunction(isMockData)
     }
 
     return (
