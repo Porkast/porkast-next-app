@@ -8,6 +8,7 @@ import AddToPlaylistButton from "@/components/AddToPlaylistButton"
 import ShowNotesViewer from "@/components/ShowNotesViewer"
 import { getPodcastEpisodeInfo } from "@/libs/itunes"
 import { Author } from "next/dist/lib/metadata/types/metadata-types"
+import { removeTextColorStyles } from "@/libs/common"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
@@ -16,7 +17,7 @@ export default async function Page({ params }: { params: { channelId: string, it
     const episode = data.episode
     const podcastInfo = data.podcast
     const podcastChannelLink = "/podcast/" + episode.ChannelId
-    const formatDescription = episode.Description.replace(/color:[^;]*;/g, '');
+    const formatDescription = removeTextColorStyles(episode.Description)
 
     const playerParams: AudioPlayerParams = {
         title: episode.Title,
