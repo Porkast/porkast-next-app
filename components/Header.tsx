@@ -132,7 +132,7 @@ export default function Header(props: HeaderProps) {
                             </div>
                             <div className="flex-1 md:px-2 md:mx-2">
                                 <Link className="hidden lg:block" href={"/"}><img className="w-16" src="/porkast-logo.png" alt="logo" /></Link>
-                                <div className="md:text-2xl uppercase font-bold">{headerTitle}</div>
+                                <div className="md:text-2xl font-bold">{headerTitle}</div>
                             </div>
                             <div className="flex-none lg:hidden">
                                 <button className="btn btn-xs sm:btn-sm md:btn-md btn-active btn-primary mr-4" onClick={showSearchModal}>Search</button>
