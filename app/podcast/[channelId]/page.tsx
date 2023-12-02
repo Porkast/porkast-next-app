@@ -5,8 +5,8 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
-import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
-import { getPodcastInfo } from '@/libs/itunes';
+import { addLinkTagToUrl, removeTextColorStyles, replaceWithBr } from '@/libs/common';
+import { getPodcastAllInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
 
@@ -18,7 +18,7 @@ export default async function Page({ params, searchParams }: { params: { channel
     }
     const limit = 10
     const offest = (parseInt(page || '1') - 1) * limit
-    var podcastData = await getPodcastInfo(podcastId)
+    var podcastData = await getPodcastAllInfo(podcastId)
     podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
     podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
 
@@ -30,6 +30,7 @@ export default async function Page({ params, searchParams }: { params: { channel
     var channelDescription = channelInfoData.TextChannelDesc
     channelDescription = addLinkTagToUrl(channelDescription)
     channelDescription = replaceWithBr(channelDescription)
+    channelDescription = removeTextColorStyles(channelDescription)
 
     const totalPage = Math.ceil(episodeTotalCount / limit)
 
@@ -82,7 +83,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                             </div>
                                         </div>
                                         <div className="mt-6">
-                                            <p>{parse(channelDescription)}</p>
+                                            <p className='text-base-content'>{parse(channelDescription)}</p>
                                         </div>
                                         {
 
@@ -159,7 +160,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.channelId
     const page = searchParams.page
-    const podcastData = await getPodcastInfo(id)
+    const podcastData = await getPodcastAllInfo(id)
     if (podcastData == null) {
         return {
             title: "Porkast",
