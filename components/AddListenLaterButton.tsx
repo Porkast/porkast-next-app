@@ -55,7 +55,7 @@ export default function AddListenLaterButton(props: AddListenLaterButtonProps) {
 
     return (
         <>
-            <button className="btn btn-neutral btn-sm flex items-center rounded-lg" onClick={onAddListenLaterBtnClick}>
+            <button className="btn btn-neutral btn-sm flex items-center rounded-lg mr-2" onClick={onAddListenLaterBtnClick}>
                 {
                     isLoading ? (
                         <span className="loading loading-spinner loading-sm"></span>
