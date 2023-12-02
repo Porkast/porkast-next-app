@@ -11,7 +11,7 @@ export default function ListenLaterPage() {
         <>
             <Header>
                 <div className="min-h-screen">
-                    <div className="w-full flex justify-center pt-20">
+                    <div className="w-full flex justify-center pt-28">
                         <div>
                             <div className="text-2xl font-semibold flex justify-center w-full italic text-center dark:text-white text-black">
                                 Explore podcast
