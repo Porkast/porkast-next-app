@@ -5,7 +5,7 @@ import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
-import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
+import { addLinkTagToUrl, removeTextColorStyles, replaceWithBr } from '@/libs/common';
 import { getPodcastAllInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
@@ -30,6 +30,7 @@ export default async function Page({ params, searchParams }: { params: { channel
     var channelDescription = channelInfoData.TextChannelDesc
     channelDescription = addLinkTagToUrl(channelDescription)
     channelDescription = replaceWithBr(channelDescription)
+    channelDescription = removeTextColorStyles(channelDescription)
 
     const totalPage = Math.ceil(episodeTotalCount / limit)
 
@@ -82,7 +83,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                             </div>
                                         </div>
                                         <div className="mt-6">
-                                            <p>{parse(channelDescription)}</p>
+                                            <p className='text-base-content'>{parse(channelDescription)}</p>
                                         </div>
                                         {
 
