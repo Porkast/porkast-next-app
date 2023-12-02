@@ -11,7 +11,7 @@ type CreatePlaylistDialogProps = {
 }
 
 export type CreatePlaylistDialogRef = {
-    showDialog: () => void
+    showDialog: (isMockData: boolean) => void
 }
 
 const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreatePlaylistDialogProps, ref: Ref<CreatePlaylistDialogRef>) => {
@@ -21,14 +21,17 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
     const [isloading, setIsLoading] = useState(false)
     const [playlistName, setPlaylistName] = useState('')
     const [playlistDescription, setPlaylistDescription] = useState('')
+    const [isMockData, setIsMockData] = useState(false)
 
     const onSubmitToCreatePlaylistBtnClick = async () => {
-        if (isloading) {
+        if (isloading || isMockData) {
             return
         }
         setIsLoading(true)
         const createResp = await createPlaylist(userId, playlistName, playlistDescription)
         if (createResp && createResp.code == 0) {
+            const dialog = document.getElementById("createPlaylistModal") as HTMLDialogElement;
+            dialog.close()
             appContext.showMsgAlert(createResp.message, MsgAlertType.SUCCESS)
         } else {
             appContext.showMsgAlert(createResp.message, MsgAlertType.FAILED)
@@ -40,7 +43,8 @@ const CreatePlaylistDialog = forwardRef<CreatePlaylistDialogRef>((props: CreateP
         const dialog = document.getElementById("createPlaylistModal") as HTMLDialogElement;
         if (ref) {
             (ref as any).current = {
-                showDialog: async function (userId: string) {
+                showDialog: async function (isMockData: boolean) {
+                    setIsMockData(isMockData)
                     const userInfo = await getUserSessionInfo()
                     setUserId(userInfo.userId)
                     if (dialog) {
