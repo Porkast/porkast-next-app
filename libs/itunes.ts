@@ -66,7 +66,7 @@ export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, 
     return items.slice(offset, offset + limit)
 }
 
-export const getPodcastInfo = async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
+export const getPodcastAllInfo = async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
     const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
     const jsonResp = await res.json()
     const podcastInfo = jsonResp.results[0]

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
 import { addLinkTagToUrl, replaceWithBr } from '@/libs/common';
-import { getPodcastInfo } from '@/libs/itunes';
+import { getPodcastAllInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
 
@@ -18,7 +18,7 @@ export default async function Page({ params, searchParams }: { params: { channel
     }
     const limit = 10
     const offest = (parseInt(page || '1') - 1) * limit
-    var podcastData = await getPodcastInfo(podcastId)
+    var podcastData = await getPodcastAllInfo(podcastId)
     podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
     podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
 
@@ -159,7 +159,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.channelId
     const page = searchParams.page
-    const podcastData = await getPodcastInfo(id)
+    const podcastData = await getPodcastAllInfo(id)
     if (podcastData == null) {
         return {
             title: "Porkast",

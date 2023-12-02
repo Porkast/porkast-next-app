@@ -6,7 +6,7 @@ import { AppProvider } from "@/components/AppContext"
 import AddListenLaterButton from "@/components/AddListenLaterButton"
 import AddToPlaylistButton from "@/components/AddToPlaylistButton"
 import ShowNotesViewer from "@/components/ShowNotesViewer"
-import { getPodcastEpisodeInfo, getPodcastInfo } from "@/libs/itunes"
+import { getPodcastEpisodeInfo } from "@/libs/itunes"
 import { Author } from "next/dist/lib/metadata/types/metadata-types"
 
 
