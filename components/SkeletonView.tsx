@@ -8,7 +8,7 @@ export const SkeletonListenLaterEpisodeView = () => {
 
 
     return (
-        <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9 pl-6 pr-6">
+        <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
             <div className="ml-6 mr-6">
                 {/* Header information */}
                 <div className="skeleton w-56 h-8 mt-9"></div>
@@ -76,7 +76,7 @@ export const SkeletonListenPlaylistView = () => {
     }
 
     return (
-        <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9 pl-6 pr-6">
+        <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
             <div className="ml-6 mr-6">
                 {/* Header information */}
                 <div className="skeleton w-56 h-8 mt-9"></div>
