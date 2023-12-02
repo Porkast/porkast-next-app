@@ -13,7 +13,7 @@ type AppContextType = {
     seek: (time: number) => void;
     showMsgAlert: (msg: string, msgType: MsgAlertType) => void;
     addToPlayListFunction: (userId: string, title: string, feedId: string, guid: string, source: string) => void;
-    createPlaylistFunction: () => void
+    createPlaylistFunction: (isMockData: boolean) => void
 };
 
 const AppContext = createContext<AppContextType>({
@@ -27,7 +27,7 @@ const AppContext = createContext<AppContextType>({
     },
     addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
     },
-    createPlaylistFunction: function (): void {
+    createPlaylistFunction: function (isMockData: boolean): void {
     }
 });
 
@@ -69,8 +69,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         addToPlayListFunction: function (userId: string, title: string, feedId: string, guid: string, source: string): void {
             addToPlaylistModalRef.current?.showDialog(title, feedId, guid, source)
         },
-        createPlaylistFunction: function (): void {
-            createPlaylistModalRef.current?.showDialog()
+        createPlaylistFunction: function (isMockData: boolean): void {
+            createPlaylistModalRef.current?.showDialog(isMockData)
         }
     };
 
