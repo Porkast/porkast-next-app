@@ -17,7 +17,7 @@ export default function PlaylistPage() {
                                 Create a Podcast Playlist
                             </div>
                             <div className="text-xl font-bold flex justify-center w-full italic text-center mt-4">
-                                Save to Your<span className="text-primary">&nbsp;Playlist&nbsp;</span>
+                                Save Podcast to Your<span className="text-primary">&nbsp;Playlist&nbsp;</span>
                             </div>
                             <div className="text-xl font-bold flex justify-center w-full italic text-center mt-4">
                                 Just Like Music Playlist
