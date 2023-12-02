@@ -1,8 +1,6 @@
 'use clien'
 
 import AddListenLaterButton from "./AddListenLaterButton"
-import { useAppContext } from "./AppContext"
-
 
 export const SkeletonListenLaterEpisodeView = () => {
 
@@ -69,11 +67,6 @@ export const SkeletonListenLaterEpisodeView = () => {
 
 export const SkeletonListenPlaylistView = () => {
 
-    const appContext = useAppContext();
-
-    const onAddBtnClick = async () => {
-        appContext.addToPlayListFunction('', 'Podcast', '', '', "itunes")
-    }
 
     return (
         <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
@@ -126,7 +119,7 @@ export const SkeletonListenPlaylistView = () => {
                     <div className='flex justify-start mt-4 md:mt-0 items-center'>
                         <button className="skeleton w-32 btn btn-neutral btn-sm flex items-center rounded-lg mr-2">
                         </button>
-                        <button className="btn btn-neutral mr-2 btn-sm flex items-center rounded-lg" onClick={onAddBtnClick}>
+                        <button className="btn btn-neutral mr-2 btn-sm flex items-center rounded-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                             <span className="font-bold text-xs md:display">Add</span>
                         </button>
