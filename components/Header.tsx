@@ -141,9 +141,9 @@ export default function Header(props: HeaderProps) {
                                 <ul className="menu menu-horizontal">
                                     {/* Navbar menu content here */}
                                     {/* <li><a className="text-base btn btn-ghost">Trending</a></li> */}
-                                    <li><Link href={`/listenlater/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Listen Later</Link></li>
-                                    <li><Link href={`/playlist/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Playlist</Link></li>
-                                    <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-base btn btn-ghost">Subscription</Link></li>
+                                    <li><Link href={`/listenlater/${userInfo?.userId || ''}`} className="text-xl btn btn-ghost">Listen Later</Link></li>
+                                    <li><Link href={`/playlist/${userInfo?.userId || ''}`} className="text-xl btn btn-ghost">Playlist</Link></li>
+                                    <li><Link href={`/subscription/${userInfo?.userId || ''}`} className="text-xl btn btn-ghost">Subscription</Link></li>
                                     {
                                         props.hideSearchBtn ? (
                                             <></>
@@ -161,7 +161,15 @@ export default function Header(props: HeaderProps) {
                                                 </label>
                                                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
                                                     {/* <li><a>Settings</a></li> */}
-                                                    <li onClick={handleLogout}><a className="text-base btn btn-ghost">Sign Out</a></li>
+                                                    <li onClick={handleLogout}>
+                                                        <a className="text-base font-bold w-48">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
+                                                            <div className="">
+                                                                <div>Sign Out</div>
+                                                                <div className="text-sm text-gray-500 w-36 truncate">{userInfo?.email}</div>
+                                                            </div>
+                                                        </a>
+                                                    </li>
                                                 </ul>
                                             </div>
                                         ) : <li><Link className="text-base btn btn-primary" href={"/signin"}>Sign In</Link></li>
@@ -240,7 +248,12 @@ export default function Header(props: HeaderProps) {
                                     <li onClick={handleLogout}>
                                         <a className="text-base font-bold">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
-                                            Sign Out
+                                            <div className="">
+                                                <div>
+                                                    Sign Out
+                                                </div>
+                                                <div className="text-sm text-gray-500 max-w-xs overflow-hidden">{userInfo?.email}</div>
+                                            </div>
                                         </a>
                                     </li>
                                 ) : (
