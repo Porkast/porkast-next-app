@@ -93,7 +93,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                             <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
                                         </div>
                                         <div className="flex justify-center mt-4">
-                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s playlist`}</div>
+                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Playlist`}</div>
                                         </div>
                                         <div className="flex justify-center mt-4">
                                             <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
