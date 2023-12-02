@@ -66,7 +66,35 @@ export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, 
     return items.slice(offset, offset + limit)
 }
 
-export const getPodcastInfo = async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
+export const getPodcastInfo = async (podcastId: string): Promise<FeedChannel> => {
+    const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
+    const jsonResp = await res.json()
+    const podcastInfo = jsonResp.results[0]
+    let channelInfo: FeedChannel = {
+        Id: podcastInfo.collectionId,
+        Title: podcastInfo.collectionName,
+        ChannelDesc: "",
+        TextChannelDesc: "",
+        ImageUrl: podcastInfo.artworkUrl100,
+        Link: podcastInfo.collectionViewUrl,
+        FeedLink: podcastInfo.feedUrl,
+        FeedType: "",
+        Categories: podcastInfo.genres,
+        Author: podcastInfo.artistName,
+        OwnerName: podcastInfo.artistName,
+        OwnerEmail: "",
+        Items: [],
+        Count: 0,
+        Copyright: "",
+        Language: "",
+        TookTime: 0,
+        HasThumbnail: false
+    }
+
+    return channelInfo
+}
+
+export const getPodcastAllInfo = async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
     const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
     const jsonResp = await res.json()
     const podcastInfo = jsonResp.results[0]

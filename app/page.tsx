@@ -7,7 +7,11 @@ export default function Home() {
         <div>
             <Header hideSearchBtn={true} >
                 <div className="mt-28">
-                    <div className="md:text-5xl text-2xl font-semibold flex justify-center w-full italic text-center">
+                    <div className="w-full flex justify-center">
+                        <img src="/porkast-text-logo-white.jpg" className="w-96 dark:block hidden" />
+                        <img src="/porkast-text-logo-black.jpg" className="w-96 dark:hidden block" />
+                    </div>
+                    <div className="md:text-5xl text-2xl font-semibold flex justify-center w-full italic text-center dark:text-white text-black">
                         Discover, Subscribe, Share
                     </div>
                     <div className="md:text-4xl text-xl text-primary font-bold flex justify-center w-full italic text-center mt-9">
