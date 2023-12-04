@@ -5,7 +5,7 @@ import EpisodeCard from "@/components/EpisodeCard"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
 import { AvatarImage } from "@/components/PorkastImage"
-import { SharedListenLaterBtn } from "@/components/Share"
+import { SharePlaylistBtn, SharedListenLaterBtn } from "@/components/Share"
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton"
 import { getPlaylistInfoById, getPlaylistItemListByUserId } from "@/libs/playlist"
 import { getUserSessionInfo } from "@/libs/suapbase"
@@ -122,7 +122,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                             {
                                                 isMyPage ? (
                                                     <div className="mt-4 -ml-2 flex justify-start">
-                                                        <SharedListenLaterBtn creatorId={userId} />
+                                                        <SharePlaylistBtn userId={userId} playlistId={playlistId} />
                                                     </div>
                                                 ) : (
                                                     <div className="mt-4 -ml-2 flex justify-start">
@@ -135,7 +135,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                     <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
                                 </div>
                                 <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
-                                        
+
                                 {
                                     itemList && itemList.length > 0 ? (
                                         itemList.map((item, index) => {
@@ -162,7 +162,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                     ) : (
                                         <></>
                                     )
-                                } 
+                                }
                                 <div className="w-full flex justify-center pt-6 pb-9">
                                     <div className="join">
                                         {
