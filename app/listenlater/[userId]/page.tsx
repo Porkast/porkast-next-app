@@ -120,15 +120,16 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                     <div className="mt-4 flex justify-center">
                                         <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Listen Later`}</div>
                                     </div>
+                                    <div className="mt-4 -ml-2 flex justify-center">
+                                        <SharedListenLaterBtn creatorId={userId} />
+                                    </div>
                                     {
-                                        isMyPage ? (
+                                        !isMyPage ? (
                                             <div className="mt-4 -ml-2 flex justify-center">
-                                                <SharedListenLaterBtn creatorId={userId} />
+                                                {/* <SubscribeListenLaterBtn creatorId={userId} /> */}
                                             </div>
                                         ) : (
-                                            <div className="mt-4 -ml-2 flex justify-center">
-                                                <SubscribeListenLaterBtn creatorId={userId} />
-                                            </div>
+                                            <></>
                                         )
                                     }
                                     <div className="flex justify-center">
@@ -139,7 +140,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                             <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} episode</div>
                             {
                                 itemList && itemList.length > 0 ? (
-                                   itemList.map((item, index) => {
+                                    itemList.map((item, index) => {
                                         // check if item.Duration contain `:`
                                         let duration: string
                                         if (!isNaN(Number(item.duration))) {
