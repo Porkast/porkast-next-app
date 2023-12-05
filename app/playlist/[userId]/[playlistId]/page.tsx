@@ -119,15 +119,16 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                                         <div className="ml-3">
                                             <div className="md:text-2xl text-xl font-bold">{playlistInfo?.PlaylistName}</div>
                                             <div className="text-sm font-medium text-gray-500 mt-2">By {nickname}</div>
+                                            <div className="mt-4 -ml-2 flex justify-start">
+                                                <SharePlaylistBtn userId={userId} playlistId={playlistId} />
+                                            </div>
                                             {
-                                                isMyPage ? (
+                                                !isMyPage ? (
                                                     <div className="mt-4 -ml-2 flex justify-start">
-                                                        <SharePlaylistBtn userId={userId} playlistId={playlistId} />
+                                                        {/* <SubscribeListenLaterBtn creatorId={userId} /> */}
                                                     </div>
                                                 ) : (
-                                                    <div className="mt-4 -ml-2 flex justify-start">
-                                                        <SubscribeListenLaterBtn creatorId={userId} />
-                                                    </div>
+                                                    <></>
                                                 )
                                             }
                                         </div>
@@ -186,8 +187,8 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
                         </div>
                     </Header>
                     <Footer />
-                </div>
-            </AppProvider>
+                </div >
+            </AppProvider >
         </>
     )
 }
