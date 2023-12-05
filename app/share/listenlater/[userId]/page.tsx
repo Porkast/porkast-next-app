@@ -69,7 +69,7 @@ export default function Page({ params }: { params: { userId: string } }) {
                             <div className="text-2xl font-bold">Listen Later RSS Source Viewer</div>
                         </div>
                         <div className="w-full flex justify-center pl-6 pr-6 pt-9">
-                            <div className="text-base">{nickname}'s Porkast Listen Later List</div>
+                            <div className="text-base">{nickname}{`'s Porkast Listen Later List`}</div>
                         </div>
                         <div className="w-full flex justify-center pl-6 pr-6 mt-4">
                             <Link className="link link-primary" href={rssLink} target="_blank">RSS Link</Link>
