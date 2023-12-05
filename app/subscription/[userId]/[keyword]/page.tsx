@@ -4,9 +4,8 @@ import EpisodeCard from "@/components/EpisodeCard";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { AvatarImage } from "@/components/PorkastImage";
-import { SharedListenLaterBtn } from "@/components/Share";
+import { ShareSearchSubscriptionBtn } from "@/components/Share";
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
-import { convertMillsTimeToDuration } from "@/libs/common";
 import { getUserSessionInfo } from "@/libs/suapbase";
 import { getUserKeywordSubscriptionItemList } from "@/libs/subscription";
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
@@ -119,7 +118,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                         {
                                             isMyPage ? (
                                                 <div className="mt-4 -ml-2 flex justify-start">
-                                                    <SharedListenLaterBtn creatorId={userId} />
+                                                    <ShareSearchSubscriptionBtn userId={userId} keyword={keyword} />
                                                 </div>
                                             ) : (
                                                 <div className="mt-4 -ml-2 flex justify-start">
