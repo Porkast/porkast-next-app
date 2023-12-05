@@ -20,9 +20,11 @@
     "@vercel/analytics": "^1.1.1",
     "html-react-parser": "^4.2.2",
     "next": "latest",
+    "podcast": "^2.0.1",
     "react": "latest",
     "react-dom": "latest",
     "react-helmet": "^6.1.0",
+    "react-xml-viewer": "^2.0.1",
     "shikwasa": "^2.2.1",
     "uuid": "^9.0.1",
     "xml2js": "^0.6.2"
