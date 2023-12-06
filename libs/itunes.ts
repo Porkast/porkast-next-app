@@ -94,7 +94,7 @@ export const getPodcastInfo = async (podcastId: string): Promise<FeedChannel> =>
 }
 
 export const getPodcastAllInfo = async (podcastId: string): Promise<{ podcast: FeedChannel, episodes: FeedItem[] }> => {
-    const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`)
+    const res = await fetch(`https://itunes.apple.com/lookup?id=${podcastId}&entity=podcast`, { cache: 'no-store' })
     const jsonResp = await res.json()
     const podcastInfo = jsonResp.results[0]
     const feedLink = podcastInfo.feedUrl
@@ -220,7 +220,7 @@ const buildFeedChannelModel = (rssFeed: RSS, feedLink: string, podcastId: string
 }
 
 export const getRSSFeed = async (feedUrl: string): Promise<RSS> => {
-    const res = await fetch(feedUrl);
+    const res = await fetch(feedUrl, { cache: 'no-store' });
     const respStr = await res.text();
     const parser = new xml2js.Parser({ explicitArray: false });
     const result = await parser.parseStringPromise(respStr);
