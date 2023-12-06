@@ -1,5 +1,4 @@
 import { FeedItem } from "@/types/feed_item"
-import { cache } from "react"
 import { convertMillsTimeToDuration } from "./common"
 import { FeedChannel } from "@/types/feed_channel"
 import xml2js from 'xml2js';
