@@ -46,13 +46,13 @@ export default function Page({ params }: { params: { playlistId: string, userId:
 
             setPlaylistInfo(playlistInfoResp.data)
 
-            const xmlResp = await fetch(`${process.env.API_BASE_URL}/api/rss/playlist/` + params.playlistId + '/' + params.userId, {
+            const xmlResp = await fetch(`${process.env.API_BASE_URL}api/rss/playlist/` + params.playlistId + '/' + params.userId, {
                 method: 'GET'
             })
 
             const xmlRespStr = await xmlResp.text()
             setXml(xmlRespStr)
-            setRssLink(`${process.env.API_BASE_URL}/api/rss/playlist/` + params.playlistId + '/' + params.userId)
+            setRssLink(`${process.env.API_BASE_URL}api/rss/playlist/` + params.playlistId + '/' + params.userId)
         }
 
         initPageInfo()
