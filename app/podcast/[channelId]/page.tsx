@@ -1,4 +1,5 @@
-import type { Metadata, ResolvingMetadata } from 'next'
+'use client'
+
 import Header from "@/components/Header";
 import EpisodeCard from '@/components/EpisodeCard';
 import Footer from '@/components/Footer';
@@ -7,10 +8,11 @@ import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
 import { addLinkTagToUrl, removeTextColorStyles, replaceWithBr } from '@/libs/common';
 import { getPodcastAllInfo } from '@/libs/itunes';
-import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
+import { useEffect, useState } from "react";
+import { FeedChannel } from "@/types/feed_channel";
 
-export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
+export default function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
     var page = searchParams.page
     if (!page) {
@@ -18,37 +20,70 @@ export default async function Page({ params, searchParams }: { params: { channel
     }
     const limit = 10
     const offest = (parseInt(page || '1') - 1) * limit
-    var podcastData = await getPodcastAllInfo(podcastId)
-    podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
-    podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
 
-    if (!podcastData) {
-        return
-    }
-    const channelInfoData = podcastData.podcast
-    const episodeTotalCount = channelInfoData.Count
-    var channelDescription = channelInfoData.TextChannelDesc
-    channelDescription = addLinkTagToUrl(channelDescription)
-    channelDescription = replaceWithBr(channelDescription)
-    channelDescription = removeTextColorStyles(channelDescription)
+    const [channelInfoData, setChannelInfoData] = useState<FeedChannel>()
+    const [episodeTotalCount, setEpisodeTotalCount] = useState(0)
+    const [channelDescription, setChannelDescription] = useState("")
+    const [totalPage, setTotalPage] = useState(0)
+    const [nextPageUrl, setNextPageUrl] = useState("")
+    const [prevPageUrl, setPrevPageUrl] = useState("")
+    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
+    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
 
-    const totalPage = Math.ceil(episodeTotalCount / limit)
+    useEffect(() => {
+        const initPageInfo = async () => {
+            var podcastData = await getPodcastAllInfo(podcastId)
+            podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
+            podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
+            if (!podcastData) {
+                return
+            }
+            setChannelInfoData(podcastData.podcast)
+            setEpisodeTotalCount(podcastData.podcast.Count)
+            var channelDescriptionTemp = podcastData.podcast.TextChannelDesc
+            channelDescriptionTemp = addLinkTagToUrl(channelDescriptionTemp)
+            channelDescriptionTemp = replaceWithBr(channelDescriptionTemp)
+            channelDescriptionTemp = removeTextColorStyles(channelDescriptionTemp)
+            setChannelDescription(channelDescriptionTemp)
+            const totalPages = Math.ceil(podcastData.podcast.Count / limit)
+            setTotalPage(totalPages)
+        }
 
-    let nextPage = 0
-    if (parseInt(page) >= totalPage) {
-        nextPage = parseInt(page)
-    } else {
-        nextPage = parseInt(page) + 1
-    }
-    const nextPageUrl = "/podcast/" + podcastId + "?page=" + nextPage
+        initPageInfo()
+    }, [podcastId])
 
-    let prePage = 0
-    if (parseInt(page) > 1) {
-        prePage = parseInt(page) - 1
-    } else {
-        prePage = parseInt(page)
-    }
-    const prevPageUrl = "/podcast/" + podcastId + "?page=" + prePage
+
+
+
+    useEffect(() => {
+        let nextPage = 0
+        if (parseInt(page) >= totalPage) {
+            nextPage = parseInt(page)
+        } else {
+            nextPage = parseInt(page) + 1
+        }
+        setNextPageUrl("/podcast/" + podcastId + "?page=" + nextPage)
+
+        let prePage = 0
+        if (parseInt(page) > 1) {
+            prePage = parseInt(page) - 1
+        } else {
+            prePage = parseInt(page)
+        }
+        setPrevPageUrl("/podcast/" + podcastId + "?page=" + prePage)
+
+        if (parseInt(page) >= totalPage) {
+            setIsNextBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+        if (parseInt(page) <= 1) {
+            setIsPreBtnClickable(false)
+        } else {
+            setIsNextBtnClickable(true)
+        }
+    }, [episodeTotalCount, totalPage, page])
+
 
     return (
         <AppProvider>
@@ -60,26 +95,26 @@ export default async function Page({ params, searchParams }: { params: { channel
                             {
                                 page == "1" ?
                                     <div className='w-full'>
-                                        <div className='text-3xl font-bold'>{channelInfoData.Title}</div>
+                                        <div className='text-3xl font-bold'>{channelInfoData?.Title}</div>
                                         <div className="w-full flex justify-start mt-4">
                                             <div className="w-24">
-                                                <AvatarImage imageUrl={channelInfoData.ImageUrl} />
+                                                <AvatarImage imageUrl={channelInfoData?.ImageUrl} />
                                             </div>
                                             <div className="ml-3">
-                                                <div className="text-sm font-medium text-gray-500 mt-2">By {channelInfoData.Author}</div>
+                                                <div className="text-sm font-medium text-gray-500 mt-2">By {channelInfoData?.Author}</div>
                                                 <div className="flex justify-start mt-4">
-                                                    <a className="btn btn-neutral btn-sm flex items-center rounded-lg" href={channelInfoData.FeedLink} target="_blank">
+                                                    <a className="btn btn-neutral btn-sm flex items-center rounded-lg" href={channelInfoData?.FeedLink} target="_blank">
                                                         <svg className="w-4 h-4 icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4715" width="32" height="32">
                                                             <path d="M128 768a128 128 0 1 0 0 256 128 128 0 0 0 0-256zM0 368v176c265.104 0 480 214.912 480 480h176c0-362.32-293.696-656-656-656zM0 0v176c468.336 0 848 379.664 848 848h176C1024 458.464 565.536 0 0 0z" fill="#bfbfbf" p-id="4716"></path>
                                                         </svg>
                                                         RSS
                                                     </a>
-                                                    <a className="btn btn-neutral btn-sm flex items-center rounded-lg ml-4" href={channelInfoData.Link} target="_blank">
+                                                    <a className="btn btn-neutral btn-sm flex items-center rounded-lg ml-4" href={channelInfoData?.Link} target="_blank">
                                                         <svg className="w-5 h-5 icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3342" width="32" height="32"><path d="M574 665.4c-3.1-3.1-8.2-3.1-11.3 0L446.5 781.6c-53.8 53.8-144.6 59.5-204 0-59.5-59.5-53.8-150.2 0-204l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3l-39.8-39.8c-3.1-3.1-8.2-3.1-11.3 0L191.4 526.5c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l116.2-116.2c3.1-3.1 3.1-8.2 0-11.3L574 665.4zM832.6 191.4c-84.6-84.6-221.5-84.6-306 0L410.3 307.6c-3.1 3.1-3.1 8.2 0 11.3l39.7 39.7c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c53.8-53.8 144.6-59.5 204 0 59.5 59.5 53.8 150.2 0 204L665.3 562.6c-3.1 3.1-3.1 8.2 0 11.3l39.8 39.8c3.1 3.1 8.2 3.1 11.3 0l116.2-116.2c84.5-84.6 84.5-221.5 0-306.1z" p-id="3343" fill="#bfbfbf"></path><path d="M610.1 372.3c-3.1-3.1-8.2-3.1-11.3 0L372.3 598.7c-3.1 3.1-3.1 8.2 0 11.3l39.6 39.6c3.1 3.1 8.2 3.1 11.3 0l226.4-226.4c3.1-3.1 3.1-8.2 0-11.3l-39.5-39.6z" p-id="3344" fill="#bfbfbf"></path></svg>
                                                         Link
                                                     </a>
                                                 </div>
-                                                <p className="mt-4 text-xs">{channelInfoData.Copyright}</p>
+                                                <p className="mt-4 text-xs">{channelInfoData?.Copyright}</p>
                                             </div>
                                         </div>
                                         <div className="mt-6">
@@ -87,7 +122,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                         </div>
                                         {
 
-                                            channelInfoData.Categories == undefined || channelInfoData.Categories.length == 0 ? (
+                                            channelInfoData?.Categories == undefined || channelInfoData.Categories.length == 0 ? (
                                                 <></>
                                             ) : (
                                                 <div className="w-full carousel carousel-center p-2 mt-4 space-x-2 bg-base-200 rounded-lg">
@@ -117,14 +152,14 @@ export default async function Page({ params, searchParams }: { params: { channel
                             <div className="w-full flex justify-center pt-9">
                                 <div className="w-full">
                                     {
-                                        channelInfoData.Items.map((item: any) => {
+                                        channelInfoData?.Items.map((item: any) => {
                                             return (
                                                 <EpisodeCard key={item.Id} data={{
                                                     itemId: item.GUID,
                                                     channelId: item.ChannelId,
                                                     title: item.HighlightTitle,
                                                     description: item.TextDescription,
-                                                    image: item.ImageUrl == "" ? podcastData.podcast.ImageUrl : item.ImageUrl,
+                                                    image: item.ImageUrl == "" ? channelInfoData.ImageUrl : item.ImageUrl,
                                                     link: item.Link,
                                                     rssLink: item.FeedLink,
                                                     channelName: item.ChannelTitle,
@@ -140,9 +175,21 @@ export default async function Page({ params, searchParams }: { params: { channel
                             </div>
                             <div className="w-full flex justify-center pt-6 pb-9">
                                 <div className="join">
-                                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                    {
+                                        isPreBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">«</button>
+                                        )
+                                    }
                                     <button className="join-item btn btn-neutral">Page {page}</button>
-                                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                    {
+                                        isNextBtnClickable ? (
+                                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
+                                        ) : (
+                                            <button className="join-item btn btn-neutral btn-disabled">»</button>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -152,31 +199,4 @@ export default async function Page({ params, searchParams }: { params: { channel
             </div>
         </AppProvider>
     );
-}
-
-export async function generateMetadata(
-    { params, searchParams }: { params: { channelId: string }, searchParams: { page: string } },
-    parent: ResolvingMetadata
-): Promise<Metadata> {
-    const id = params.channelId
-    const page = searchParams.page
-    const podcastData = await getPodcastAllInfo(id)
-    if (podcastData == null) {
-        return {
-            title: "Porkast",
-            description: "Porkast is a podcast search engine.",
-        }
-    }
-    const description = podcastData.podcast.ChannelDesc
-    const title = podcastData.podcast.Title + "- Porkast"
-    const authorList: Author[] = []
-    authorList.push({
-        name: podcastData.podcast.OwnerName,
-        url: podcastData.podcast.OwnerEmail
-    })
-    return {
-        title: title,
-        description: description,
-        authors: authorList,
-    }
 }
