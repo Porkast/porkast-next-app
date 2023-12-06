@@ -36,13 +36,13 @@ export default function Page({ params }: { params: { userId: string } }) {
             setUserInfo(userInfoData)
             setNickname(getTempNickname(userInfoData))
 
-            const xmlResp = await fetch(`${process.env.API_BASE_URL}/api/rss/listenlater/` + params.userId, {
+            const xmlResp = await fetch(`${process.env.API_BASE_URL}api/rss/listenlater/` + params.userId, {
                 method: 'GET'
             })
 
             const xmlRespStr = await xmlResp.text()
             setXml(xmlRespStr)
-            setRssLink(`${process.env.API_BASE_URL}/api/rss/listenlater/` + params.userId)
+            setRssLink(`${process.env.API_BASE_URL}api/rss/listenlater/` + params.userId)
         }
 
         initPageInfo()
