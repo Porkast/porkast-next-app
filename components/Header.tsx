@@ -29,7 +29,8 @@ export default function Header(props: HeaderProps) {
                 id: userInfo?.userId,
                 email: userInfo?.email,
                 nickname: userInfo?.username,
-                avatar: userInfo?.avatar
+                avatar: userInfo?.avatar,
+                token: userInfo?.token
             }
             setUserInfo(userInfo)
             syncToServer(serverUserInfo)

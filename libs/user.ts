@@ -33,7 +33,8 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
     const resp = await fetch(`${process.env.API_BASE_URL}api/user/sync`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization': userInfo.token || ''
         },
         body: JSON.stringify(
             {
