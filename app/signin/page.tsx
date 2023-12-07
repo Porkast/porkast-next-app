@@ -22,7 +22,8 @@ export default function AuthForm() {
                         id: userInfo?.userId,
                         email: userInfo?.email,
                         username: userInfo?.username,
-                        avatar: userInfo?.avatar
+                        avatar: userInfo?.avatar,
+                        token: userInfo?.token
                     }
                     syncToServer(serverUserInfo)
                     window.location.href = '/'
