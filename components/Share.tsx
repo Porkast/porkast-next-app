@@ -59,14 +59,9 @@ export type ShareSearchSubscriptionBtnProps = {
 export const ShareSearchSubscriptionBtn = (props: ShareSearchSubscriptionBtnProps) => {
 
     const router = useRouter()
-    const appContext = useAppContext()
 
     const onShareBtnClick = () => {
-        if (!appContext) {
-            return
-        }
-        appContext.showMsgAlert("Comming soon", MsgAlertType.INFO)
-        // router.push('/share/subscription/' + props.userId + '/' + props.keyword)
+        router.push('/share/subscription/' + props.userId + '/' + props.keyword)
     }
 
     return (
