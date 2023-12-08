@@ -1,0 +1,96 @@
+'use client'
+
+import { AppProvider } from "@/components/AppContext";
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import { CopyRSSLinkBtn } from "@/components/Share";
+import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import XMLViewer from 'react-xml-viewer'
+
+
+export default function Page({ params }: { params: { userId: string, keyword: string } }) {
+
+    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
+    const [nickname, setNickname] = useState<string>('')
+    const [rssLink, setRssLink] = useState<string>('')
+    const [keyword, setKeyword] = useState<string>(params.keyword)
+    const [xml, setXml] = useState<string>('<hello>World</hello>')
+    const xmlViewerCustomTheme = {
+        overflowBreak: true,
+        width: "100%",
+    };
+
+
+    useEffect(() => {
+        const initPageInfo = async () => {
+
+            const userInfoResp = await getUserInfoFromServer(params.userId)
+            if (!userInfoResp || userInfoResp.code != 0) {
+                // TODO: show error
+                return
+            }
+            const userInfoData = userInfoResp.data
+            setUserInfo(userInfoData)
+            setNickname(getTempNickname(userInfoData))
+
+            const xmlResp = await fetch(`${process.env.API_BASE_URL}api/rss/subscription/` + params.userId + "/" + params.keyword, {
+                method: 'GET'
+            })
+
+            const xmlRespStr = await xmlResp.text()
+            setXml(xmlRespStr)
+            setRssLink(`${process.env.API_BASE_URL}api/rss/subscription/` + params.userId + "/" + params.keyword)
+
+            setKeyword(decodeURIComponent(params.keyword))
+        }
+
+        initPageInfo()
+
+        const element = document.getElementsByClassName('rxv-container') as any;
+        if (element) {
+            // Access or manipulate the element here
+            // For example, you can add a class to the element
+            element[0].style.maxWidth = '42rem';
+            element[0].style.width = '100%';
+            element[0].style.padding = '1.5rem';
+
+        }
+
+    }, [params.userId, params.keyword])
+
+    return (
+        <>
+            <AppProvider>
+                <Header>
+                    <div className="w-full flex justify-center min-h-screen mt-20">
+                        <div className="w-full max-w-2xl">
+                            <div className="w-full flex justify-center">
+                                <div className="text-2xl font-bold">#{keyword} - RSS Source Viewer</div>
+                            </div>
+                            <div className="w-full flex justify-center pl-6 pr-6 pt-9">
+                                <div className="text-base">{nickname}{`'s Porkast Search List`}</div>
+                            </div>
+                            <div className="w-full flex justify-center pl-6 pr-6 mt-4">
+                                <Link className="link link-primary" href={rssLink} target="_blank">RSS Link</Link>
+                            </div>
+                            <div className="w-full flex justify-center pl-6 pr-6 mt-4">
+                                <CopyRSSLinkBtn rssLink={rssLink} />
+                            </div>
+                            <div className="w-full flex justify-center pl-6 pr-6 mt-4">
+                                <div className="text-xs text-gray-500 text-center">Copy the RSS link and paste it into your preferred podcast player to subscribe this playlist</div>
+                            </div>
+                            <div className="w-full max-w-2xl mt-6 pl-6 pr-6">
+                                <div className="w-full flex justify-center rounded-lg border border-solid border-primary h-96 overflow-scroll">
+                                    <XMLViewer collapsible theme={xmlViewerCustomTheme} xml={xml} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Header>
+                <Footer />
+            </AppProvider>
+        </>
+    )
+}
