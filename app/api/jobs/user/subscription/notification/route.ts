@@ -124,21 +124,55 @@ export async function POST(request: NextRequest) {
     }
 
     const ksList = await queryUserLatestKeywordSubscriptionFeedItemList(userInfo.id, keyword, source, country, excludeFeedIds, String(usEnrity.latest_id), 0, 10)
+    const totalCount = await prisma.keyword_subscription.count({
+        where: {
+            keyword: keyword,
+            source: source,
+            country: country,
+            exclude_feed_id: excludeFeedIds,
+            id: {
+                gt: usEnrity.latest_id || 0
+            }
+        }
+    })
 
     const userEmail = userInfo.email
-    if (ksList && ksList.length > 0 && userEmail) {
+    if (totalCount > 0 && ksList && ksList.length > 0 && userEmail) {
         const link = `https://porkast.com/subscription/${userInfo.id}/${keyword}`
         const emailParams: NotificationParams = {
             keyword: keyword,
             nickname: getNickname(userEmail, userInfo.nickname || ''),
-            updateCount: ksList.length,
+            updateCount: totalCount,
             titleList: ksList.map(ks => ks.Title),
             link: link,
             to: userEmail,
             subject: "#" + keyword + " has new podcasts update"
         }
         try {
-            await sendSubscriptionUpdateEmail(emailParams)
+            // await sendSubscriptionUpdateEmail(emailParams)
+
+            const latestItem = await prisma.keyword_subscription.findFirst({
+                where: {
+                    keyword: keyword,
+                    source: source,
+                    country: country,
+                    exclude_feed_id: excludeFeedIds
+                },
+                orderBy: {
+                    id: 'desc'
+                },
+                skip: 0,
+                take: 1
+            })
+            await prisma.user_subscription.update({
+                where: {
+                    id: usEnrity.id
+                },
+                data: {
+                    latest_id: latestItem?.id
+                }
+            })
+            console.log('Sent subscription update email to ' + userEmail, " with params " + JSON.stringify(emailParams))
         } catch (error) {
             console.log('Failed to send subscription update email to ' + userEmail, " with params " + JSON.stringify(emailParams))
             resp.code = 1
@@ -147,6 +181,7 @@ export async function POST(request: NextRequest) {
                 status: 500
             })
         }
+
     }
 
     resp.code = 0
