@@ -1,5 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    experimental: {
+        serverComponentsExternalPackages: [
+            '@react-email/components',
+            '@react-email/render',
+            '@react-email/tailwind'
+        ]
+    },
     env: {
         API_BASE_URL: process.env.API_BASE_URL,
     },
