@@ -1,4 +1,4 @@
-import { Body, Button, Container, Head, Heading, Html, Preview, Row, Section, Tailwind, Text } from "@react-email/components"
+import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Row, Section, Tailwind, Text } from "@react-email/components"
 
 
 type EmailTemplateProps = {
@@ -26,18 +26,21 @@ export function UserSubscriptionUpdateNotification(props: EmailTemplateProps) {
                             <Text>
                                 Your subscription #{props.keyword} has new podcast update.
                             </Text>
-                            <Button href={props.link} className="bg-indigo-700 text-lg font-bold w-full">Listen Now</Button>
                         </Section>
                         <Section>
                             {
                                 props.titleList.map((title, index) => {
                                     return (
-                                        <Row key={index}>
-                                            {title}
+                                        <Row className="mt-4" key={index}>
+                                            <Text>
+                                                {title}
+                                            </Text>
+                                            <Hr />
                                         </Row>
                                     )
                                 })
                             }
+                            <Button href={props.link} className="bg-indigo-700 text-lg font-bold w-full text-center text-white border rounded-full mt-9">Listen Now</Button>
                         </Section>
                     </Container>
                 </Body>
