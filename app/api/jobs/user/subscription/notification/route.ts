@@ -149,8 +149,7 @@ export async function POST(request: NextRequest) {
             subject: "#" + keyword + " has new podcasts update"
         }
         try {
-            // await sendSubscriptionUpdateEmail(emailParams)
-
+            await sendSubscriptionUpdateEmail(emailParams)
             const latestItem = await prisma.keyword_subscription.findFirst({
                 where: {
                     keyword: keyword,
@@ -172,7 +171,6 @@ export async function POST(request: NextRequest) {
                     latest_id: latestItem?.id
                 }
             })
-            console.log('Sent subscription update email to ' + userEmail, " with params " + JSON.stringify(emailParams))
         } catch (error) {
             console.log('Failed to send subscription update email to ' + userEmail, " with params " + JSON.stringify(emailParams))
             resp.code = 1
