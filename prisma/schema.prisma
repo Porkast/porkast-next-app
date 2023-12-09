@@ -63,6 +63,7 @@ model keyword_subscription {
   source          String?   @db.VarChar(64)
   exclude_feed_id String?   @db.VarChar(64)
 
+  @@unique([keyword, country, source, exclude_feed_id, feed_item_id, feed_channel_id], map: "ks_idx_uniq")
   @@index([keyword, country, source, exclude_feed_id], map: "ks_idx_kcse")
   @@index([keyword], map: "ks_idx_keyword")
 }
@@ -130,6 +131,7 @@ model user_subscription {
   ref_id          String?   @db.VarChar(64)
   ref_name        String?   @db.VarChar(255)
   type            String?   @default("searchKeyword") @db.VarChar(128)
+  latest_id       Int?      @default(0)
 
   @@index([keyword], map: "usk_idx_keyword")
   @@index([user_id], map: "usk_idx_user_id")
