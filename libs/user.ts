@@ -27,6 +27,13 @@ export const getTempNickname = (serverUserInfo: ServerUserInfo): string => {
     return nickname
 }
 
+export const getNickname = (email: string, nickname: string): string => {
+    if (!nickname) {
+        nickname = email.split('@')[0]
+    }
+    return nickname
+}
+
 export const syncToServer = async (userInfo: ServerUserInfo) => {
 
 
