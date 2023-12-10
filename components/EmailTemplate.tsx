@@ -1,5 +1,15 @@
-import { Body, Button, Container, Head, Heading, Hr, Html, Preview, Row, Section, Tailwind, Text } from "@react-email/components"
-
+import {
+    Body,
+    Button,
+    Container,
+    Head,
+    Hr,
+    Html,
+    Img,
+    Preview,
+    Section,
+    Text,
+} from '@react-email/components';
 
 type EmailTemplateProps = {
     keyword: string
@@ -12,39 +22,95 @@ type EmailTemplateProps = {
 export function UserSubscriptionUpdateNotification(props: EmailTemplateProps) {
 
     return (
-        <Tailwind>
-            <Html>
-                <Head />
-                <Preview>#{props.keyword} has new podcasts update</Preview>
-                <Body className="w-full flex justify-center">
-                    <Container className="w-full max-w-2xl">
-                        <Heading className="text-lg font-bold">#{props.keyword} has {props.updateCount} new podcast update</Heading>
-                        <Section>
-                            <Text>
-                                Hi {props.nickname},
-                            </Text>
-                            <Text>
-                                Your subscription #{props.keyword} has new podcast update.
-                            </Text>
-                        </Section>
-                        <Section>
-                            {
-                                props.titleList.map((title, index) => {
-                                    return (
-                                        <Row className="mt-4" key={index}>
-                                            <Text>
-                                                {title}
-                                            </Text>
-                                            <Hr />
-                                        </Row>
-                                    )
-                                })
-                            }
-                            <Button href={props.link} className="bg-indigo-700 text-lg font-bold w-full text-center text-white border rounded-full mt-9">Listen Now</Button>
-                        </Section>
-                    </Container>
-                </Body>
-            </Html>
-        </Tailwind>
+        <Html>
+            <Head />
+            <Preview>
+                #{props.keyword} has new podcasts update.
+            </Preview>
+            <Body style={main}>
+                <Container style={container}>
+                    <Img
+                        src='https://porkast.com/porkast-text-logo-dark.jpg'
+                        width="170"
+                        height="50"
+                        alt="porkast"
+                        style={logo}
+                    />
+                    <Text style={paragraph}>Hi {props.nickname},</Text>
+                    <Text style={paragraph}>
+                        Your subscription #{props.keyword} has new podcast update.
+                    </Text>
+                    <Hr style={hr} />
+                    {
+                        props.titleList && props.titleList.length > 0 ? (
+                            props.titleList.map((title, index) => (
+                                <Text style={{ marginBottom: '10px' }} key={index}>
+                                    {index + 1}. {title}
+                                </Text>
+                            ))
+                        ) : (
+                            <></>
+                        )
+                    }
+                    <Section style={btnContainer}>
+                        <Button style={button} href={props.link}>
+                            Listen Now
+                        </Button>
+                    </Section>
+                    <Text style={paragraph}>
+                        Best,
+                        <br />
+                        The Porkast team
+                    </Text>
+                    <Hr style={hr} />
+                    {/* <Text style={footer}>408 Warren Rd - San Mateo, CA 94402</Text> */}
+                </Container>
+            </Body>
+        </Html>
     )
 }
+
+const main = {
+    backgroundColor: '#ffffff',
+    fontFamily:
+        '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
+};
+
+const container = {
+    margin: '0 auto',
+    padding: '20px 0 48px',
+};
+
+const logo = {
+    margin: '0 auto',
+};
+
+const paragraph = {
+    fontSize: '16px',
+    lineHeight: '26px',
+};
+
+const btnContainer = {
+    textAlign: 'center' as const,
+};
+
+const button = {
+    backgroundColor: '#5F51E8',
+    borderRadius: '3px',
+    color: '#fff',
+    fontSize: '16px',
+    textDecoration: 'none',
+    textAlign: 'center' as const,
+    display: 'block',
+    padding: '12px',
+};
+
+const hr = {
+    borderColor: '#cccccc',
+    margin: '20px 0',
+};
+
+const footer = {
+    color: '#8898aa',
+    fontSize: '12px',
+};
