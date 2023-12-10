@@ -59,6 +59,11 @@ export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, 
         item.Count = items.length
     })
 
+    // order by pubDate desc
+    items.sort((a, b) => {
+        return new Date(b.PubDate).getTime() - new Date(a.PubDate).getTime()
+    })
+
     if (limit == 0) {
         return items
     }
