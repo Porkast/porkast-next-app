@@ -102,7 +102,7 @@ export default function PlaylistPage({ params, searchParams }: { params: { userI
         if (parseInt(page) <= 1) {
             setIsPreBtnClickable(false)
         } else {
-            setIsNextBtnClickable(true)
+            setIsPreBtnClickable(true)
         }
     }, [totalCount, totalPage, page])
 
