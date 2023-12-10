@@ -101,7 +101,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
         if (parseInt(page) <= 1) {
             setIsPreBtnClickable(false)
         } else {
-            setIsNextBtnClickable(true)
+            setIsPreBtnClickable(true)
         }
     }, [totalCount, totalPage, page])
 
