@@ -151,8 +151,15 @@ export async function POST(request: NextRequest) {
             subject: "#" + keyword + " has new podcasts update"
         }
         try {
+
+            const sendNotificationEmail = async (latestId: number) => {
+                if (latestId != 0) {
+                    await sendSubscriptionUpdateEmail(emailParams)
+                }
+            }
+
             const [_, latestItem] = await Promise.all([
-                sendSubscriptionUpdateEmail(emailParams),
+                sendNotificationEmail(usEnrity.latest_id || 0),
                 prisma.keyword_subscription.findFirst({
                     where: {
                         keyword: keyword,
