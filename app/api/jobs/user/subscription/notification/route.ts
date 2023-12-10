@@ -91,15 +91,23 @@ export async function POST(request: NextRequest) {
         })
     }
 
-    const usEnrity = await prisma.user_subscription.findFirst({
-        where: {
-            keyword: keyword,
-            country: country,
-            exclude_feed_id: excludeFeedIds,
-            source: source,
-            user_id: userId
-        }
-    })
+    const [usEnrity, userInfo] = await Promise.all([
+        prisma.user_subscription.findFirst({
+            where: {
+                keyword: keyword,
+                country: country,
+                exclude_feed_id: excludeFeedIds,
+                source: source,
+                user_id: userId
+            }
+        }),
+
+        prisma.user_info.findFirst({
+            where: {
+                id: userId
+            }
+        })
+    ])
 
     if (!usEnrity) {
         resp.code = 1
@@ -108,12 +116,6 @@ export async function POST(request: NextRequest) {
             status: 400
         })
     }
-
-    const userInfo = await prisma.user_info.findFirst({
-        where: {
-            id: userId
-        }
-    })
 
     if (!userInfo) {
         resp.code = 1
@@ -149,20 +151,23 @@ export async function POST(request: NextRequest) {
             subject: "#" + keyword + " has new podcasts update"
         }
         try {
-            await sendSubscriptionUpdateEmail(emailParams)
-            const latestItem = await prisma.keyword_subscription.findFirst({
-                where: {
-                    keyword: keyword,
-                    source: source,
-                    country: country,
-                    exclude_feed_id: excludeFeedIds
-                },
-                orderBy: {
-                    id: 'desc'
-                },
-                skip: 0,
-                take: 1
-            })
+            const [_, latestItem] = await Promise.all([
+                sendSubscriptionUpdateEmail(emailParams),
+                prisma.keyword_subscription.findFirst({
+                    where: {
+                        keyword: keyword,
+                        source: source,
+                        country: country,
+                        exclude_feed_id: excludeFeedIds
+                    },
+                    orderBy: {
+                        id: 'desc'
+                    },
+                    skip: 0,
+                    take: 1
+                })
+
+            ])
             await prisma.user_subscription.update({
                 where: {
                     id: usEnrity.id
