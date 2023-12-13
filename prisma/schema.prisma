@@ -61,9 +61,9 @@ model keyword_subscription {
   create_time     DateTime? @db.DateTime(0)
   country         String?   @db.VarChar(64)
   source          String?   @db.VarChar(64)
-  exclude_feed_id String?   @db.VarChar(64)
+  exclude_feed_id String?   @db.VarChar(255)
 
-  @@unique([keyword, country, source, exclude_feed_id, feed_item_id, feed_channel_id], map: "ks_idx_uniq")
+  @@unique([keyword, feed_channel_id, feed_item_id, country, source, exclude_feed_id], map: "ks_idx_uniq")
   @@index([keyword, country, source, exclude_feed_id], map: "ks_idx_kcse")
   @@index([keyword], map: "ks_idx_keyword")
 }
@@ -126,7 +126,7 @@ model user_subscription {
   order_by_date   Int?
   lang            String?   @db.VarChar(64)
   country         String?   @db.VarChar(64)
-  exclude_feed_id String?   @db.Text
+  exclude_feed_id String?   @db.VarChar(255)
   source          String?   @db.VarChar(64)
   ref_id          String?   @db.VarChar(64)
   ref_name        String?   @db.VarChar(255)
