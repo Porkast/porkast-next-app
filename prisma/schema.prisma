@@ -126,7 +126,7 @@ model user_subscription {
   order_by_date   Int?
   lang            String?   @db.VarChar(64)
   country         String?   @db.VarChar(64)
-  exclude_feed_id String?   @db.VarChar(64)
+  exclude_feed_id String?   @db.Text
   source          String?   @db.VarChar(64)
   ref_id          String?   @db.VarChar(64)
   ref_name        String?   @db.VarChar(255)
