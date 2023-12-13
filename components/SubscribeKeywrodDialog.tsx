@@ -5,6 +5,7 @@ import { subscribeSearchKeyword } from "@/libs/subscription"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
+import { FeedChannel } from "@/types/feed_channel"
 
 
 export type SubscribeKeywrodDialogRef = {
@@ -51,8 +52,17 @@ const SubscribeKeywrodDialog = forwardRef<SubscribeKeywrodDialogRef>((props, ref
         if (feedIdList.length > 0) {
             setIsLoadingExcludeChannelInfo(true)
         }
-        for (const feedId of feedIdList) {
-            const channelInfo = await getPodcastInfo(feedId)
+
+        const promiseList = feedIdList.map(feedId => getPodcastInfo(feedId))
+
+        let channelInfoList: FeedChannel[] = []
+        try {
+            channelInfoList = await Promise.all(promiseList)
+        } catch (error) {
+            console.log('getPodcastInfo error : ', error)
+        }
+
+        for (const channelInfo of channelInfoList) {
             channelNameListTemp.push(channelInfo.Title)
         }
         setExcludeTitleList(channelNameListTemp)
