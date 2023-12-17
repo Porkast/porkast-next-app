@@ -175,14 +175,17 @@ export async function POST(request: NextRequest) {
                 })
 
             ])
-            await prisma.user_subscription.update({
-                where: {
-                    id: usEnrity.id
-                },
-                data: {
-                    latest_id: latestItem?.id
-                }
-            })
+
+            if (latestItem?.id != 0) {
+                await prisma.user_subscription.update({
+                    where: {
+                        id: usEnrity.id
+                    },
+                    data: {
+                        latest_id: latestItem?.id
+                    }
+                })
+            }
         } catch (error) {
             console.log('Failed to send subscription update email to ' + userEmail, " with params " + JSON.stringify(emailParams))
             resp.code = 1
