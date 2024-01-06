@@ -218,6 +218,8 @@ const buildFeedChannelModel = (rssFeed: PodcastFeed & Parser.Output<PodcastItem>
 
 const parsePodcastRSS = async (feedUrl: string): Promise<PodcastFeed & Parser.Output<PodcastItem>> => {
     const parser: Parser<PodcastFeed, PodcastItem> = new Parser();
-    const feed = await parser.parseURL(feedUrl);
+    const rssResp = await fetch(feedUrl);
+    const rssStr = await rssResp.text();
+    const feed = await parser.parseString(rssStr);
     return feed
 }
