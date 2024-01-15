@@ -2,7 +2,6 @@ import { FeedItem } from "@/types/feed_item"
 import { convertMillsTimeToDuration } from "./common"
 import { FeedChannel } from "@/types/feed_channel"
 import Parser from "rss-parser";
-import { Feed, Item } from "podcast";
 import { PodcastFeed, PodcastItem } from "@/types/feed";
 
 export const searchPodcastEpisodeFromItunes = async (q: string, entity: string, country: string, excludeFeedId: string, offset: number, limit: number, totalCount: number): Promise<FeedItem[]> => {
