@@ -48,7 +48,7 @@ export async function queryUserKeywordSubscriptionList(userId: string, offset: n
             status: 1
         },
         orderBy: {
-            create_time: 'desc'
+            latest_id: 'desc'
         },
         skip: offset,
         take: limit
