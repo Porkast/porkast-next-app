@@ -14,4 +14,6 @@ export type SubscriptionDataDto = {
     RefName: string;
     Type: string;
     Count: number;
+    UpdateTime?: Date | null;
+    TotalCount?: number;
 }
