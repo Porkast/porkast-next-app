@@ -158,7 +158,7 @@ export async function POST(request: NextRequest) {
                 }
             }
 
-            const [_, latestItem] = await Promise.all([
+            const [_, latestItem, totalCount] = await Promise.all([
                 sendNotificationEmail(usEnrity.latest_id || 0),
                 prisma.keyword_subscription.findFirst({
                     where: {
@@ -172,6 +172,14 @@ export async function POST(request: NextRequest) {
                     },
                     skip: 0,
                     take: 1
+                }),
+                prisma.keyword_subscription.count({
+                    where: {
+                        keyword: keyword,
+                        source: source,
+                        country: country,
+                        exclude_feed_id: excludeFeedIds
+                    }
                 })
 
             ])
@@ -182,7 +190,9 @@ export async function POST(request: NextRequest) {
                         id: usEnrity.id
                     },
                     data: {
-                        latest_id: latestItem?.id
+                        latest_id: latestItem?.id,
+                        update_time: latestItem?.create_time,
+                        total_count: totalCount
                     }
                 })
             }
