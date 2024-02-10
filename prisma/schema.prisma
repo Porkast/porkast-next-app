@@ -132,6 +132,8 @@ model user_subscription {
   ref_name        String?   @db.VarChar(255)
   type            String?   @default("searchKeyword") @db.VarChar(128)
   latest_id       Int?      @default(0)
+  update_time     DateTime? @db.DateTime(0)
+  total_count     Int?      @default(0)
 
   @@index([keyword], map: "usk_idx_keyword")
   @@index([user_id], map: "usk_idx_user_id")
