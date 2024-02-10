@@ -121,7 +121,22 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                                         <h2 className="card-title">{item.RefName}</h2>
                                                     )
                                                 }
-                                                <p>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</p>
+                                                <div className="flex justify-start">
+                                                    {
+                                                        item.UpdateTime != null ? (
+                                                            <div className="mr-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
+                                                        ) : (
+                                                            <div>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</div>
+                                                        )
+                                                    }
+                                                    {
+                                                        item.TotalCount == 0 ? (
+                                                            <div></div>
+                                                        ) : (
+                                                            <p>Episodes: {item.TotalCount}</p>
+                                                        )
+                                                    }
+                                                </div>
                                             </div>
                                         </a>
                                     )

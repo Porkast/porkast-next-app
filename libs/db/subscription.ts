@@ -76,7 +76,9 @@ export async function queryUserKeywordSubscriptionList(userId: string, offset: n
             RefId: queryResutl.ref_id || '',
             RefName: queryResutl.ref_name || '',
             Type: queryResutl.type || '',
-            Count: totalCount
+            Count: totalCount,
+            UpdateTime: queryResutl.create_time,
+            TotalCount: queryResutl.total_count || 0
         })
     }
 
