@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { verifyAuth } from './libs/auth'
 
-const authAPIRoutes = ['/api/subscription/keyword', '/api/user/sync', '/api/listenlater/item', '/api/playlist/']
+const authAPIRoutes = ['/api/subscription/keyword', '/api/user/sync', '/api/listenlater/item/queue', '/api/playlist/']
 
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next()
