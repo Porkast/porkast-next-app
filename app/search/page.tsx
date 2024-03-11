@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import EpisodeCard from "@/components/EpisodeCard"
 import Header from "@/components/Header"
 import { useSearchParams } from "next/navigation"
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
@@ -19,7 +19,16 @@ enum Page {
     PrePage
 }
 
+
 export default function SearchPage() {
+    return (
+        <Suspense>
+            <Search />
+        </Suspense>
+    )
+}
+
+function Search() {
 
     const searhcParam = useSearchParams()
     const [searchResultData, setSearchResultData] = useState<FeedItem[]>([])

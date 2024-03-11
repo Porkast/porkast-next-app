@@ -1,9 +1,9 @@
+import { doSearchSubscription } from "@/libs/db/subscription";
 import prisma from "@/libs/prisma";
 import { JsonResponse } from "@/types/api";
 import { Prisma } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from 'uuid';
-import { doSearchSubscription } from "./search/route";
 
 
 export async function POST(request: NextRequest) {
