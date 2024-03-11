@@ -33,7 +33,7 @@ export const createOrUpdateFeedItem = async (feedItem: FeedItem) => {
             episode: feedItem.Episode,
             explicit: feedItem.Explicit,
             season: feedItem.Season,
-            episodeType: feedItem.EpisodeType,
+            episodetype: feedItem.EpisodeType,
             source: feedItem.Source,
             description: Buffer.from(feedItem.Description),
         }
@@ -65,7 +65,7 @@ export const createOrUpdateFeedItem = async (feedItem: FeedItem) => {
             episode: feedItem.Episode,
             explicit: feedItem.Explicit,
             season: feedItem.Season,
-            episodeType: feedItem.EpisodeType,
+            episodetype: feedItem.EpisodeType,
         }
         await prisma.feed_item.create({
             data: itemInfoCreate
