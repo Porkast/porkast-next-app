@@ -5,7 +5,8 @@ const nextConfig = {
             '@react-email/components',
             '@react-email/render',
             '@react-email/tailwind'
-        ]
+        ],
+        // missingSuspenseWithCSRBailout: false,
     },
     env: {
         API_BASE_URL: process.env.API_BASE_URL,

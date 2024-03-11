@@ -9,6 +9,7 @@ datasource db {
   schemas  = ["auth", "public"]
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model audit_log_entries {
   instance_id String?   @db.Uuid
   id          String    @id @db.Uuid
@@ -20,6 +21,7 @@ model audit_log_entries {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model flow_state {
   id                     String                @id @db.Uuid
   user_id                String?               @db.Uuid
@@ -40,6 +42,7 @@ model flow_state {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model identities {
   provider_id     String
   user_id         String    @db.Uuid
@@ -58,6 +61,7 @@ model identities {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model instances {
   id              String    @id @db.Uuid
   uuid            String?   @db.Uuid
@@ -68,6 +72,7 @@ model instances {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model mfa_amr_claims {
   session_id            String   @db.Uuid
   created_at            DateTime @db.Timestamptz(6)
@@ -80,6 +85,7 @@ model mfa_amr_claims {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model mfa_challenges {
   id          String      @id @db.Uuid
   factor_id   String      @db.Uuid
@@ -92,6 +98,7 @@ model mfa_challenges {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model mfa_factors {
   id             String           @id @db.Uuid
   user_id        String           @db.Uuid
@@ -109,6 +116,7 @@ model mfa_factors {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model refresh_tokens {
   instance_id String?   @db.Uuid
   id          BigInt    @id @default(autoincrement())
@@ -129,6 +137,8 @@ model refresh_tokens {
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model saml_providers {
   id                String        @id @db.Uuid
   sso_provider_id   String        @db.Uuid
@@ -144,6 +154,8 @@ model saml_providers {
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model saml_relay_states {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -163,12 +175,14 @@ model saml_relay_states {
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model schema_migrations {
   version String @id @db.VarChar(255)
 
   @@schema("auth")
 }
 
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model sessions {
   id             String           @id @db.Uuid
   user_id        String           @db.Uuid
@@ -191,6 +205,9 @@ model sessions {
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_domains {
   id              String        @id @db.Uuid
   sso_provider_id String        @db.Uuid
@@ -203,6 +220,9 @@ model sso_domains {
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model sso_providers {
   id                String              @id @db.Uuid
   resource_id       String?
@@ -215,6 +235,9 @@ model sso_providers {
   @@schema("auth")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains an expression index which requires additional setup for migrations. Visit https://pris.ly/d/expression-indexes for more info.
 model users {
   instance_id                 String?       @db.Uuid
   id                          String        @id @db.Uuid
@@ -324,6 +347,8 @@ model keyword_subscription {
   @@schema("public")
 }
 
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model profiles {
   id         String    @id @db.Uuid
   updated_at DateTime? @db.Timestamptz(6)
@@ -390,7 +415,7 @@ model user_playlist_item {
 }
 
 model user_subscription {
-  id              String?   @db.VarChar(64)
+  id              String    @id @db.VarChar(64)
   user_id         String?   @db.VarChar(128)
   create_time     DateTime? @db.Timestamp(6)
   status          Int?      @default(1)
@@ -403,11 +428,13 @@ model user_subscription {
   ref_id          String?   @db.VarChar(64)
   ref_name        String?   @db.VarChar(255)
   type            String?   @default("searchKeyword") @db.VarChar(128)
+  latest_id       Int?      @default(0)
+  update_time     DateTime? @db.Date
+  total_count     Int?      @default(0)
 
   @@index([keyword], map: "usk_idx_keyword")
   @@index([user_id], map: "usk_idx_user_id")
   @@index([user_id, keyword, source], map: "usk_user_id_keyword")
-  @@ignore
   @@schema("public")
 }
 

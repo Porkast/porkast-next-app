@@ -163,7 +163,7 @@ const buildFeedItemAndKeywordInputList = async (keyword: string, country: string
             enclosure_length: String(item.EnclosureLength),
             duration: item.Duration,
             episode: item.Episode,
-            episodeType: item.EpisodeType,
+            episodetype: item.EpisodeType,
             explicit: item.Explicit,
             season: item.Season,
             description: Buffer.from(item.Description),
