@@ -11,6 +11,13 @@ const nextConfig = {
     env: {
         API_BASE_URL: process.env.API_BASE_URL,
     },
+
+    webpack(config, { isServer }) {
+        if (isServer) {
+            config.devtool = 'source-map'
+        }
+        return config
+    },
     async headers() {
         return [
             {
