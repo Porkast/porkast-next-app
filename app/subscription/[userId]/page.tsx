@@ -121,10 +121,10 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                                         <h2 className="card-title">{item.RefName}</h2>
                                                     )
                                                 }
-                                                <div className="flex justify-start">
+                                                <div className="md:flex block md:justify-start">
                                                     {
                                                         item.UpdateTime != null ? (
-                                                            <div className="mr-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
+                                                            <div className="mr-4 md:mb-0 mb-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
                                                         ) : (
                                                             <div>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</div>
                                                         )
