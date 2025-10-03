@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { AppProvider } from '@/components/AppContext';
 import parse from 'html-react-parser'
 import { addLinkTagToUrl, removeTextColorStyles, replaceWithBr } from '@/libs/common';
-import { getPodcastAllInfo } from '@/libs/itunes';
+// import { getPodcastAllInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
 import { getSpotifyShowDetail, getSpotifyShowEpisodes } from '@/libs/spotify';
@@ -158,19 +158,20 @@ export async function generateMetadata(
 ): Promise<Metadata> {
     const id = params.channelId
     const page = searchParams.page
-    const podcastData = await getPodcastAllInfo(id)
+    // const podcastData = await getPodcastAllInfo(id)
+    const podcastData = await getSpotifyShowDetail(id)
     if (podcastData == null) {
         return {
             title: "Porkast",
             description: "Porkast is a podcast search engine.",
         }
     }
-    const description = podcastData.podcast.ChannelDesc
-    const title = podcastData.podcast.Title + "- Porkast"
+    const description = podcastData.ChannelDesc
+    const title = podcastData.Title + "- Porkast"
     const authorList: Author[] = []
     authorList.push({
-        name: podcastData.podcast.OwnerName,
-        url: podcastData.podcast.OwnerEmail
+        name: podcastData.OwnerName,
+        url: podcastData.OwnerEmail
     })
     return {
         title: title,
