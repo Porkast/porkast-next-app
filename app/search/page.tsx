@@ -13,6 +13,8 @@ import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
 import Loading from '@/components/Loading';
 import AddExcludeFeedIdDialog, { AddExcludeFeedIdDialogRef } from '@/components/AddExcludeFeedIdDialog';
 import SubscribeKeywrodDialog, { SubscribeKeywrodDialogRef } from '@/components/SubscribeKeywrodDialog';
+import { searchSpotifyEpisodes } from '@/libs/spotify';
+import { searchEpisodes } from '@/libs/common';
 
 enum Page {
     NextPage,
@@ -67,7 +69,9 @@ function Search() {
         const fetchData = (async () => {
             setIsLoading(true)
             const offest = (parseInt(page || '1') - 1) * limit
-            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)
+            // const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)
+            const data = await searchEpisodes(q || '', country || 'US', offest, limit)
+            console.log(data)
             setIsLoading(false)
             setSearchResultData(data)
             if (data.length > 0) {

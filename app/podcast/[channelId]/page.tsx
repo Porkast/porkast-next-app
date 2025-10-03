@@ -9,6 +9,7 @@ import { addLinkTagToUrl, removeTextColorStyles, replaceWithBr } from '@/libs/co
 import { getPodcastAllInfo } from '@/libs/itunes';
 import { Author } from 'next/dist/lib/metadata/types/metadata-types';
 import { AvatarImage } from '@/components/PorkastImage';
+import { getSpotifyShowDetail, getSpotifyShowEpisodes } from '@/libs/spotify';
 
 export default async function Page({ params, searchParams }: { params: { channelId: string }, searchParams: { page: string } }) {
     const podcastId = params.channelId;
@@ -18,14 +19,11 @@ export default async function Page({ params, searchParams }: { params: { channel
     }
     const limit = 10
     const offest = (parseInt(page || '1') - 1) * limit
-    var podcastData = await getPodcastAllInfo(podcastId)
-    podcastData.episodes = podcastData.episodes.slice(offest, offest + limit)
-    podcastData.podcast.Items = podcastData.podcast.Items.slice(offest, offest + limit)
+    // var podcastData = await getPodcastAllInfo(podcastId)
+    var channelInfoData = await getSpotifyShowDetail(podcastId)
+    var episodes = await getSpotifyShowEpisodes(podcastId, 'US', limit, offest)
+    channelInfoData.Items = episodes
 
-    if (!podcastData) {
-        return
-    }
-    const channelInfoData = podcastData.podcast
     const episodeTotalCount = channelInfoData.Count
     var channelDescription = channelInfoData.TextChannelDesc
     channelDescription = addLinkTagToUrl(channelDescription)
@@ -124,7 +122,7 @@ export default async function Page({ params, searchParams }: { params: { channel
                                                     channelId: item.ChannelId,
                                                     title: item.HighlightTitle,
                                                     description: item.TextDescription,
-                                                    image: item.ImageUrl == "" ? podcastData.podcast.ImageUrl : item.ImageUrl,
+                                                    image: item.ImageUrl == "" ? channelInfoData.ImageUrl : item.ImageUrl,
                                                     link: item.Link,
                                                     rssLink: item.FeedLink,
                                                     channelName: item.ChannelTitle,

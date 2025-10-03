@@ -1,6 +1,7 @@
 import { generateFeedItemId } from "@/libs/common";
-import { searchPodcastEpisodeFromItunes } from "@/libs/itunes";
+// import { searchPodcastEpisodeFromItunes } from "@/libs/itunes";
 import prisma from "@/libs/prisma";
+import { searchSpotifyEpisodes } from "@/libs/spotify";
 import { FeedItem } from "@/types/feed_item";
 import { Prisma } from "@prisma/client";
 import { NextRequest } from "next/server";
@@ -88,7 +89,8 @@ export async function POST(request: NextRequest) {
         })
     }
 
-    const feedItemList = await searchPodcastEpisodeFromItunes(keyword, 'podcastEpisode', country, excludeFeedIds, 0, 0, 200)
+    // const feedItemList = await searchPodcastEpisodeFromItunes(keyword, 'podcastEpisode', country, excludeFeedIds, 0, 0, 200)
+    const feedItemList = await searchSpotifyEpisodes(keyword, country, 50, 0)
 
     if (!feedItemList || feedItemList.length === 0) {
         resp.code = 1

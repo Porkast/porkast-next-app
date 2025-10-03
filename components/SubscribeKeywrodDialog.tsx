@@ -6,6 +6,7 @@ import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
 import { FeedChannel } from "@/types/feed_channel"
+import { getSpotifyShowDetail } from "@/libs/spotify"
 
 
 export type SubscribeKeywrodDialogRef = {
@@ -53,7 +54,8 @@ const SubscribeKeywrodDialog = forwardRef<SubscribeKeywrodDialogRef>((props, ref
             setIsLoadingExcludeChannelInfo(true)
         }
 
-        const promiseList = feedIdList.map(feedId => getPodcastInfo(feedId))
+        // const promiseList = feedIdList.map(feedId => getPodcastInfo(feedId))
+        const promiseList = feedIdList.map(feedId => getSpotifyShowDetail(feedId))
 
         let channelInfoList: FeedChannel[] = []
         try {
