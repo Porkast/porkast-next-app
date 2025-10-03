@@ -12,7 +12,8 @@ export async function POST(request: NextRequest) {
     const userId = reqBody.userId;
     const keyword = reqBody.keyword;
     const country = reqBody.country || 'US';
-    const source = reqBody.source || 'itunes';
+    // const source = reqBody.source || 'itunes';
+    const source = reqBody.source || 'spotify';
     const excludeFeedId = reqBody.excludeFeedId || '';
     const sortByDate = reqBody.sortByDate;
 

@@ -5,7 +5,9 @@ import AudioPlayButton from './AudioPlayButton';
 import AddListenLaterButton from './AddListenLaterButton';
 import AddToPlaylistButton from './AddToPlaylistButton';
 import { AvatarImage } from './PorkastImage';
-import { parseHtmlStrinText } from '@/libs/common';
+import { getEpisodeDetail, parseHtmlStrinText } from '@/libs/common';
+import { useEffect, useState } from 'react';
+// import { getPodcastInfo } from '@/libs/itunes';
 
 type ExcludeFunction = (channelTitle: string, feedId: string) => void
 
@@ -34,11 +36,10 @@ export default function EpisodeCard(props: EpisodeCardProps) {
 
     const { data } = props
     const urlEncodeItemId = encodeURIComponent(data.itemId)
-    const podcastEpisodeLink = "/podcast/" + data.channelId + "/episode/" + urlEncodeItemId
-    const podcastChannelLink = "/podcast/" + data.channelId
-    data.title = data.title.replace('highlightPlaceholder', 'className="text-primary"');
-    data.authorName = data.authorName.replace('highlightPlaceholder', 'className="text-primary"');
-    data.channelName = data.channelName.replace('highlightPlaceholder', 'className="text-primary"');
+    const [podcastEpisodeLink, setPodcastEpisodeLink] = useState('')
+    const [podcastChannelLink, setPodcastChannelLink] = useState('')
+    const [authorName, setAuthorName] = useState('')
+    const [channelName, setChannelName] = useState('')
     // data.description = data.description.replace('highlightPlaceholder', 'className="text-primary"');
     data.description = parseHtmlStrinText(data.description)
 
@@ -62,6 +63,17 @@ export default function EpisodeCard(props: EpisodeCardProps) {
         }
     }
 
+    useEffect(() => {
+        const initEpisodeInfo = async () => {
+            const episode = await getEpisodeDetail(data.itemId, 'US')
+            setPodcastEpisodeLink("/podcast/" + episode.ChannelId + "/episode/" + urlEncodeItemId)
+            setPodcastChannelLink("/podcast/" + episode.ChannelId)
+            setAuthorName(episode.Author)
+            setChannelName(episode.ChannelTitle)
+        }
+        initEpisodeInfo()
+    }, [data.itemId]);
+
     return (
         <div className="bg-base-100 shadow-xl rounded-box mb-12 pt-9">
             <div className="ml-6 mr-6">
@@ -73,7 +85,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                     </a>
                     <div className="ml-3">
                         <div className='md:flex md:justify-start items-center'>
-                            <a href={podcastChannelLink} className="text-base font-medium mr-2">{parse(data.channelName)}</a>
+                            <a href={podcastChannelLink} className="text-base font-medium mr-2">{parse(channelName)}</a>
                             {
                                 props.data.showExcludeBtn ? (
                                     <button className="btn btn-xs btn-neutral items-center rounded-lg mt-0" onClick={onExcludeModalBtnClick}>Exclude</button>
@@ -87,7 +99,7 @@ export default function EpisodeCard(props: EpisodeCardProps) {
                             data.authorName == "" || data.authorName == "null" ? (
                                 <></>
                             ) : (
-                                <div className="text-sm font-medium text-gray-500 mt-2">By {parse(data.authorName)}</div>
+                                <div className="text-sm font-medium text-gray-500 mt-2">By {parse(authorName)}</div>
                             )
                         }
                         <div className="flex justify-start mt-4">

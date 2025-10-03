@@ -2,6 +2,7 @@ import { generateFeedItemId, generateID } from "@/libs/common";
 import { createOrUpdateFeedItem } from "@/libs/db/feed_item";
 import { getPodcastEpisodeInfo } from "@/libs/itunes";
 import prisma from "@/libs/prisma";
+import { getSpotifyEpisodeDetail } from "@/libs/spotify";
 import { FeedItem } from "@/types/feed_item";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,7 +19,8 @@ export async function POST(request: NextRequest) {
     const userId = body.userId
     const channelId = body.channelId
     const itemId = body.itemId
-    const source = body.source || 'itunes'
+    // const source = body.source || 'itunes'
+    const source = body.source || 'spotify'
     if (!userId || !channelId || !itemId) {
         resp.code = 1
         resp.message = 'Missing required fields'
@@ -26,8 +28,12 @@ export async function POST(request: NextRequest) {
     }
 
     let itemInfoResp;
+    let feedItem: FeedItem
     if (source == 'itunes') {
         itemInfoResp = await getPodcastEpisodeInfo(channelId, itemId)
+        feedItem = itemInfoResp.episode
+    } else {
+        feedItem = await getSpotifyEpisodeDetail(itemId)
     }
 
     if (!itemInfoResp) {
@@ -36,7 +42,6 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(resp)
     }
 
-    let feedItem: FeedItem = itemInfoResp.episode
     feedItem.Id = await generateFeedItemId(feedItem.FeedLink, feedItem.Title)
     feedItem.ChannelId = await generateFeedItemId(feedItem.FeedLink, feedItem.ChannelTitle)
 

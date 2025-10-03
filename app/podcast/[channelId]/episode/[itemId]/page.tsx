@@ -6,16 +6,19 @@ import { AppProvider } from "@/components/AppContext"
 import AddListenLaterButton from "@/components/AddListenLaterButton"
 import AddToPlaylistButton from "@/components/AddToPlaylistButton"
 import ShowNotesViewer from "@/components/ShowNotesViewer"
-import { getPodcastEpisodeInfo } from "@/libs/itunes"
+// import { getPodcastEpisodeInfo } from "@/libs/itunes"
 import { Author } from "next/dist/lib/metadata/types/metadata-types"
 import { removeTextColorStyles } from "@/libs/common"
+import { getSpotifyEpisodeDetail, getSpotifyShowDetail } from "@/libs/spotify"
 
 
 export default async function Page({ params }: { params: { channelId: string, itemId: string } }) {
 
-    const data = await getPodcastEpisodeInfo(params.channelId, params.itemId)
-    const episode = data.episode
-    const podcastInfo = data.podcast
+    // const data = await getPodcastEpisodeInfo(params.channelId, params.itemId)
+    // const episode = data.episode
+    // const podcastInfo = data.podcast
+    const episode = await getSpotifyEpisodeDetail(params.itemId)
+    const podcastInfo = await getSpotifyShowDetail(params.channelId)
     const podcastChannelLink = "/podcast/" + episode.ChannelId
     const formatDescription = removeTextColorStyles(episode.Description)
 
@@ -92,13 +95,17 @@ export async function generateMetadata(
     { params }: { params: { channelId: string, itemId: string } },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
-    const podcastData = await getPodcastEpisodeInfo(params.channelId, params.itemId)
-    const title = podcastData.episode.Title
-    const description = podcastData.episode.Description
+    // const data = await getPodcastEpisodeInfo(params.channelId, params.itemId)
+    // const episode = data.episode
+    // const podcastInfo = data.podcast
+    const episode = await getSpotifyEpisodeDetail(params.itemId)
+    const podcastInfo = await getSpotifyShowDetail(params.channelId)
+    const title = episode.Title
+    const description = episode.Description
     const authorList: Author[] = []
     authorList.push({
-        name: podcastData.podcast.OwnerName,
-        url: podcastData.podcast.OwnerEmail
+        name: podcastInfo.OwnerName,
+        url: podcastInfo.OwnerEmail
     })
 
     return {

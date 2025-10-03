@@ -4,6 +4,7 @@ import { FeedItem, FeedItemDto } from "@/types/feed_item"
 import { Prisma } from "@prisma/client"
 import { formatDateTime, generateFeedItemId } from "../common"
 import { searchPodcastEpisodeFromItunes } from "../itunes"
+import { searchSpotifyEpisodes } from "@/libs/spotify"
 
 
 export async function queryUserKeywordSubscriptionDetail(userId: string, keyword: string): Promise<SubscriptionDataDto> {
@@ -225,7 +226,8 @@ export async function doSearchSubscription(keyword: string, country: string, sou
         const searchResult = await searchPodcastEpisodeFromItunes(keyword, 'podcastEpisode', country, excludeFeedId, 0, 0, 200)
         searchResultItemList.push(...searchResult);
     } else {
-        // TODO: implement other sources
+        const searchResult = await searchSpotifyEpisodes(keyword, country, 50, 0)
+        searchResultItemList.push(...searchResult);
     }
 
     let ksManyInput: Prisma.keyword_subscriptionCreateManyInput[] = [];

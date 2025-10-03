@@ -1,5 +1,7 @@
 import { v5 as uuidv5 } from 'uuid';
 import { v4 as uuidv4 } from 'uuid';
+import { JsonResponse } from '@/types/api';
+import { FeedItem } from '@/types/feed_item';
 
 
 export const replaceWithBr = (text: string): string => {
@@ -62,4 +64,83 @@ export const generatePlaylistId = async (name: string, userId: string): Promise<
 export const generatePlaylistItemId = async (playlistId: string, itemId: string): Promise<string> => {
     const uniqueId = uuidv5(playlistId + itemId, uuidv5.DNS);
     return uniqueId
+}
+
+/**
+ * Search for podcast episodes using the internal API
+ * @param q Search query string
+ * @param country Country code (default: 'US')
+ * @param offset Pagination offset (default: 0)
+ * @param limit Maximum number of results (default: 10)
+ * @returns Promise<FeedItem[]> Array of podcast episodes
+ */
+export const searchEpisodes = async (q: string, country: string = 'US', offset: number = 0, limit: number = 10
+): Promise<FeedItem[]> => {
+    try {
+        const params = new URLSearchParams({
+            q,
+            country,
+            offset: offset.toString(),
+            limit: limit.toString(),
+        });
+
+        const response = await fetch(`/api/search/episode?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const jsonResponse: JsonResponse = await response.json();
+
+        if (jsonResponse.code !== 0) {
+            throw new Error(`API error: ${jsonResponse.message || 'Unknown error'}`);
+        }
+
+        return jsonResponse.data as FeedItem[];
+    } catch (error) {
+        console.error('Error searching episodes:', error);
+        throw error;
+    }
+}
+
+/**
+ * Get detailed information for a specific podcast episode using the internal API
+ * @param episodeId Spotify episode ID
+ * @param market Market code (default: 'US')
+ * @returns Promise<FeedItem> Detailed episode information
+ */
+export const getEpisodeDetail = async (episodeId: string, market: string = 'US'
+): Promise<FeedItem> => {
+    try {
+        const params = new URLSearchParams({
+            market,
+        });
+
+        const response = await fetch(`/api/podcast/episode/${episodeId}?${params.toString()}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const jsonResponse: JsonResponse = await response.json();
+
+        if (jsonResponse.code !== 0) {
+            throw new Error(`API error: ${jsonResponse.message || 'Unknown error'}`);
+        }
+
+        return jsonResponse.data as FeedItem;
+    } catch (error) {
+        console.error('Error getting episode detail:', error);
+        throw error;
+    }
 }
