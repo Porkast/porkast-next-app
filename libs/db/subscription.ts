@@ -219,6 +219,26 @@ export async function queryUserLatestKeywordSubscriptionFeedItemList(userId: str
     return resultList
 }
 
+export async function disableUserKeywordSubscription(userId: string, keyword: string): Promise<boolean> {
+    try {
+        const result = await prisma.user_subscription.updateMany({
+            where: {
+                user_id: userId,
+                keyword: keyword,
+                status: 1
+            },
+            data: {
+                status: 0
+            }
+        })
+
+        return result.count > 0
+    } catch (error) {
+        console.error('Error disabling user keyword subscription:', error)
+        throw new Error('Failed to disable subscription')
+    }
+}
+
 export async function doSearchSubscription(keyword: string, country: string, source: string, excludeFeedId: string) {
     let searchResultItemList: FeedItem[] = [];
     if (source == 'itunes' || source == '') {
