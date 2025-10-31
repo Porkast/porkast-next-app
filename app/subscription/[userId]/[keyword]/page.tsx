@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import { AvatarImage } from "@/components/PorkastImage";
 import { ShareSearchSubscriptionBtn } from "@/components/Share";
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
+import UnsubscribeKeywordButton from "@/components/UnsubscribeKeywordButton";
 import { getUserSessionInfo } from "@/libs/suapbase";
 import { getUserKeywordSubscriptionItemList } from "@/libs/subscription";
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
@@ -119,6 +120,7 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                             isMyPage ? (
                                                 <div className="mt-4 -ml-2 flex justify-start">
                                                     <ShareSearchSubscriptionBtn userId={userId} keyword={keyword} />
+                                                    <UnsubscribeKeywordButton userId={userId} keyword={keyword} />
                                                 </div>
                                             ) : (
                                                 <div className="mt-4 -ml-2 flex justify-start">

@@ -4,6 +4,7 @@ import { AppProvider } from "@/components/AppContext";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { AvatarImage } from "@/components/PorkastImage";
+import UnsubscribeKeywordButton from "@/components/UnsubscribeKeywordButton";
 import { formatDateTime } from "@/libs/common";
 import { getUserSubscriptionList } from "@/libs/subscription";
 import { getUserInfoFromServer, getTempNickname, ServerUserInfo } from "@/libs/user";
@@ -29,7 +30,6 @@ export default function Page({ params, searchParams }: { params: { userId: strin
     const [prevPageUrl, setPrevPageUrl] = useState("")
     const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
     const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
-
 
     useEffect(() => {
         async function initPageInfo() {
@@ -112,33 +112,48 @@ export default function Page({ params, searchParams }: { params: { userId: strin
                                 subscriptionList?.map((item, index) => {
                                     const encodeKeyword = encodeURIComponent(item.Keyword)
                                     return (
-                                        <a key={index} href={`/subscription/${userId}/${encodeKeyword}`} className="card w-full bg-base-100 shadow-xl mb-6">
+                                        <div key={index} className="card w-full bg-base-100 shadow-xl mb-6">
                                             <div className="card-body">
-                                                {
-                                                    item.Keyword ? (
-                                                        <h2 className="card-title">#{item.Keyword}</h2>
-                                                    ) : (
-                                                        <h2 className="card-title">{item.RefName}</h2>
-                                                    )
-                                                }
-                                                <div className="md:flex block md:justify-start">
-                                                    {
-                                                        item.UpdateTime != null ? (
-                                                            <div className="mr-4 md:mb-0 mb-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
-                                                        ) : (
-                                                            <div>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</div>
-                                                        )
-                                                    }
-                                                    {
-                                                        item.TotalCount == 0 ? (
-                                                            <div></div>
-                                                        ) : (
-                                                            <p>Episodes: {item.TotalCount}</p>
-                                                        )
-                                                    }
+                                                <div className="flex justify-between items-start">
+                                                    <div className="flex-1">
+                                                        {
+                                                            item.Keyword ? (
+                                                                <h2 className="card-title">
+                                                                    <a href={`/subscription/${userId}/${encodeKeyword}`} className="hover:text-primary">
+                                                                        #{item.Keyword}
+                                                                    </a>
+                                                                </h2>
+                                                            ) : (
+                                                                <h2 className="card-title">{item.RefName}</h2>
+                                                            )
+                                                        }
+                                                        <div className="md:flex block md:justify-start mt-2">
+                                                            {
+                                                                item.UpdateTime != null ? (
+                                                                    <div className="mr-4 md:mb-0 mb-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
+                                                                ) : (
+                                                                    <div>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</div>
+                                                                )
+                                                            }
+                                                            {
+                                                                item.TotalCount == 0 ? (
+                                                                    <div></div>
+                                                                ) : (
+                                                                    <p>Episodes: {item.TotalCount}</p>
+                                                                )
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div className="card-actions justify-end">
+                                                        {
+                                                            item.Keyword && (
+                                                                <UnsubscribeKeywordButton userId={userId} keyword={item.Keyword} />
+                                                            )
+                                                        }
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </div>
                                     )
                                 })
                             }
