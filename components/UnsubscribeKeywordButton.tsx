@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { disableUserKeywordSubscription } from "@/libs/db/subscription";
+import { unsubscribeKeyword } from "@/libs/subscription";
 
 type UnsubscribeKeywordButtonProps = {
     userId: string;
@@ -22,12 +22,13 @@ export default function UnsubscribeKeywordButton(props: UnsubscribeKeywordButton
 
         setIsUnsubscribing(true)
         try {
-            const success = await disableUserKeywordSubscription(userId, decodeURIComponent(keyword))
-            if (success) {
+            const result = await unsubscribeKeyword(userId, decodeURIComponent(keyword))
+
+            if (result.code === 0) {
                 // Redirect to subscription list page after successful unsubscribe
                 router.push(`/subscription/${userId}`)
             } else {
-                alert('Failed to unsubscribe. Please try again.')
+                alert(result.message || 'Failed to unsubscribe. Please try again.')
             }
         } catch (error) {
             console.error('Error unsubscribing:', error)
