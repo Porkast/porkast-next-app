@@ -1,4 +1,4 @@
-import { queryKeywordSubscriptionFeedItemList, queryUserKeywordSubscriptionDetail } from "@/libs/db/subscription";
+import { queryKeywordSubscriptionFeedItemList, queryUserKeywordSubscriptionDetail, disableUserKeywordSubscription } from "@/libs/db/subscription";
 import { SubscriptionDataDto } from "@/types/subscription";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -32,5 +32,33 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
     resp.code = 0
     resp.message = 'ok'
     resp.data = feedItemList
+    return NextResponse.json(resp);
+}
+
+export async function DELETE(request: NextRequest, { params }: { params: { userId: string, keyword: string } }) {
+    const userId = params.userId;
+    const keyword = decodeURIComponent(params.keyword);
+
+    const resp: JsonResponse = {
+        code: 0,
+        message: '',
+        data: null
+    }
+
+    try {
+        const success = await disableUserKeywordSubscription(userId, keyword);
+        if (success) {
+            resp.code = 0;
+            resp.message = 'Subscription successfully disabled';
+        } else {
+            resp.code = 1;
+            resp.message = 'No active subscription found for this keyword';
+        }
+    } catch (error) {
+        console.error('Error disabling user keyword subscription:', error);
+        resp.code = 1;
+        resp.message = 'Failed to disable subscription: ' + error;
+    }
+
     return NextResponse.json(resp);
 }
