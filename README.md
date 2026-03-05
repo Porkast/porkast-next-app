@@ -1,36 +1,125 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <img src="public/porkast-text-logo-white.jpg" alt="Porkast Logo" width="400" />
+  <h3>Discover, Subscribe, Share - Your Personalized Podcast Platform</h3>
 
-## Getting Started
+  [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
+  [![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-blue?logo=supabase)](https://supabase.com/)
+  [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
+  [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
+  [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+</div>
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Overview
+
+**Porkast** is a modern, full-stack podcast exploration and management platform. It allows users to discover new content, curate personal playlists, and generate custom RSS feeds that can be used in any standard podcast player.
+
+Whether you're looking to follow specific topics via keyword subscriptions or manage a "Listen Later" queue, Porkast provides a seamless experience across web and Telegram.
+
+## ✨ Key Features
+
+- 🔍 **Advanced Discovery**: Search millions of podcasts powered by iTunes and Spotify APIs.
+- 📬 **Smart Subscriptions**: Subscribe to specific podcasts or **keywords** to automatically track new episodes matching your interests.
+- 🎵 **Personalized Playlists**: Create, manage, and share custom podcast playlists.
+- ⏳ **Listen Later**: A dedicated queue for episodes you want to catch up on.
+- 📡 **RSS Feed Generation**: Turn your subscriptions, playlists, and "Listen Later" queue into personal RSS feeds compatible with any podcast app (Overcast, Pocket Casts, etc.).
+- 🤖 **Telegram Integration**: Full-featured [Telegram Bot](https://t.me/PorkcastBot) to manage your podcast life on the go.
+- 📧 **Notifications**: Stay updated with new episode alerts via email.
+- 🌓 **Modern UI**: Clean, responsive design with dark/light mode support.
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Authentication**: [Supabase Auth](https://supabase.com/auth)
+- **Database**: PostgreSQL (via [Supabase](https://supabase.com/))
+- **ORM**: [Prisma](https://www.prisma.io/)
+- **UI & Styling**: [Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)
+- **Audio Engine**: [Shikwasa](https://github.com/the-mugen/shikwasa)
+- **Email Service**: [Resend](https://resend.com/) & [React Email](https://react.email/)
+- **RSS Parsing**: [rss-parser](https://www.npmjs.com/package/rss-parser)
+
+## 🚦 Getting Started
+
+### Prerequisites
+
+- Node.js 18+ and Yarn/NPM/PNPM
+- A Supabase project
+- A PostgreSQL database (can be the one from Supabase)
+- Resend API key (for emails)
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/your-username/porkast.git
+   cd porkast
+   ```
+
+2. **Install dependencies:**
+
+   ```bash
+   yarn install
+   ```
+
+3. **Set up Environment Variables:**
+   Create a `.env.local` file (or copy from `.env.sample`) and fill in your credentials:
+
+   ```bash
+   cp .env.sample .env.local
+   ```
+
+4. **Initialize Database & Types:**
+
+   ```bash
+   npx prisma db push
+   npx prisma generate
+   # To update Supabase types (requires PROJECT_REF)
+   yarn update-types
+   ```
+
+5. **Run the development server:**
+
+   ```bash
+   yarn dev
+   ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📁 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```text
+├── app/              # Next.js App Router (Pages & API)
+├── components/       # Reusable React UI components
+├── libs/             # Business logic, DB clients, and utilities
+├── prisma/           # Database schema and migrations
+├── public/           # Static assets (images, logos)
+├── supabase/         # Supabase configuration and Edge functions
+├── types/            # TypeScript type definitions
+└── middleware.ts     # Auth & session middleware
+```
 
-## Learn More
+## 🤖 Telegram Bot
 
-To learn more about Next.js, take a look at the following resources:
+Porkast is also available as a Telegram Bot. Check out the source code for the bot (if in a separate repo) or use it directly at [@PorkcastBot](https://t.me/PorkcastBot).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🤝 Contributing
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Deploy on Vercel
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📄 License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Distributed under the MIT License. See `LICENSE` for more information.
+
+---
+
+<div align="center">
+  Developed with ❤️ for the Podcast Community.
+</div>
