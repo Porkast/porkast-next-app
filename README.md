@@ -3,7 +3,6 @@
   <h3>Discover, Subscribe, Share - Your Personalized Podcast Platform</h3>
 
   [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org/)
-  [![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-blue?logo=supabase)](https://supabase.com/)
   [![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?logo=prisma)](https://www.prisma.io/)
   [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css)](https://tailwindcss.com/)
   [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
@@ -31,8 +30,8 @@ Whether you're looking to follow specific topics via keyword subscriptions or ma
 ## 🛠️ Tech Stack
 
 - **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
-- **Authentication**: [Supabase Auth](https://supabase.com/auth)
-- **Database**: PostgreSQL (via [Supabase](https://supabase.com/))
+- **Authentication**: Custom Email OTP Auth (JWT-based)
+- **Database**: PostgreSQL
 - **ORM**: [Prisma](https://www.prisma.io/)
 - **UI & Styling**: [Tailwind CSS](https://tailwindcss.com/) & [DaisyUI](https://daisyui.com/)
 - **Audio Engine**: [Shikwasa](https://github.com/the-mugen/shikwasa)
@@ -44,8 +43,7 @@ Whether you're looking to follow specific topics via keyword subscriptions or ma
 ### Prerequisites
 
 - Node.js 18+ and Yarn/NPM/PNPM
-- A Supabase project
-- A PostgreSQL database (can be the one from Supabase)
+- A PostgreSQL database
 - Resend API key (for emails)
 
 ### Installation
@@ -70,13 +68,11 @@ Whether you're looking to follow specific topics via keyword subscriptions or ma
    cp .env.sample .env.local
    ```
 
-4. **Initialize Database & Types:**
+4. **Initialize Database:**
 
    ```bash
    npx prisma db push
    npx prisma generate
-   # To update Supabase types (requires PROJECT_REF)
-   yarn update-types
    ```
 
 5. **Run the development server:**
@@ -95,7 +91,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ├── libs/             # Business logic, DB clients, and utilities
 ├── prisma/           # Database schema and migrations
 ├── public/           # Static assets (images, logos)
-├── supabase/         # Supabase configuration and Edge functions
 ├── types/            # TypeScript type definitions
 └── middleware.ts     # Auth & session middleware
 ```

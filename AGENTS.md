@@ -17,7 +17,7 @@ Porkast is a modern podcast discovery and management platform built with Next.js
 
 - **PostgreSQL** - Primary database
 - **Prisma** - Modern database ORM
-- **Supabase** - Backend-as-a-Service providing authentication and database services
+- **Custom Email OTP Auth** - JWT-based authentication with 6-digit verification codes sent via email
 
 ### Other Key Dependencies
 
@@ -26,6 +26,7 @@ Porkast is a modern podcast discovery and management platform built with Next.js
 - **RSS Parser** - RSS feed parsing
 - **Shikwasa** - Audio player component
 - **Vercel Analytics** - Performance analytics
+- **jose** - JWT signing and verification
 
 ## Project Structure
 
@@ -33,6 +34,7 @@ Porkast is a modern podcast discovery and management platform built with Next.js
 /workspaces/porkast-next-app/
 ├── app/                    # Next.js App Router pages
 │   ├── api/               # API routes
+│   │   ├── auth/          # Custom Email OTP Auth APIs
 │   │   ├── jobs/          # Background task related APIs
 │   │   ├── listenlater/   # Listen later functionality APIs
 │   │   ├── playlist/      # Playlist functionality APIs
@@ -52,8 +54,7 @@ Porkast is a modern podcast discovery and management platform built with Next.js
 ├── libs/                  # Utility libraries and business logic
 ├── types/                 # TypeScript type definitions
 ├── prisma/                # Database schema and migrations
-├── public/                # Static assets
-└── supabase/              # Supabase configuration and functions
+└── public/                # Static assets
 ```
 
 ## Core Features
@@ -98,12 +99,11 @@ Copy `.env.sample` to `.env.local` and configure the following variables:
 # API Configuration
 API_BASE_URL=https://porkast.com/
 
-# Supabase Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-
 # Database Configuration
 DATABASE_URL=postgres://username:password@domain.com:5432/porkastdb
+
+# Auth Configuration
+JWT_SECRET=your_jwt_secret
 
 # Other Service Configuration
 CRON_SECRET=your_cron_secret
@@ -206,16 +206,17 @@ docker run -p 3000:3000 porkast
 - **user_playlist_item** - Playlist items
 - **user_listen_later** - Listen later items
 - **keyword_subscription** - Keyword subscriptions
-- **profiles** - User profiles
+- **user_info** - Primary user profiles and authentication data
+- **verification_token** - Temporary storage for email verification codes
 
 ### Authentication System
 
-Uses Supabase Auth for user authentication, supporting:
+Uses a custom Email OTP authentication flow:
 
-- Email/password login
-- Third-party OAuth login
-- Session management
-- User profiles
+- **Send Code**: Generates and emails a 6-digit OTP to the user.
+- **Verify Code**: Validates the OTP and issues a JWT session token.
+- **Session Management**: JWTs are stored in local storage and verified via middleware for protected API routes.
+- **User Creation**: New users are automatically registered upon first successful email verification.
 
 ## Development Guidelines
 
