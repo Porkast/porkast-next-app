@@ -1,5 +1,5 @@
 import { FeedItem } from "@/types/feed_item";
-import { getUserSessionInfo } from "./suapbase";
+import { getUserSessionInfo } from "./session";
 import { SubscriptionDataDto } from "@/types/subscription";
 
 

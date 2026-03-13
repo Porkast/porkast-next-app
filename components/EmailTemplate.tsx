@@ -114,3 +114,48 @@ const footer = {
     color: '#8898aa',
     fontSize: '12px',
 };
+
+type VerificationEmailProps = {
+    code: string
+}
+
+export function UserVerificationEmail({ code }: VerificationEmailProps) {
+    return (
+        <Html>
+            <Head />
+            <Preview>
+                Your Porkast Verification Code
+            </Preview>
+            <Body style={main}>
+                <Container style={container}>
+                    <Img
+                        src='https://porkast.com/porkast-text-logo-dark.jpg'
+                        width="170"
+                        height="50"
+                        alt="porkast"
+                        style={logo}
+                    />
+                    <Text style={paragraph}>Hi,</Text>
+                    <Text style={paragraph}>
+                        Your verification code for Porkast is:
+                    </Text>
+                    <Section style={{ textAlign: 'center', margin: '20px 0' }}>
+                        <Text style={{ fontSize: '32px', fontWeight: 'bold', letterSpacing: '4px', margin: '0' }}>
+                            {code}
+                        </Text>
+                    </Section>
+                    <Text style={paragraph}>
+                        This code will expire in 10 minutes. If you did not request this, please ignore this email.
+                    </Text>
+                    <Hr style={hr} />
+                    <Text style={paragraph}>
+                        Best,
+                        <br />
+                        The Porkast team
+                    </Text>
+                </Container>
+            </Body>
+        </Html>
+    )
+}
+

@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { getUserSessionInfo } from "@/libs/suapbase";
+import { getUserSessionInfo } from "@/libs/session";
 import { useAppContext } from "./AppContext";
 
 type AddToPlaylistButtonProps = {

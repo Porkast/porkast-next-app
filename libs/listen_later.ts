@@ -1,5 +1,5 @@
 import { UserListenLaterDto } from "@/types/listen_later";
-import { getUserSessionInfo } from "./suapbase";
+import { getUserSessionInfo } from "./session";
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
 

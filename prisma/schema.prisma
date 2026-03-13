@@ -466,3 +466,14 @@ enum factor_type {
 
   @@schema("auth")
 }
+
+model verification_token {
+  id         String   @id @default(cuid()) @db.VarChar(64)
+  email      String   @db.VarChar(128)
+  token      String   @db.VarChar(64)
+  expires_at DateTime @db.Timestamp(6)
+  created_at DateTime @default(now()) @db.Timestamp(6)
+
+  @@unique([email, token])
+  @@schema("public")
+}

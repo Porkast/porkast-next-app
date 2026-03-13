@@ -1,11 +1,13 @@
 import type { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
-const supabaseJWTSecret = "hwfkEIMPtn0gREZUEcV2ZeksWcI/IClvR8TesHgRWkQbnTKTS+VnA0nvczDCjnZDIx5DCJYgxYrzrUy0OrWoSw=="
+const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_please_change'
 
 interface UserJwtPayload {
-    jti: string
+    id: string
+    email: string
     iat: number
+    exp: number
 }
 
 export class AuthError extends Error { }
@@ -20,12 +22,11 @@ export async function verifyAuth(req: NextRequest): Promise<UserJwtPayload> {
     try {
         const verified = await jwtVerify(
             token,
-            new TextEncoder().encode(supabaseJWTSecret)
+            new TextEncoder().encode(JWT_SECRET)
         )
         console.log('verified', verified)
-        return verified.payload as UserJwtPayload
+        return verified.payload as unknown as UserJwtPayload
     } catch (err) {
         throw new AuthError('Your token has expired.')
     }
-
 }

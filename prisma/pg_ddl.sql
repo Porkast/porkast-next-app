@@ -43,3 +43,12 @@ CREATE TABLE user_playlist_item (
 CREATE TABLE user_subscription (
     id VARCHAR(64), user_id VARCHAR(128), create_time TIMESTAMP, status INTEGER DEFAULT 1, keyword VARCHAR(128), order_by_date INTEGER, lang VARCHAR(64), country VARCHAR(64), exclude_feed_id VARCHAR(64), source VARCHAR(64), ref_id VARCHAR(64), ref_name VARCHAR(255), type VARCHAR(128) DEFAULT 'searchKeyword', CONSTRAINT usk_idx_keyword UNIQUE (keyword), CONSTRAINT usk_idx_user_id UNIQUE (user_id), CONSTRAINT usk_user_id_keyword UNIQUE (user_id, keyword, source)
 );
+
+CREATE TABLE IF NOT EXISTS public.verification_token (
+    id VARCHAR(64) PRIMARY KEY,
+    email VARCHAR(128) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP(6) NOT NULL,
+    created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE UNIQUE INDEX IF NOT EXISTS verification_token_email_token_key ON public.verification_token(email, token);

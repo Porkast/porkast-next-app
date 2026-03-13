@@ -3,7 +3,7 @@
 import { useAppContext } from "./AppContext";
 import { MsgAlertType } from "./MsgAlert";
 import { useEffect, useState } from "react";
-import { getUserSessionInfo } from "@/libs/suapbase";
+import { getUserSessionInfo } from "@/libs/session";
 import { subscribeUserListenLater } from "@/libs/subscription";
 
 type SubscribeListenLaterBtnProps = {
