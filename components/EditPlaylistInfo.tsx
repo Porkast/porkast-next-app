@@ -1,6 +1,6 @@
 'use client'
 
-import { getUserSessionInfo } from "@/libs/suapbase"
+import { getUserSessionInfo } from "@/libs/session"
 import { useEffect, useState } from "react"
 
 type EditPlaylistInfoBtnProps = {

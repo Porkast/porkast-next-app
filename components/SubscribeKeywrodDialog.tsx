@@ -1,6 +1,6 @@
 'use client '
 import { getPodcastInfo } from "@/libs/itunes"
-import { getUserSessionInfo } from "@/libs/suapbase"
+import { getUserSessionInfo } from "@/libs/session"
 import { subscribeSearchKeyword } from "@/libs/subscription"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"

@@ -1,6 +1,6 @@
 import { FeedItem } from "@/types/feed_item";
 import { UserPlaylistDto } from "@/types/playlist";
-import { getUserSessionInfo } from "./suapbase";
+import { getUserSessionInfo } from "./session";
 import { ServerUserInfo } from "./user";
 
 export async function addToPlayList(userId: string, channelId: string, itemId: string, playlistId: string, source: string = 'itunes'): Promise<JsonResponse> {

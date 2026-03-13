@@ -7,7 +7,7 @@ import { AvatarImage } from "@/components/PorkastImage";
 import { ShareSearchSubscriptionBtn } from "@/components/Share";
 import SubscribeListenLaterBtn from "@/components/SubscribeListenLaterButton";
 import UnsubscribeKeywordButton from "@/components/UnsubscribeKeywordButton";
-import { getUserSessionInfo } from "@/libs/suapbase";
+import { getUserSessionInfo } from "@/libs/session";
 import { getUserKeywordSubscriptionItemList } from "@/libs/subscription";
 import { ServerUserInfo, getTempNickname, getUserInfoFromServer } from "@/libs/user";
 import { FeedItem } from "@/types/feed_item";

@@ -4,7 +4,7 @@ import { createPlaylist } from "@/libs/playlist"
 import { Ref, forwardRef, useEffect, useState } from "react"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
-import { getUserSessionInfo } from "@/libs/suapbase"
+import { getUserSessionInfo } from "@/libs/session"
 
 type CreatePlaylistDialogProps = {
 

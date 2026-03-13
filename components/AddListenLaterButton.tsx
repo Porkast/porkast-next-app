@@ -4,7 +4,7 @@ import { addToListenLater } from "@/libs/listen_later";
 import { useAppContext } from "./AppContext";
 import { MsgAlertType } from "./MsgAlert";
 import { useEffect, useState } from "react";
-import { getUserSessionInfo, isUserLoggedIn } from "@/libs/suapbase";
+import { getUserSessionInfo, isUserLoggedIn } from "@/libs/session";
 
 type AddListenLaterButtonProps = {
     userId?: string;

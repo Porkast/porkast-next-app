@@ -1,6 +1,6 @@
 'use client'
 
-import supabase, { SupabaseSessionInfo, getUserSessionInfo, isUserLoggedIn, updateUserSessionInfo, userSignout } from "@/libs/suapbase"
+import { SessionInfo, getUserSessionInfo, isUserLoggedIn, userSignout } from "@/libs/session"
 import { ServerUserInfo, syncToServer } from "@/libs/user"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
@@ -20,33 +20,24 @@ export default function Header(props: HeaderProps) {
     const [inputPlaceholderVal, setSearchPlaceholderVal] = useState('');
     const [headerTitle, setHeaderTitle] = useState('Porkast')
     const [isLogin, setIsLogin] = useState(false);
-    const [userInfo, setUserInfo] = useState<SupabaseSessionInfo>();
+    const [userInfo, setUserInfo] = useState<SessionInfo>();
 
     useEffect(() => {
-        const syncUserInfo = async () => {
-            const userInfo = await getUserSessionInfo()
-            const serverUserInfo: ServerUserInfo = {
-                id: userInfo?.userId,
-                email: userInfo?.email,
-                nickname: userInfo?.username,
-                avatar: userInfo?.avatar,
-                token: userInfo?.token
-            }
-            setUserInfo(userInfo)
-            syncToServer(serverUserInfo)
-        }
-        supabase.auth.onAuthStateChange(async (event, session) => {
-            if (event === 'SIGNED_OUT') {
-                window.location.href = '/signin'
-            } else if (event === 'SIGNED_IN') {
-                syncUserInfo()
-                updateUserSessionInfo()
-            }
-        })
-
         const checkUserLogin = async () => {
             const isUserLogin = await isUserLoggedIn()
             setIsLogin(isUserLogin)
+            if (isUserLogin) {
+                const info = await getUserSessionInfo()
+                setUserInfo(info)
+                const serverUserInfo: ServerUserInfo = {
+                    id: info?.userId,
+                    email: info?.email,
+                    nickname: info?.username,
+                    avatar: info?.avatar,
+                    token: info?.token
+                }
+                syncToServer(serverUserInfo)
+            }
         }
 
         checkUserLogin()
