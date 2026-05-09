@@ -19,9 +19,10 @@ const AudioPlayer = forwardRef<AudioPlayerRef, AudioPlayerProps>((props, ref: Re
     const { data } = props;
     const [showAudioPlayer, setShowAudioPlayer] = useState(false);
     const { title, artist, cover, src } = data ?? { title: '', artist: '', cover: '', src: '' };
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    var systemTheme = mediaQuery.matches ? 'dark' : 'light';
-    var themeColor = systemTheme === 'dark' ? 'white' : 'black';
+    const [themeColor] = useState(() => {
+        if (typeof window === 'undefined') return 'black';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'white' : 'black';
+    });
 
     useEffect(() => {
 
