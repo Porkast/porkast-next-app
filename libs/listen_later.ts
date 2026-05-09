@@ -1,5 +1,9 @@
 import { UserListenLaterDto } from "@/types/listen_later";
 import { getUserSessionInfo } from "./session";
+import { queryUserListenLaterList, queryUserListenLaterTotalCount } from "./db/listen_later";
+import { formatDateTime } from "./common";
+
+// ─── Client-side ───
 
 export async function addToListenLater(channelId: string, itemId: string, userId: string, source: string): Promise<JsonResponse> {
 
@@ -39,5 +43,27 @@ export const getListenLaterListByUserId = async (userId: string, page: number): 
         code: respJson.code,
         message: respJson.message,
         data: respJson.data
+    }
+}
+
+// ─── Server-side (direct Prisma, no network hop) ───
+
+export async function getListenLaterListByUserIdServer(userId: string, page: number): Promise<{ code: number, message: string, data: UserListenLaterDto[] }> {
+    try {
+        const limit = 10
+        const offset = (page - 1) * limit
+        const queryListData = await queryUserListenLaterList(userId, limit, offset)
+        const totalCount = await queryUserListenLaterTotalCount(userId)
+
+        for (const dto of queryListData) {
+            dto.count = totalCount
+            dto.pub_date = formatDateTime(dto.pub_date)
+            dto.input_date = formatDateTime(dto.input_date)
+            dto.reg_date = formatDateTime(dto.reg_date)
+        }
+
+        return { code: 0, message: 'OK', data: queryListData }
+    } catch (err) {
+        return { code: 1, message: String(err), data: [] }
     }
 }

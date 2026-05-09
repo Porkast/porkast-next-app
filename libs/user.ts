@@ -70,3 +70,28 @@ export const getUserInfoFromServer = async (userId: string): Promise<{ code: num
         data: respJson.data
     }
 }
+
+import prisma from './prisma'
+
+export async function getUserInfoByIdServer(userId: string): Promise<{ code: number, message: string, data: ServerUserInfo | null }> {
+    try {
+        const user = await prisma.user_info.findUnique({ where: { id: userId } })
+        if (!user) return { code: 1, message: 'User not found', data: null }
+        return {
+            code: 0,
+            message: 'OK',
+            data: {
+                id: user.id,
+                username: user.username || '',
+                nickname: user.nickname || '',
+                email: user.email || '',
+                phone: user.phone || '',
+                regDate: user.reg_date || new Date(),
+                updateDate: user.update_date || new Date(),
+                avatar: user.avatar || '',
+            }
+        }
+    } catch (err) {
+        return { code: 1, message: String(err), data: null }
+    }
+}

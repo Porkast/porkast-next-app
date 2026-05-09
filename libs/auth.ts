@@ -1,9 +1,11 @@
-import type { NextRequest, NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 import { jwtVerify } from 'jose'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_please_change'
+export const AUTH_COOKIE_NAME = 'porkast_auth_token'
+export const AUTH_COOKIE_MAX_AGE = 30 * 24 * 60 * 60 // 30 days
 
-interface UserJwtPayload {
+export interface UserJwtPayload {
     id: string
     email: string
     iat: number
@@ -12,21 +14,18 @@ interface UserJwtPayload {
 
 export class AuthError extends Error { }
 
-/**
- * Verifies the user's JWT token and returns its payload if it's valid.
- */
+/** Verifies a raw JWT token string and returns its decoded payload. */
+export async function verifyJWT(token: string): Promise<UserJwtPayload> {
+    const verified = await jwtVerify(
+        token,
+        new TextEncoder().encode(JWT_SECRET)
+    )
+    return verified.payload as unknown as UserJwtPayload
+}
+
+/** Verifies JWT from the Authorization header (backward compat for client fetch calls). */
 export async function verifyAuth(req: NextRequest): Promise<UserJwtPayload> {
     const token = req.headers.get('Authorization')
-
     if (!token) throw new AuthError('Missing user token')
-    try {
-        const verified = await jwtVerify(
-            token,
-            new TextEncoder().encode(JWT_SECRET)
-        )
-        console.log('verified', verified)
-        return verified.payload as unknown as UserJwtPayload
-    } catch (err) {
-        throw new AuthError('Your token has expired.')
-    }
+    return verifyJWT(token)
 }

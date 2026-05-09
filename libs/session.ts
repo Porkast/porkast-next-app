@@ -1,3 +1,5 @@
+import { verifyJWT, type UserJwtPayload } from './auth'
+
 export type SessionInfo = {
     userId: string
     email: string
@@ -6,19 +8,28 @@ export type SessionInfo = {
     avatar?: string
 }
 
+export type ServerSession = {
+    userId: string
+    email: string
+}
+
+// ──────────────────────────────────────────────
+// Client-side functions (localStorage for UI display, real auth is cookie-based)
+// ──────────────────────────────────────────────
+
 export const isUserLoggedIn = async (): Promise<boolean> => {
     if (typeof window === 'undefined') return false;
     const cacheUserData = localStorage.getItem('user_session')
     if (cacheUserData) {
         const userInfo = JSON.parse(cacheUserData) as SessionInfo
-        // Optional: Check if token is expired based on JWT payload if needed
-        return !!userInfo.token
+        return !!userInfo.userId
     }
     return false
 }
 
 export const userSignout = async (): Promise<boolean> => {
     if (typeof window !== 'undefined') {
+        await fetch('/api/auth/signout', { method: 'POST' })
         localStorage.removeItem('user_session')
         window.location.href = '/signin'
     }
@@ -26,8 +37,6 @@ export const userSignout = async (): Promise<boolean> => {
 }
 
 export const updateUserSessionInfo = async () => {
-    // This function used to fetch user from supabase and store in local storage.
-    // In our new flow, user info is only updated from server and we store it directly during sign in or profile update.
     console.log('updateUserSessionInfo is now a no-op as session is managed via JWT')
 }
 
