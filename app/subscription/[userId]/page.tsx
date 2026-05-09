@@ -1,187 +1,49 @@
-'use client'
+import { getUserSubscriptionListServer } from "@/libs/subscription"
+import { getUserInfoByIdServer, getTempNickname } from "@/libs/user"
+import { SubscriptionDataDto } from "@/types/subscription"
+import { ServerUserInfo } from "@/libs/user"
+import SubscriptionListClient from "./SubscriptionListClient"
 
-import { AppProvider } from "@/components/AppContext";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import { AvatarImage } from "@/components/PorkastImage";
-import UnsubscribeKeywordButton from "@/components/UnsubscribeKeywordButton";
-import { formatDateTime } from "@/libs/common";
-import { getUserSubscriptionList } from "@/libs/subscription";
-import { getUserInfoFromServer, getTempNickname, ServerUserInfo } from "@/libs/user";
-import { SubscriptionDataDto } from "@/types/subscription";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-
-
-
-export default function Page({ params, searchParams }: { params: { userId: string }, searchParams: { page: string } }) {
-    const userId = params.userId;
-    var page = searchParams.page
-    if (!page) {
-        page = "1"
-    }
-
-    const [subscriptionList, setSubscriptionList] = useState<SubscriptionDataDto[]>([])
-    const [totalPage, setTotalPage] = useState(0)
-    const [totalCount, setTotalCount] = useState(0)
-    const [userInfo, setUserInfo] = useState<ServerUserInfo>()
-    const [nickname, setNickname] = useState("")
-    const [nextPageUrl, setNextPageUrl] = useState("")
-    const [prevPageUrl, setPrevPageUrl] = useState("")
-    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
-    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
-
-    useEffect(() => {
-        async function initPageInfo() {
-            const userInfoResp = await getUserInfoFromServer(userId)
-            if (userInfoResp.code != 0) {
-                return
-            }
-            const userInfoData = userInfoResp.data
-            const nicknameStr = getTempNickname(userInfoData)
-            setUserInfo(userInfoData)
-            setNickname(nicknameStr)
-
-            var subscriptionDataList: SubscriptionDataDto[] = []
-            const resp = await getUserSubscriptionList(userId)
-            subscriptionDataList = resp.data
-            setSubscriptionList(subscriptionDataList)
-            if (subscriptionDataList && subscriptionDataList.length > 0) {
-                setTotalPage(Math.ceil(subscriptionDataList[0].Count / 10))
-                setTotalCount(subscriptionDataList[0].Count)
-            } else {
-                return
-            }
-        }
-
-        initPageInfo()
-    }, [page])
-
-    useEffect(() => {
-        let nextPage = 0
-        if (parseInt(page) >= totalPage) {
-            nextPage = parseInt(page)
-        } else {
-            nextPage = parseInt(page) + 1
-        }
-        setNextPageUrl("/subscription/" + userId + "/" + "?page=" + nextPage)
-
-        let prePage = 0
-        if (parseInt(page) > 1) {
-            prePage = parseInt(page) - 1
-        } else {
-            prePage = parseInt(page)
-        }
-        setPrevPageUrl("/subscription/" + userId + "/" + "?page=" + prePage)
-
-        if (parseInt(page) >= totalPage) {
-            setIsNextBtnClickable(false)
-        } else {
-            setIsNextBtnClickable(true)
-        }
-        if (parseInt(page) <= 1) {
-            setIsPreBtnClickable(false)
-        } else {
-            setIsPreBtnClickable(true)
-        }
-    }, [totalCount, totalPage, page])
-
-    return (
-        <AppProvider>
-            <div>
-                <Header title="Subscription">
-                    <div className='w-full flex justify-center mb-9 min-h-screen pt-20'>
-                        <div className='w-full max-w-2xl pl-6 pr-6 mb-9'>
-                            <div className="w-full mb-10">
-                                <div className="flex justify-center mt-4">
-                                    <div className="w-full">
-                                        <div className="flex justify-center">
-                                            <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
-                                        </div>
-                                        <div className="flex justify-center mt-4">
-                                            <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Subscription`}</div>
-                                        </div>
-                                        <div className="flex justify-center mt-4">
-                                            <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{totalCount} results</div>
-                            {
-                                subscriptionList?.map((item, index) => {
-                                    const encodeKeyword = encodeURIComponent(item.Keyword)
-                                    return (
-                                        <div key={index} className="card w-full bg-base-100 shadow-xl mb-6">
-                                            <div className="card-body">
-                                                <div className="flex justify-between items-start">
-                                                    <div className="flex-1">
-                                                        {
-                                                            item.Keyword ? (
-                                                                <h2 className="card-title">
-                                                                    <a href={`/subscription/${userId}/${encodeKeyword}`} className="hover:text-primary">
-                                                                        #{item.Keyword}
-                                                                    </a>
-                                                                </h2>
-                                                            ) : (
-                                                                <h2 className="card-title">{item.RefName}</h2>
-                                                            )
-                                                        }
-                                                        <div className="md:flex block md:justify-start mt-2">
-                                                            {
-                                                                item.UpdateTime != null ? (
-                                                                    <div className="mr-4 md:mb-0 mb-4">Update at: {formatDateTime(item.UpdateTime.toLocaleString())}</div>
-                                                                ) : (
-                                                                    <div>Create at: {formatDateTime(item.CreateTime?.toLocaleString())}</div>
-                                                                )
-                                                            }
-                                                            {
-                                                                item.TotalCount == 0 ? (
-                                                                    <div></div>
-                                                                ) : (
-                                                                    <p>Episodes: {item.TotalCount}</p>
-                                                                )
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div className="card-actions justify-end">
-                                                        {
-                                                            item.Keyword && (
-                                                                <UnsubscribeKeywordButton userId={userId} keyword={item.Keyword} />
-                                                            )
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                })
-                            }
-                            <div className="w-full flex justify-center pt-6 pb-9">
-                                <div className="join">
-                                    {
-                                        isPreBtnClickable ? (
-                                            <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
-                                        ) : (
-                                            <button className="join-item btn btn-neutral btn-disabled">«</button>
-                                        )
-                                    }
-                                    <button className="join-item btn btn-neutral">Page {page}</button>
-                                    {
-                                        isNextBtnClickable ? (
-                                            <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
-                                        ) : (
-                                            <button className="join-item btn btn-neutral btn-disabled">»</button>
-                                        )
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </Header>
-                <Footer />
-            </div>
-        </AppProvider>
-    )
+type Props = {
+    params: Promise<{ userId: string }>
+    searchParams: Promise<{ page?: string }>
 }
 
+export default async function Page({ params, searchParams }: Props) {
+    const { userId } = await params
+    const { page: pageStr } = await searchParams
+    const page = parseInt(pageStr || '1')
+
+    let subscriptionList: SubscriptionDataDto[] = []
+    let totalCount = 0
+    let userInfo: ServerUserInfo | null = null
+    let nickname = ""
+
+    const userResp = await getUserInfoByIdServer(userId)
+    if (userResp.code === 0 && userResp.data) {
+        userInfo = userResp.data
+        nickname = getTempNickname(userResp.data)
+    }
+
+    const subResp = await getUserSubscriptionListServer(userId)
+    if (subResp.code === 0) {
+        subscriptionList = subResp.data
+        if (subscriptionList.length > 0) {
+            totalCount = subscriptionList[0].Count
+        }
+    }
+
+    const totalPage = Math.max(1, Math.ceil(totalCount / 10))
+
+    return (
+        <SubscriptionListClient
+            userId={userId}
+            page={page}
+            userInfo={userInfo}
+            nickname={nickname}
+            subscriptionList={subscriptionList}
+            totalCount={totalCount}
+            totalPage={totalPage}
+        />
+    )
+}

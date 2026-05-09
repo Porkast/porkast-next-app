@@ -1,196 +1,56 @@
-'use client'
+import { searchPodcastEpisodeFromItunes } from '@/libs/itunes'
+import { FeedItem } from '@/types/feed_item'
+import SearchContent from './SearchContent'
+import type { Metadata } from 'next'
 
-import { Helmet } from 'react-helmet';
-import EpisodeCard from "@/components/EpisodeCard"
-import Header from "@/components/Header"
-import { useSearchParams } from "next/navigation"
-import { useEffect, useState, useRef, Suspense } from 'react';
-import Footer from '@/components/Footer';
-import Link from 'next/link';
-import { AppProvider } from '@/components/AppContext';
-import { FeedItem } from '@/types/feed_item';
-import { searchPodcastEpisodeFromItunes } from '@/libs/itunes';
-import Loading from '@/components/Loading';
-import AddExcludeFeedIdDialog, { AddExcludeFeedIdDialogRef } from '@/components/AddExcludeFeedIdDialog';
-import SubscribeKeywrodDialog, { SubscribeKeywrodDialogRef } from '@/components/SubscribeKeywrodDialog';
-
-enum Page {
-    NextPage,
-    PrePage
+type Props = {
+    searchParams: Promise<{ q?: string; page?: string; entity?: string; country?: string; source?: string; excludeFeedId?: string }>
 }
 
-
-export default function SearchPage() {
-    return (
-        <Suspense>
-            <Search />
-        </Suspense>
-    )
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+    const params = await searchParams
+    const q = params.q
+    return {
+        title: q ? `Porkast - ${q}` : 'Porkast Search',
+        description: q ? `Search results for "${q}" on Porkast podcast platform` : 'Discover podcasts on Porkast',
+    }
 }
 
-function Search() {
+export default async function SearchPage({ searchParams }: Props) {
+    const params = await searchParams
+    const q = params.q || ''
+    const page = parseInt(params.page || '1')
+    const country = params.country || 'US'
+    const source = params.source || 'itunes'
+    const excludeFeedId = params.excludeFeedId || ''
+    const entity = params.entity || 'item'
 
-    const searhcParam = useSearchParams()
-    const [searchResultData, setSearchResultData] = useState<FeedItem[]>([])
-    const [searchResultCount, setSearchResultCount] = useState(0)
-    const [searchResultTotalPage, setSearchResultTotalPage] = useState(1)
-    const [isLoading, setIsLoading] = useState(true)
-    const [isNextBtnClickable, setIsNextBtnClickable] = useState(true)
-    const [isPreBtnClickable, setIsPreBtnClickable] = useState(true)
-    const addExcludeFeedIdDialogRef = useRef<AddExcludeFeedIdDialogRef>(null)
-    const subscribeSearchKeywordDialogRef = useRef<SubscribeKeywrodDialogRef>(null)
-    const q = searhcParam.get('q')
-    const excludeFeedId = searhcParam.get('excludeFeedId')
-    const searchTotalCount = 200
-    const limit = 10
+    let searchResults: FeedItem[] = []
+    let totalCount = 0
+    let totalPage = 1
 
-    let page = searhcParam.get('page') || '1'
-    let entity = searhcParam.get('scope')
-    if (!entity) {
-        entity = "item"
-    }
-    let country = searhcParam.get('country') || 'US'
-    let source = searhcParam.get('source') || 'itunes'
-
-    const prevPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.PrePage)
-    const nextPageUrl = getTargetPageUrl(q || '', parseInt(page), searchResultTotalPage, Page.NextPage)
-
-    const showExcludeDialog = (channelTitle: string, feedId: string) => {
-        addExcludeFeedIdDialogRef.current?.showModal(channelTitle, feedId)
-    }
-
-    const showSubscribeSearchKeywordDialog = () => {
-        subscribeSearchKeywordDialogRef.current?.showDialog(q || '', excludeFeedId || '', country, source)
-    }
-
-    useEffect(() => {
-        const fetchData = (async () => {
-            setIsLoading(true)
-            const offest = (parseInt(page || '1') - 1) * limit
-            const data = await searchPodcastEpisodeFromItunes(q || '', 'podcastEpisode', country || 'US', excludeFeedId || '', offest, limit, searchTotalCount)
-            setIsLoading(false)
-            setSearchResultData(data)
-            if (data.length > 0) {
-                const totalCount = data[0].Count
-                setSearchResultCount(totalCount)
-                const totalPage = Math.ceil(totalCount / limit)
-                setSearchResultTotalPage(totalPage)
-            } else {
-                setSearchResultCount(0)
-            }
-        })
-
-        if (!q || q.length == 0) {
-            return
+    if (q.length > 0) {
+        const limit = 10
+        const offset = (page - 1) * limit
+        const data = await searchPodcastEpisodeFromItunes(q, 'podcastEpisode', country, excludeFeedId, offset, limit, 200)
+        searchResults = data
+        if (data.length > 0) {
+            totalCount = data[0].Count
+            totalPage = Math.ceil(totalCount / limit)
         }
-
-        fetchData()
-    }, [q, page, entity, country])
-
-
-    useEffect(() => {
-        if (parseInt(page) >= searchResultTotalPage) {
-            setIsNextBtnClickable(false)
-        } else {
-            setIsNextBtnClickable(true)
-        }
-        if (parseInt(page) <= 1) {
-            setIsPreBtnClickable(false)
-        } else {
-            setIsPreBtnClickable(true)
-        }
-    }, [page, searchResultCount])
+    }
 
     return (
-        <AppProvider>
-            <div className="w-full">
-                <Helmet>
-                    <title>Porkast-{q}</title>
-                </Helmet>
-                <Header keyword={q ? q : ""} title='Search'>
-                    <div className="w-full flex justify-center pl-6 pr-6 pt-20">
-                        <div className="w-full max-w-2xl">
-                            <div className='text-neutral-500 text-sm mb-6 ml-2'>{searchResultCount} results</div>
-                            {
-                                isLoading ? (
-                                    <Loading />
-                                ) : (
-                                    <>
-                                        {
-                                            searchResultData?.map((item: FeedItem) => {
-                                                return (
-                                                    <EpisodeCard key={item.Id} data={{
-                                                        itemId: item.GUID,
-                                                        channelId: item.ChannelId,
-                                                        title: item.HighlightTitle,
-                                                        description: item.TextDescription,
-                                                        image: item.ImageUrl,
-                                                        link: item.Link,
-                                                        rssLink: item.FeedLink,
-                                                        channelName: item.HighlightChannelTitle,
-                                                        authorName: item.Author,
-                                                        pubDate: item.PubDate,
-                                                        audioLength: item.Duration,
-                                                        audioSrc: item.EnclosureUrl,
-                                                        showExcludeBtn: true
-                                                    }}
-                                                        onExcludeModalBtnClick={showExcludeDialog}
-                                                    />
-                                                )
-                                            })
-                                        }
-                                    </>
-                                )
-                            }
-                            <div className='flex justify-start w-full'>
-                                <button className="btn btn-primary rounded-lg ml-4" onClick={showSubscribeSearchKeywordDialog}>
-                                    <span className="font-bold text-base">Subscribe {q}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="w-full flex justify-center pt-6 pb-9">
-                        <div className="join">
-                            {
-                                isPreBtnClickable ? (
-                                    <Link className="join-item btn btn-neutral" href={prevPageUrl}>«</Link>
-                                ) : (
-                                    <button className="join-item btn btn-neutral btn-disabled">«</button>
-                                )
-                            }
-                            <button className="join-item btn btn-neutral">Page {page}</button>
-                            {
-                                isNextBtnClickable ? (
-                                    <Link className="join-item btn btn-neutral" href={nextPageUrl}>»</Link>
-                                ) : (
-                                    <button className="join-item btn btn-neutral btn-disabled">»</button>
-                                )
-                            }
-                        </div>
-                    </div>
-                    <AddExcludeFeedIdDialog ref={addExcludeFeedIdDialogRef} />
-                    <SubscribeKeywrodDialog ref={subscribeSearchKeywordDialogRef} />
-                </Header>
-                <Footer />
-            </div>
-        </AppProvider>
+        <SearchContent
+            q={q}
+            page={page}
+            country={country}
+            source={source}
+            excludeFeedId={excludeFeedId}
+            entity={entity}
+            searchResults={searchResults}
+            totalCount={totalCount}
+            totalPage={totalPage}
+        />
     )
-}
-
-const getTargetPageUrl = (keyword: string, currentPage: number, searchResultTotalPage: number, target: Page): string => {
-    const urlParams = new URLSearchParams(window.location.search);
-    var targetPageUrl = '';
-    var targetPageNum = 0;
-    var entity = urlParams.get('entity') ? urlParams.get('entity') : 'item';
-    var country = urlParams.get('country') ? urlParams.get('country') : 'US';
-    var excludeFeedId = urlParams.get('excludeFeedId') ? urlParams.get('excludeFeedId') : '';
-
-    if (target == Page.NextPage) {
-        targetPageNum = currentPage >= searchResultTotalPage ? currentPage : currentPage + 1
-    } else {
-        targetPageNum = currentPage > 1 ? currentPage - 1 : currentPage
-    }
-    targetPageUrl = "/search?q=" + keyword + "&page=" + targetPageNum + "&entity=" + entity + "&country=" + country + "&excludeFeedId=" + excludeFeedId
-
-    return targetPageUrl
 }

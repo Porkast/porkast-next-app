@@ -1,7 +1,9 @@
 import { FeedItem } from "@/types/feed_item";
 import { getUserSessionInfo } from "./session";
 import { SubscriptionDataDto } from "@/types/subscription";
+import { queryUserKeywordSubscriptionList, queryUserKeywordSubscriptionDetail, queryKeywordSubscriptionFeedItemList } from "./db/subscription";
 
+// ─── Client-side (keep for interactive operations) ───
 
 export const subscribeSearchKeyword = async (userId: string, searchKeyword: string, country: string = 'US', source: string = 'itunes', excludeFeedId: string = '', token: string): Promise<JsonResponse> => {
     var apiUrl = `${process.env.API_BASE_URL}api/subscription/keyword`
@@ -96,5 +98,28 @@ export const unsubscribeKeyword = async (userId: string, keyword: string): Promi
 
     const respJson = await resp.json()
     return respJson
+}
+
+// ─── Server-side (direct Prisma, no network hop) ───
+
+export async function getUserSubscriptionListServer(userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> {
+    try {
+        const data = await queryUserKeywordSubscriptionList(userId, 0, 100)
+        return { code: 0, message: 'OK', data }
+    } catch (err) {
+        return { code: 1, message: String(err), data: [] }
+    }
+}
+
+export async function getUserKeywordSubscriptionItemListServer(userId: string, keyword: string, page: number): Promise<{ code: number, message: string, data: FeedItem[] }> {
+    try {
+        const limit = 10
+        const offset = (page - 1) * limit
+        const usInfo = await queryUserKeywordSubscriptionDetail(userId, keyword)
+        const data = await queryKeywordSubscriptionFeedItemList(userId, keyword, usInfo.Source, usInfo.Country, usInfo.ExcludeFeedId, offset, limit)
+        return { code: 0, message: 'ok', data }
+    } catch (err) {
+        return { code: 1, message: String(err), data: [] }
+    }
 }
 

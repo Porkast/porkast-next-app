@@ -1,4 +1,4 @@
-'use clien'
+'use client'
 
 import AddListenLaterButton from "./AddListenLaterButton"
 

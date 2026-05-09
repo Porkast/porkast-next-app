@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/prisma";
 import { SignJWT } from "jose";
+import { AUTH_COOKIE_NAME, AUTH_COOKIE_MAX_AGE } from "@/libs/auth";
 
 export async function POST(request: NextRequest) {
     try {
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
             .setExpirationTime('30d') // 30 days validity
             .sign(new TextEncoder().encode(secret));
 
-        return NextResponse.json({
+        const response = NextResponse.json({
             code: 0,
             message: 'Successfully verified',
             data: {
@@ -69,6 +70,17 @@ export async function POST(request: NextRequest) {
                 token: jwt
             }
         });
+
+        // Set httpOnly cookie for server-side auth
+        response.cookies.set(AUTH_COOKIE_NAME, jwt, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: AUTH_COOKIE_MAX_AGE,
+            path: '/',
+        });
+
+        return response;
     } catch (error: any) {
         console.error('Error verifying code:', error);
         return NextResponse.json({ code: 1, message: 'Internal Server Error', data: null }, { status: 500 });

@@ -54,9 +54,9 @@ export default function AuthForm() {
 
             if (data.code === 0) {
                 const userInfo = data.data
-                // Save user info to local storage
+                // Save display info to localStorage (real auth is now in httpOnly cookie)
                 localStorage.setItem('user_session', JSON.stringify(userInfo))
-                
+
                 const serverUserInfo: ServerUserInfo = {
                     id: userInfo.userId,
                     email: userInfo.email,
