@@ -64,6 +64,7 @@ export async function getListenLaterListByUserIdServer(userId: string, page: num
 
         return { code: 0, message: 'OK', data: queryListData }
     } catch (err) {
+        console.error('getListenLaterListByUserIdServer error:', err)
         return { code: 1, message: String(err), data: [] }
     }
 }

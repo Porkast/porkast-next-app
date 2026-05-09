@@ -1,3 +1,4 @@
+import prisma from './prisma'
 
 export type ServerUserInfo = {
     id: string;
@@ -70,9 +71,6 @@ export const getUserInfoFromServer = async (userId: string): Promise<{ code: num
         data: respJson.data
     }
 }
-
-import prisma from './prisma'
-
 export async function getUserInfoByIdServer(userId: string): Promise<{ code: number, message: string, data: ServerUserInfo | null }> {
     try {
         const user = await prisma.user_info.findUnique({ where: { id: userId } })
@@ -92,6 +90,7 @@ export async function getUserInfoByIdServer(userId: string): Promise<{ code: num
             }
         }
     } catch (err) {
+        console.error('getUserInfoByIdServer error:', err)
         return { code: 1, message: String(err), data: null }
     }
 }
