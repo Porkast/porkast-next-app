@@ -110,6 +110,7 @@ export async function getUserPlaylistByUserIdServer(userId: string, page: number
         const data = await queryUserPlaylistListByUserId(userId, offset, limit)
         return { code: 0, message: 'Ok', data }
     } catch (err) {
+        console.error('getUserPlaylistByUserIdServer error:', err)
         return { code: 1, message: String(err), data: [] }
     }
 }
@@ -138,6 +139,7 @@ export async function getPlaylistInfoByIdServer(playlistId: string): Promise<{ c
 
         return { code: 0, message: 'OK', data: playlistInfoDto }
     } catch (err) {
+        console.error('getPlaylistInfoByIdServer error:', err)
         return { code: 1, message: String(err), data: null }
     }
 }
@@ -164,6 +166,7 @@ export async function getPlaylistItemListByUserIdServer(userId: string, playlist
         const playlist = await queryPlaylistItemsByPlaylistId(playlistId)
         return { code: 0, message: 'success', data: { userInfo, playlist: playlist as unknown as FeedItem[] } }
     } catch (err) {
+        console.error('getPlaylistItemListByUserIdServer error:', err)
         return { code: 1, message: String(err), data: null }
     }
 }

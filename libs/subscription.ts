@@ -107,6 +107,7 @@ export async function getUserSubscriptionListServer(userId: string): Promise<{ c
         const data = await queryUserKeywordSubscriptionList(userId, 0, 100)
         return { code: 0, message: 'OK', data }
     } catch (err) {
+        console.error('getUserSubscriptionListServer error:', err)
         return { code: 1, message: String(err), data: [] }
     }
 }
@@ -119,6 +120,7 @@ export async function getUserKeywordSubscriptionItemListServer(userId: string, k
         const data = await queryKeywordSubscriptionFeedItemList(userId, keyword, usInfo.Source, usInfo.Country, usInfo.ExcludeFeedId, offset, limit)
         return { code: 0, message: 'ok', data }
     } catch (err) {
+        console.error('getUserKeywordSubscriptionItemListServer error:', err)
         return { code: 1, message: String(err), data: [] }
     }
 }
