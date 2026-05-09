@@ -26,7 +26,7 @@ export default async function Page({ params, searchParams }: Props) {
         nickname = getTempNickname(userResp.data)
     }
 
-    const subResp = await getUserKeywordSubscriptionItemListServer(userId, keyword, page)
+    const subResp = await getUserKeywordSubscriptionItemListServer(userId, decodedKeyword, page)
     if (subResp.code === 0) {
         itemList = subResp.data
         if (itemList.length > 0) {
