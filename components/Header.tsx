@@ -153,6 +153,8 @@ export default function Header(props: HeaderProps) {
                                                 </label>
                                                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
                                                     {/* <li><a>Settings</a></li> */}
+                                                    <li><Link href="/privacy" className="text-base">Privacy Policy</Link></li>
+                                                    <li><Link href="/terms" className="text-base">Terms of Service</Link></li>
                                                     <li onClick={handleLogout}>
                                                         <a className="text-base font-bold w-48">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" x2="9" y1="12" y2="12" /></svg>
@@ -164,7 +166,11 @@ export default function Header(props: HeaderProps) {
                                                     </li>
                                                 </ul>
                                             </div>
-                                        ) : <li><Link className="text-base btn btn-primary" href={"/signin"}>Sign In</Link></li>
+                                        ) : <>
+                                                    <li><Link href="/privacy" className="text-base btn btn-ghost">Privacy</Link></li>
+                                                    <li><Link href="/terms" className="text-base btn btn-ghost">Terms</Link></li>
+                                                    <li><Link className="text-base btn btn-primary" href={"/signin"}>Sign In</Link></li>
+                                                </>
                                     }
                                 </ul>
                             </div>
@@ -235,6 +241,16 @@ export default function Header(props: HeaderProps) {
                             )
                         }
                         <div className="absolute bottom-6 w-72">
+                            <li>
+                                <Link href="/privacy" className="text-base font-bold">
+                                    Privacy Policy
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/terms" className="text-base font-bold">
+                                    Terms of Service
+                                </Link>
+                            </li>
                             {
                                 isLogin ? (
                                     <li onClick={handleLogout}>
