@@ -11,6 +11,24 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ code: 1, message: 'Invalid email address', data: null }, { status: 400 });
         }
 
+        // Rate limit: check if a token was sent recently
+        const recentToken = await prisma.verification_token.findFirst({
+            where: { email },
+            orderBy: { created_at: 'desc' },
+        });
+
+        if (recentToken) {
+            const elapsed = Math.floor((Date.now() - recentToken.created_at.getTime()) / 1000);
+            const remaining = 60 - elapsed;
+            if (remaining > 0) {
+                return NextResponse.json({
+                    code: 1,
+                    message: `Please wait ${remaining} seconds and try again.`,
+                    data: { retryAfter: remaining },
+                }, { status: 429 });
+            }
+        }
+
         // Generate a 6-digit random code
         const code = Math.floor(100000 + Math.random() * 900000).toString();
 
