@@ -35,7 +35,7 @@ export default function PlaylistListClient({ userId, page, userInfo, nickname, p
                                 <div className="flex justify-center mt-4">
                                     <div className="w-full">
                                         <div className="flex justify-center">
-                                            <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
+                                            <AvatarImage className="w-28" imageUrl={userInfo?.avatar} displayName={nickname} />
                                         </div>
                                         <div className="flex justify-center mt-4">
                                             <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Playlist`}</div>

@@ -47,7 +47,7 @@ export default function ListenLaterClient({ userId, page, userInfo, nickname, it
                             <div className="w-full flex justify-center mb-10">
                                 <div className="mt-4">
                                     <div className="flex justify-center">
-                                        <AvatarImage className="w-28" imageUrl={userInfo?.avatar} />
+                                        <AvatarImage className="w-28" imageUrl={userInfo?.avatar} displayName={nickname} />
                                     </div>
                                     <div className="mt-4 flex justify-center">
                                         <div className="md:text-2xl text-xl font-bold">{nickname}{`'s Porkast Listen Later`}</div>
