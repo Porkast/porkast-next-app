@@ -1,7 +1,8 @@
-import { getUserSubscriptionListServer } from "@/libs/subscription"
+import { getUserSubscriptionListServer, getUserAllSubscriptionItemsServer } from "@/libs/subscription"
 import { getUserInfoByIdServer, getTempNickname } from "@/libs/user"
 import { SubscriptionDataDto } from "@/types/subscription"
 import { ServerUserInfo } from "@/libs/user"
+import { FeedItem } from "@/types/feed_item"
 import SubscriptionListClient from "./SubscriptionListClient"
 
 type Props = {
@@ -18,6 +19,8 @@ export default async function Page({ params, searchParams }: Props) {
     let totalCount = 0
     let userInfo: ServerUserInfo | null = null
     let nickname = ""
+    let initialFeedItems: FeedItem[] = []
+    let feedTotalCount = 0
 
     const userResp = await getUserInfoByIdServer(userId)
     if (userResp.code === 0 && userResp.data) {
@@ -33,6 +36,12 @@ export default async function Page({ params, searchParams }: Props) {
         }
     }
 
+    const feedResp = await getUserAllSubscriptionItemsServer(userId, 0, 10)
+    if (feedResp.code === 0) {
+        initialFeedItems = feedResp.data
+        feedTotalCount = feedResp.totalCount
+    }
+
     const totalPage = Math.max(1, Math.ceil(totalCount / 10))
 
     return (
@@ -44,6 +53,8 @@ export default async function Page({ params, searchParams }: Props) {
             subscriptionList={subscriptionList}
             totalCount={totalCount}
             totalPage={totalPage}
+            initialFeedItems={initialFeedItems}
+            feedTotalCount={feedTotalCount}
         />
     )
 }

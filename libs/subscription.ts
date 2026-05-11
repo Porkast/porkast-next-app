@@ -1,7 +1,7 @@
 import { FeedItem } from "@/types/feed_item";
 import { getUserSessionInfo } from "./session";
 import { SubscriptionDataDto } from "@/types/subscription";
-import { queryUserKeywordSubscriptionList, queryUserKeywordSubscriptionDetail, queryKeywordSubscriptionFeedItemList } from "./db/subscription";
+import { queryUserKeywordSubscriptionList, queryUserKeywordSubscriptionDetail, queryKeywordSubscriptionFeedItemList, queryUserAllSubscriptionFeedItemList } from "./db/subscription";
 
 // ─── Client-side (keep for interactive operations) ───
 
@@ -100,6 +100,22 @@ export const unsubscribeKeyword = async (userId: string, keyword: string): Promi
     return respJson
 }
 
+export const getUserAllSubscriptionItems = async (userId: string, offset: number, limit: number): Promise<{ code: number, message: string, data: FeedItem[] }> => {
+    const resp = await fetch(`${process.env.API_BASE_URL}api/subscription/items?userId=${userId}&offset=${offset}&limit=${limit}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        }
+    })
+    const respJson = await resp.json()
+
+    return {
+        code: respJson.code,
+        message: respJson.message,
+        data: respJson.data
+    }
+}
+
 // ─── Server-side (direct Prisma, no network hop) ───
 
 export async function getUserSubscriptionListServer(userId: string): Promise<{ code: number, message: string, data: SubscriptionDataDto[] }> {
@@ -122,6 +138,16 @@ export async function getUserKeywordSubscriptionItemListServer(userId: string, k
     } catch (err) {
         console.error('getUserKeywordSubscriptionItemListServer error:', err)
         return { code: 1, message: String(err), data: [] }
+    }
+}
+
+export async function getUserAllSubscriptionItemsServer(userId: string, offset: number, limit: number): Promise<{ code: number, message: string, data: FeedItem[], totalCount: number }> {
+    try {
+        const { items, totalCount } = await queryUserAllSubscriptionFeedItemList(userId, offset, limit)
+        return { code: 0, message: 'ok', data: items, totalCount }
+    } catch (err) {
+        console.error('getUserAllSubscriptionItemsServer error:', err)
+        return { code: 1, message: String(err), data: [], totalCount: 0 }
     }
 }
 

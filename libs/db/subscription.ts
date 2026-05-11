@@ -332,3 +332,70 @@ export async function doSearchSubscription(keyword: string, country: string, sou
     }
 
 }
+
+export async function queryUserAllSubscriptionFeedItemList(userId: string, offset: number, limit: number): Promise<{ items: FeedItem[], totalCount: number }> {
+
+    const resultList: FeedItem[] = []
+
+    const queryResultList = await prisma.$queryRaw<FeedItemDto[]>(
+        Prisma.sql`
+        SELECT fi.*, ks.source, ks.exclude_feed_id, ks.country 
+        FROM feed_item fi 
+        INNER JOIN keyword_subscription ks ON (fi.id = ks.feed_item_id) 
+        INNER JOIN user_subscription usk ON (usk.keyword = ks.keyword AND usk.country = ks.country AND usk.exclude_feed_id = ks.exclude_feed_id AND usk.source = ks.source) 
+        WHERE usk.user_id = ${userId} AND usk.status = 1 
+        ORDER BY fi.pub_date DESC 
+        LIMIT ${limit}
+        OFFSET ${offset}
+        `
+    )
+
+    const countResult = await prisma.$queryRaw<{ count: bigint }[]>(
+        Prisma.sql`
+        SELECT COUNT(*) as count
+        FROM keyword_subscription ks
+        INNER JOIN user_subscription usk ON (usk.keyword = ks.keyword AND usk.country = ks.country AND usk.exclude_feed_id = ks.exclude_feed_id AND usk.source = ks.source)
+        WHERE usk.user_id = ${userId} AND usk.status = 1
+        `
+    )
+
+    const totalCount = Number(countResult[0]?.count || 0)
+
+    for (const queryResult of queryResultList) {
+        resultList.push({
+            Id: queryResult.id,
+            FeedId: queryResult.feed_id,
+            GUID: queryResult.guid || '',
+            ChannelId: queryResult.channel_id,
+            Title: queryResult.title || '',
+            HighlightTitle: queryResult.title || '',
+            Link: queryResult.link || '',
+            PubDate: formatDateTime(queryResult.pub_date?.toString() || new Date().toString()),
+            Author: queryResult.author || '',
+            InputDate: queryResult.input_date || new Date(),
+            ImageUrl: queryResult.image_url || '',
+            EnclosureUrl: queryResult.enclosure_url || '',
+            EnclosureLength: queryResult.enclosure_length || '0',
+            EnclosureType: queryResult.enclosure_type || '',
+            Description: String(queryResult.description) || '',
+            Source: queryResult.source || '',
+            Country: queryResult.country || '',
+            ExcludeFeedId: queryResult.exclude_feed_id || '',
+            Duration: queryResult.duration || '',
+            Episode: queryResult.episode || '',
+            Explicit: queryResult.explicit || '',
+            Season: queryResult.season || '',
+            EpisodeType: queryResult.enclosure_type || '',
+            TextDescription: '',
+            ChannelImageUrl: '',
+            ChannelTitle: queryResult.channel_title || '',
+            HighlightChannelTitle: "",
+            FeedLink: queryResult.feed_link || '',
+            Count: totalCount,
+            TookTime: 0,
+            HasThumbnail: true
+        })
+    }
+
+    return { items: resultList, totalCount }
+}
