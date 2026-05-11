@@ -8,7 +8,9 @@ import UnsubscribeKeywordButton from "@/components/UnsubscribeKeywordButton"
 import { formatDateTime } from "@/libs/common"
 import { ServerUserInfo } from "@/libs/user"
 import { SubscriptionDataDto } from "@/types/subscription"
+import { FeedItem } from "@/types/feed_item"
 import Link from "next/link"
+import SubscriptionFeedList from "./SubscriptionFeedList"
 
 type Props = {
     userId: string
@@ -18,9 +20,11 @@ type Props = {
     subscriptionList: SubscriptionDataDto[]
     totalCount: number
     totalPage: number
+    initialFeedItems: FeedItem[]
+    feedTotalCount: number
 }
 
-export default function SubscriptionListClient({ userId, page, userInfo, nickname, subscriptionList, totalCount, totalPage }: Props) {
+export default function SubscriptionListClient({ userId, page, userInfo, nickname, subscriptionList, totalCount, totalPage, initialFeedItems, feedTotalCount }: Props) {
     const prevPage = page > 1 ? page - 1 : 1
     const nextPage = page < totalPage ? page + 1 : page
 
@@ -114,6 +118,11 @@ export default function SubscriptionListClient({ userId, page, userInfo, nicknam
                                     }
                                 </div>
                             </div>
+                            <SubscriptionFeedList
+                                userId={userId}
+                                initialItems={initialFeedItems}
+                                initialTotalCount={feedTotalCount}
+                            />
                         </div>
                     </div>
                 </Header>
