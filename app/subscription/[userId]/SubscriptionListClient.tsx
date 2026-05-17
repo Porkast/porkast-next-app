@@ -22,9 +22,20 @@ type Props = {
     totalPage: number
     initialFeedItems: FeedItem[]
     feedTotalCount: number
+    keywordsUsed: number
+    keywordsLimit: number | null
+    tier: string
 }
 
-export default function SubscriptionListClient({ userId, page, userInfo, nickname, subscriptionList, totalCount, totalPage, initialFeedItems, feedTotalCount }: Props) {
+function formatTier(tier: string): string {
+    switch (tier) {
+        case 'unlimited': return 'Unlimited'
+        case 'pro': return 'Pro'
+        default: return 'Free'
+    }
+}
+
+export default function SubscriptionListClient({ userId, page, userInfo, nickname, subscriptionList, totalCount, totalPage, initialFeedItems, feedTotalCount, keywordsUsed, keywordsLimit, tier }: Props) {
     const prevPage = page > 1 ? page - 1 : 1
     const nextPage = page < totalPage ? page + 1 : page
 
@@ -46,6 +57,16 @@ export default function SubscriptionListClient({ userId, page, userInfo, nicknam
                                         <div className="flex justify-center mt-4">
                                             <div className="mt-4 text-sm text-gray-500">{nickname}@Porkast</div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div className="flex justify-center mt-3">
+                                    <div className="badge badge-primary badge-lg gap-1">
+                                        <span className="font-semibold">{formatTier(tier)}</span>
+                                        <span className="opacity-50">·</span>
+                                        <span>Keywords:</span>
+                                        <span className="font-semibold">{keywordsUsed}</span>
+                                        <span>/</span>
+                                        <span className="font-semibold">{keywordsLimit === null ? '∞' : keywordsLimit}</span>
                                     </div>
                                 </div>
                             </div>

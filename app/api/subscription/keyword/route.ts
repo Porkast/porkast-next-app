@@ -1,3 +1,4 @@
+import { checkKeywordLimit } from "@/libs/membership";
 import { doSearchSubscription } from "@/libs/db/subscription";
 import prisma from "@/libs/prisma";
 import { JsonResponse } from "@/types/api";
@@ -41,16 +42,11 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(resp);
     }
 
-    const subscribedCount = await prisma.user_subscription.count({
-        where: {
-            user_id: userId,
-            status: 1
-        }
-    })
+    const { allowed, limit, used } = await checkKeywordLimit(userId)
 
-    if (subscribedCount >= 5) {
+    if (!allowed) {
         resp.code = 1
-        resp.message = 'Subscription limit reached'
+        resp.message = `You have reached the limit of search keyword subscriptions. Please download the iOS client and subscribe to a membership plan to increase the limit.`
         return NextResponse.json(resp);
     }
 
