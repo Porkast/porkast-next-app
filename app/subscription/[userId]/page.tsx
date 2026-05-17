@@ -1,3 +1,4 @@
+import { getUserMembershipStatus } from "@/libs/membership"
 import { getUserSubscriptionListServer, getUserAllSubscriptionItemsServer } from "@/libs/subscription"
 import { getUserInfoByIdServer, getTempNickname } from "@/libs/user"
 import { SubscriptionDataDto } from "@/types/subscription"
@@ -42,6 +43,11 @@ export default async function Page({ params, searchParams }: Props) {
         feedTotalCount = feedResp.totalCount
     }
 
+    const membershipStatus = await getUserMembershipStatus(userId)
+    const keywordsUsed = membershipStatus.keywordsUsed
+    const keywordsLimit = membershipStatus.keywordsLimit
+    const tier = membershipStatus.tier
+
     const totalPage = Math.max(1, Math.ceil(totalCount / 10))
 
     return (
@@ -55,6 +61,9 @@ export default async function Page({ params, searchParams }: Props) {
             totalPage={totalPage}
             initialFeedItems={initialFeedItems}
             feedTotalCount={feedTotalCount}
+            keywordsUsed={keywordsUsed}
+            keywordsLimit={keywordsLimit}
+            tier={tier}
         />
     )
 }
