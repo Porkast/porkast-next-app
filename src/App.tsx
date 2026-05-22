@@ -1,0 +1,47 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import SignInPage from './pages/SignInPage'
+import SearchPage from './pages/SearchPage'
+import PodcastChannelPage from './pages/PodcastChannelPage'
+import PodcastEpisodePage from './pages/PodcastEpisodePage'
+import SubscriptionPage from './pages/subscription/SubscriptionPage'
+import SubscriptionKeywordPage from './pages/subscription/SubscriptionKeywordPage'
+import ListenLaterPage from './pages/ListenLaterPage'
+import PlaylistPage from './pages/playlist/PlaylistPage'
+import PlaylistDetailPage from './pages/playlist/PlaylistDetailPage'
+import ShareSubscriptionPage from './pages/ShareSubscriptionPage'
+import SharePlaylistPage from './pages/SharePlaylistPage'
+import ShareListenLaterPage from './pages/ShareListenLaterPage'
+import TermsPage from './pages/TermsPage'
+import PrivacyPage from './pages/PrivacyPage'
+import NotFound from './pages/NotFound'
+import { AppProvider } from './component/AppContext'
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signin" element={<SignInPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/podcast/:channelId" element={<PodcastChannelPage />} />
+          <Route path="/podcast/:channelId/episode/:itemId" element={<PodcastEpisodePage />} />
+          <Route path="/subscription/:userId" element={<SubscriptionPage />} />
+          <Route path="/subscription/:userId/:keyword" element={<SubscriptionKeywordPage />} />
+          <Route path="/listenlater/:userId" element={<ListenLaterPage />} />
+          <Route path="/playlist/:userId" element={<PlaylistPage />} />
+          <Route path="/playlist/:userId/:playlistId" element={<PlaylistDetailPage />} />
+          <Route path="/share/subscription/:userId/:keyword" element={<ShareSubscriptionPage />} />
+          <Route path="/share/playlist/:playlistId/:userId" element={<SharePlaylistPage />} />
+          <Route path="/share/listenlater/:userId" element={<ShareListenLaterPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AppProvider>
+    </BrowserRouter>
+  )
+}
+
+export default App

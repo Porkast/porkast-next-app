@@ -2,295 +2,177 @@
 
 ## Project Overview
 
-Porkast is a modern podcast discovery and management platform built with Next.js, allowing users to discover, subscribe, share, and manage personalized podcast content. The platform supports keyword search, playlist creation, listen later functionality, and provides Telegram Bot integration.
+Porkast is a modern podcast discovery and management platform built with **Vite + React**, backed by **porkast-svc** (Cloudflare Workers / Hono / D1). Users can discover, subscribe, share, and manage personalized podcast content. The platform supports keyword search, playlist creation, listen later functionality, and Telegram Bot integration.
 
 ## Tech Stack
 
-### Frontend Framework
+### Frontend
 
-- **Next.js 14** - React full-stack framework with App Router and Server Components support
+- **Vite 7** - Build tool and dev server with HMR
+- **React 19** - UI library
 - **TypeScript** - Type-safe JavaScript superset
-- **Tailwind CSS** - Utility-first CSS framework
-- **DaisyUI** - Component library based on Tailwind CSS
+- **React Router v7** - Client-side routing
+- **Tailwind CSS v4** - Utility-first CSS framework (via `@tailwindcss/vite`)
+- **DaisyUI v5** - Component library based on Tailwind CSS
 
-### Database & Authentication
+### Backend
 
-- **PostgreSQL** - Primary database
-- **Prisma** - Modern database ORM
-- **Custom Email OTP Auth** - JWT-based authentication with 6-digit verification codes sent via email
+All backend logic is provided by **porkast-svc** — a Cloudflare Workers service built with Hono, Drizzle ORM, and D1 (SQLite). This project is a pure **client-side** frontend that communicates with porkast-svc via REST APIs.
+
+Key backend capabilities:
+- **Email OTP Auth** - Bearer session tokens
+- **iTunes Apple Podcasts API** - Podcast search & metadata
+- **RSS Feed** - Parsing, generation, and CORS proxy
+- **Membership/Tier Management** - Free / Pro / Unlimited keyword limits
 
 ### Other Key Dependencies
 
-- **React Email** - Email template components
-- **Resend** - Email sending service
-- **RSS Parser** - RSS feed parsing
 - **Shikwasa** - Audio player component
-- **Vercel Analytics** - Performance analytics
-- **jose** - JWT signing and verification
+- **html-react-parser** - Parse HTML strings to React elements
+- **UUID** - Client-side ID generation (v4/v5)
+- **react-xml-viewer** - RSS XML source viewer
+- **react-helmet** - Document head management
 
 ## Project Structure
 
 ```
 /workspaces/porkast-next-app/
-├── app/                    # Next.js App Router pages
-│   ├── api/               # API routes
-│   │   ├── auth/          # Custom Email OTP Auth APIs
-│   │   ├── jobs/          # Background task related APIs
-│   │   ├── listenlater/   # Listen later functionality APIs
-│   │   ├── playlist/      # Playlist functionality APIs
-│   │   ├── podcast/       # Podcast content APIs
-│   │   ├── rss/           # RSS subscription APIs
-│   │   ├── search/        # Search functionality APIs
-│   │   ├── subscription/  # Subscription functionality APIs
-│   │   └── user/          # User management APIs
-│   ├── listenlater/       # Listen later pages
-│   ├── playlist/          # Playlist pages
-│   ├── podcast/           # Podcast detail pages
-│   ├── search/            # Search pages
-│   ├── share/             # Share pages
-│   ├── signin/            # Sign in pages
-│   └── subscription/      # Subscription management pages
-├── components/            # React components
-├── libs/                  # Utility libraries and business logic
-├── types/                 # TypeScript type definitions
-├── prisma/                # Database schema and migrations
-└── public/                # Static assets
+├── src/
+│   ├── pages/                # Route page components
+│   │   ├── playlist/         # Playlist pages
+│   │   └── subscription/     # Subscription pages
+│   ├── component/            # Reusable React UI components
+│   ├── libs/                 # API client libraries (porkast-svc)
+│   ├── types/                # TypeScript type definitions
+│   ├── hooks/                # Custom React hooks
+│   ├── assets/               # Static assets
+│   ├── App.tsx               # Root component with React Router routes
+│   ├── App.css               # Global styles (Tailwind v4 + DaisyUI)
+│   └── main.tsx              # Application entry point
+├── public/                   # Static assets (images, redirects)
+├── dist/                     # Build output (gitignored)
+├── vite.config.ts            # Vite configuration
+├── wrangler.jsonc            # Cloudflare Pages deployment config
+└── index.html                # HTML entry point
 ```
 
 ## Core Features
 
 ### 1. Podcast Discovery & Search
-
-- Keyword-based podcast search
+- Keyword-based podcast search via iTunes API
 - Multi-source podcast content aggregation
-- Smart recommendation algorithms
+- Exclude specific sources from search results
 
 ### 2. Subscription Management
-
-- Keyword subscriptions
-- Podcast channel subscriptions
-- Exclude specific sources functionality
+- Keyword subscriptions (periodically updated by porkast-svc background jobs)
+- Subscribe to other users' Listen Later lists
+- Exclude specific feeds functionality
 
 ### 3. Playlists
-
 - Create and manage personalized playlists
-- Share playlist functionality
-- Cross-device synchronization
+- Share playlist as public RSS feed
+- Cross-device synchronization via RSS
 
 ### 4. Listen Later
-
 - Quickly save interesting content
-- Queue management
-- Status tracking
+- Queue management with pagination
+- Share as public RSS feed
 
 ### 5. Social Features
+- RSS feed sharing (subscriptions, playlists, listen later)
+- Subscribe to other users' Listen Later lists
+- Telegram Bot integration (@PorkcastBot)
 
-- Podcast sharing
-- Subscription list sharing
-- Telegram Bot integration
+## API Endpoints (porkast-svc)
+
+All API endpoints are documented in the porkast-svc project. Key prefixes:
+- `/api/auth/email-otp/*` - Email OTP authentication
+- `/api/user/*` - User management
+- `/api/subscribe/*` - Keyword subscriptions
+- `/api/playlist/*` - Playlist CRUD
+- `/api/listenlater/*` - Listen later CRUD
+- `/api/rss/*` - RSS feed generation & CORS proxy
+- `/api/membership/*` - Membership/tier management
 
 ## Development Environment Setup
 
-### Environment Variables Configuration
+### Environment Variables
 
-Copy `.env.sample` to `.env.local` and configure the following variables:
+Create a `.env` file (copy from `.env.sample`):
 
 ```bash
-# API Configuration
-API_BASE_URL=https://porkast.com/
-
-# Database Configuration
-DATABASE_URL=postgres://username:password@domain.com:5432/porkastdb
-
-# Auth Configuration
-JWT_SECRET=your_jwt_secret
-
-# Other Service Configuration
-CRON_SECRET=your_cron_secret
-ZEPLO_TOKEN=your_zeplo_token
-RESEND_API_KEY=your_resend_api_key
-RESEND_SUPPORT_API_KEY=your_resend_support_api_key
+# API Base URL for porkast-svc backend
+VITE_API_BASE_URL=https://porkast-svc.guoshaotech.workers.dev/api
 ```
 
 ### Install Dependencies
 
 ```bash
-yarn install
-# or
 npm install
-```
-
-### Database Setup
-
-```bash
-# Generate Prisma client
-npx prisma generate
-
-# Run database migrations
-npx prisma db push
 ```
 
 ### Development Server
 
 ```bash
-yarn dev
-# or
 npm run dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to view the application.
+Visit the URL shown in terminal (default http://localhost:5173).
 
 ## Build & Deployment
 
-### Build Production Version
+### Production Build
 
 ```bash
-yarn build
-# or
-npm run build
+npm run build        # TypeScript check + Vite production build
 ```
 
-### Start Production Server
+### Cloudflare Pages Deployment
 
 ```bash
-yarn start
-# or
-npm start
+npm run deploy       # wrangler pages deploy
 ```
 
-### Docker Deployment
-
-The project includes complete Dockerfile configuration:
-
-```bash
-# Build image
-docker build -t porkast .
-
-# Run container
-docker run -p 3000:3000 porkast
-```
-
-## API Structure
-
-### Playlist API
-
-- `POST /api/playlist` - Create playlist
-- `GET /api/playlist/[playlistId]` - Get playlist details
-- `GET /api/playlist/list/[userId]` - Get user playlists
-- `POST /api/playlist/item` - Add item to playlist
-
-### Search API
-
-- `GET /api/search/episode` - Search podcast episodes
-
-### Subscription API
-
-- `GET /api/subscription/list` - Get subscription list
-- `POST /api/subscription/keyword` - Create keyword subscription
-- `GET /api/rss/subscription/[userId]` - Get user RSS subscriptions
-
-### Listen Later API
-
-- `POST /api/listenlater/item` - Add to listen later
-- `GET /api/listenlater/list` - Get listen later list
-- `POST /api/listenlater/queue` - Manage listening queue
-
-## Database Schema
-
-### Core Table Structure
-
-- **feed_channel** - Podcast channel information
-- **feed_item** - Podcast episode information
-- **user_subscription** - User subscriptions
-- **user_playlist** - User playlists
-- **user_playlist_item** - Playlist items
-- **user_listen_later** - Listen later items
-- **keyword_subscription** - Keyword subscriptions
-- **user_info** - Primary user profiles and authentication data
-- **verification_token** - Temporary storage for email verification codes
-
-### Authentication System
-
-Uses a custom Email OTP authentication flow:
-
-- **Send Code**: Generates and emails a 6-digit OTP to the user.
-- **Verify Code**: Validates the OTP and issues a JWT session token.
-- **Session Management**: JWTs are stored in local storage and verified via middleware for protected API routes.
-- **User Creation**: New users are automatically registered upon first successful email verification.
+The project includes `wrangler.jsonc` and `public/_redirects` for SPA routing on Cloudflare Pages.
 
 ## Development Guidelines
 
 ### Code Style
-
 - Use TypeScript for type-safe development
-- Follow ESLint configuration rules
-- Use Tailwind CSS for styling
-- Components use functional React components
+- Follow ESLint configuration (flat config in eslint.config.js)
+- Use Tailwind CSS + DaisyUI for styling
+- All components are functional React components
 
 ### Commit Convention
-
-The project uses Git for version control, recommended to follow these commit conventions:
-
 - `feat:` New features
 - `fix:` Bug fixes
 - `docs:` Documentation updates
 - `style:` Code formatting adjustments
 - `refactor:` Code refactoring
-- `test:` Testing related
 - `chore:` Build process or auxiliary tool changes
 
 ### Debugging & Testing
-
 ```bash
-# Code linting
-npm run lint
-
-# Type checking
-npx tsc --noEmit
+npm run lint          # Code linting (ESLint)
+npm run build         # TypeScript check + production build
 ```
 
-## Deployment Platforms
+## Authentication
 
-### Vercel Deployment
-
-The project is optimized for Vercel platform deployment:
-
-- Automatic build and deployment
-- Edge function support
-- Performance analytics integration
-
-### Self-hosted Deployment
-
-Supports self-hosted deployment via Docker, see Dockerfile configuration for details.
+Uses a custom Email OTP authentication flow via porkast-svc:
+- **Request Code**: `POST /api/auth/email-otp/request` - sends 6-digit OTP to email
+- **Verify Code**: `POST /api/auth/email-otp/verify` - validates code, returns session token
+- **Session**: Bearer token stored in `localStorage`, sent via `Authorization` header
 
 ## Extended Features
 
 ### Telegram Bot
-
-The project provides Telegram Bot integration, users can:
-
-- Search podcasts via @PorkcastBot
-- Manage subscriptions and playlists
-- Share podcast content
+Search podcasts, manage subscriptions, and share episodes via @PorkcastBot on Telegram.
 
 ### RSS Subscription
-
-Supports standard RSS format, users can:
-
-- Subscribe to podcasts via RSS links
-- Generate personal RSS subscription feeds
-- Sync with other podcast apps
-
-## Performance Optimization
-
-- Use Next.js Image component for optimized image loading
-- Implement code splitting and lazy loading
-- Database query optimization
-- CDN static resource distribution
-- Cache strategy implementation
+Each user's content (subscriptions, playlists, listen later) is exposed as a public RSS feed, compatible with any podcast player.
 
 ## Contributing Guidelines
-
 1. Fork the project repository
 2. Create feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
@@ -298,11 +180,9 @@ Supports standard RSS format, users can:
 5. Create Pull Request
 
 ## License
-
-This project is licensed under the MIT License, see LICENSE file for details.
+Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
-
 - Project Homepage: [https://github.com/Porkast/porkast-next-app](https://github.com/Porkast/porkast-next-app)
 - Telegram Bot: [@PorkcastBot](https://t.me/PorkcastBot)
 - Issue Feedback: [GitHub Issues](https://github.com/Porkast/porkast-next-app/issues)
