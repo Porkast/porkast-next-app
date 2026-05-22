@@ -1,8 +1,5 @@
 {
   "name": "porkast-web-app",
   "compatibility_date": "2025-05-21",
-  "assets": {
-    "directory": "./dist",
-    "binding": "ASSETS"
-  }
+  "pages_build_output_dir": "./dist"
 }
