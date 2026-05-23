@@ -102,7 +102,7 @@ Create a `.env` file (copy from `.env.sample`):
 
 ```bash
 # API Base URL for porkast-svc backend
-VITE_API_BASE_URL=https://porkast-svc.guoshaotech.workers.dev/api
+VITE_API_BASE_URL=https://api.porkast.com/api
 ```
 
 ### Install Dependencies
