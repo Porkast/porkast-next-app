@@ -57,7 +57,7 @@ npm install
 Create a `.env` file:
 
 ```bash
-VITE_API_BASE_URL=https://porkast-svc.guoshaotech.workers.dev/api
+VITE_API_BASE_URL=https://api.porkast.com/api
 ```
 
 ### Development

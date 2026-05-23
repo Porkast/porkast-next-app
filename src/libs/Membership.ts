@@ -16,7 +16,7 @@ export interface MembershipStatusResult {
 
 export async function getUserMembershipStatus(userId: string): Promise<MembershipStatusResult> {
     try {
-        const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://porkast-svc.guoshaotech.workers.dev/api'}/membership/status?userId=${userId}`)
+        const resp = await fetch(`${import.meta.env.VITE_API_BASE_URL || 'https://api.porkast.com/api'}/membership/status?userId=${userId}`)
         const respJson = await resp.json()
 
         if (respJson.code === 0 && respJson.data) {
