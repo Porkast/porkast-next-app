@@ -5,7 +5,7 @@ import Header from '../component/Header'
 import { getUserSessionInfo, getUserInfoFromServer, updateNicknameToServer, setUserSessionInfo } from '../libs/User'
 import Loading from '../component/Loading'
 
-const NICKNAME_PATTERN = /^[A-Za-z0-9_-]{1,32}$/
+const NICKNAME_PATTERN = /^[^\s%\/?#&=+]{1,32}$/u
 
 export default function ProfilePage() {
     const [loading, setLoading] = useState(true)
@@ -39,7 +39,7 @@ export default function ProfilePage() {
 
         const trimmed = nicknameInput.trim().toLowerCase()
         if (trimmed !== '' && !NICKNAME_PATTERN.test(trimmed)) {
-            setMessage({ text: 'Nickname may only contain A-Z a-z 0-9 _ - and up to 32 characters', type: 'error' })
+            setMessage({ text: 'Nickname may not contain spaces or URL-reserved characters, and is limited to 32 characters', type: 'error' })
             setSaving(false)
             return
         }
@@ -73,7 +73,7 @@ export default function ProfilePage() {
                                 <div className="mb-6 text-sm text-gray-500">
                                     <div>Email: <span className="font-medium text-base-content">{email}</span></div>
                                     <div className="mt-1">Share RSS: <span className="font-medium text-base-content">porkast.com/share/listenlater/{shareRef}</span></div>
-                                    <div className="mt-2">Your nickname is the public identifier used in your share links, e.g. <span className="font-medium text-base-content">porkast.com/share/listenlater/{savedNickname || '...'}</span>. It may only contain A-Z a-z 0-9 _ - and must be unique.</div>
+                                    <div className="mt-2">Your nickname is the public identifier used in your share links, e.g. <span className="font-medium text-base-content">porkast.com/share/listenlater/{savedNickname || '...'}</span>. Chinese/unicode letters are allowed; spaces and URL-reserved characters are not. It must be unique.</div>
                                 </div>
 
                                 {message.text && (
