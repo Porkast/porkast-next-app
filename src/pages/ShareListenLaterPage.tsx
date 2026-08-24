@@ -5,19 +5,25 @@ import Footer from '../component/Footer'
 import Header from '../component/Header'
 import { CopyRSSLinkBtn } from '../component/Share'
 import { API_URL } from '../libs/Constants'
+import { getUserInfoFromServer } from '../libs/User'
 import Loading from '../component/Loading'
 import XMLViewer from 'react-xml-viewer'
 
 export default function ShareListenLaterPage() {
-    const { userId } = useParams()
+    const { userName } = useParams()
+    const userRef = userName || ''
     const [loading, setLoading] = useState(true)
     const [nickname, setNickname] = useState('')
     const [xml, setXml] = useState('<hello>World</hello>')
-    const rssLink = `${API_URL}/rss/listenlater/${userId}`
+    const rssLink = `${API_URL}/rss/listenlater/${userRef}`
 
     useEffect(() => {
-        if (!userId) return
+        if (!userRef) return
         const fetchData = async () => {
+            const userResp = await getUserInfoFromServer(userRef)
+            if (userResp.code === 0 && userResp.data) {
+                setNickname(userResp.data.nickname || userResp.data.email?.split('@')[0] || '')
+            }
             try {
                 const xmlResp = await fetch(rssLink)
                 setXml(await xmlResp.text())
@@ -25,7 +31,7 @@ export default function ShareListenLaterPage() {
             setLoading(false)
         }
         fetchData()
-    }, [userId])
+    }, [userRef])
 
     if (loading) return <Loading />
 

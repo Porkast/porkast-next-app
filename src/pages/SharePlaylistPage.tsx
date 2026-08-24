@@ -6,23 +6,29 @@ import Header from '../component/Header'
 import { CopyRSSLinkBtn } from '../component/Share'
 import { API_URL } from '../libs/Constants'
 import { getPlaylistInfoById } from '../libs/Playlist'
+import { getUserInfoFromServer } from '../libs/User'
 import Loading from '../component/Loading'
 import XMLViewer from 'react-xml-viewer'
 
 export default function SharePlaylistPage() {
-    const { playlistId, userId } = useParams()
+    const { playlistId, userName } = useParams()
+    const userRef = userName || ''
     const [loading, setLoading] = useState(true)
     const [playlistName, setPlaylistName] = useState('')
     const [nickname, setNickname] = useState('')
     const [xml, setXml] = useState('<hello>World</hello>')
-    const rssLink = `${API_URL}/rss/playlist/${playlistId}/${userId}`
+    const rssLink = `${API_URL}/rss/playlist/${playlistId}/${userRef}`
 
     useEffect(() => {
-        if (!playlistId || !userId) return
+        if (!playlistId || !userRef) return
         const fetchData = async () => {
             const plResp = await getPlaylistInfoById(playlistId)
             if (plResp.code === 0 && plResp.data) {
                 setPlaylistName(plResp.data.PlaylistName)
+            }
+            const userResp = await getUserInfoFromServer(userRef)
+            if (userResp.code === 0 && userResp.data) {
+                setNickname(userResp.data.nickname || userResp.data.email?.split('@')[0] || '')
             }
             try {
                 const xmlResp = await fetch(rssLink)
@@ -31,7 +37,7 @@ export default function SharePlaylistPage() {
             setLoading(false)
         }
         fetchData()
-    }, [playlistId, userId])
+    }, [playlistId, userRef])
 
     if (loading) return <Loading />
 

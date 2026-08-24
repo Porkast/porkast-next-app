@@ -12,6 +12,7 @@ import PlaylistDetailPage from './pages/playlist/PlaylistDetailPage'
 import ShareSubscriptionPage from './pages/ShareSubscriptionPage'
 import SharePlaylistPage from './pages/SharePlaylistPage'
 import ShareListenLaterPage from './pages/ShareListenLaterPage'
+import ProfilePage from './pages/ProfilePage'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
 import NotFound from './pages/NotFound'
@@ -32,9 +33,10 @@ function App() {
           <Route path="/listenlater/:userId" element={<ListenLaterPage />} />
           <Route path="/playlist/:userId" element={<PlaylistPage />} />
           <Route path="/playlist/:userId/:playlistId" element={<PlaylistDetailPage />} />
-          <Route path="/share/subscription/:userId/:keyword" element={<ShareSubscriptionPage />} />
-          <Route path="/share/playlist/:playlistId/:userId" element={<SharePlaylistPage />} />
-          <Route path="/share/listenlater/:userId" element={<ShareListenLaterPage />} />
+          <Route path="/share/subscription/:userName/:keyword" element={<ShareSubscriptionPage />} />
+          <Route path="/share/playlist/:playlistId/:userName" element={<SharePlaylistPage />} />
+          <Route path="/share/listenlater/:userName" element={<ShareListenLaterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="*" element={<NotFound />} />

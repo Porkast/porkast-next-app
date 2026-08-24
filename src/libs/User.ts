@@ -56,13 +56,48 @@ export const syncToServer = async (userInfo: ServerUserInfo) => {
     return resp
 }
 
-export const getUserInfoFromServer = async (userId: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
-    const resp = await fetch(`${API_URL}/user/info/${userId}`)
-    const respJson = await resp.json()
-    return {
-        code: respJson.code,
-        message: respJson.message,
-        data: respJson.data
+export const getUserInfoFromServer = async (userRef: string): Promise<{ code: number, message: string, data: ServerUserInfo }> => {
+    try {
+        const resp = await fetch(`${API_URL}/user/info/${encodeURIComponent(userRef)}`)
+        const respJson = await resp.json()
+        return {
+            code: respJson.code ?? 1,
+            message: respJson.message ?? '',
+            data: respJson.data
+        }
+    } catch (err) {
+        console.log(err)
+        return {
+            code: 1,
+            message: 'Network error',
+            data: undefined as any
+        }
+    }
+}
+
+export const updateNicknameToServer = async (nickname: string): Promise<{ code: number, message: string, data?: { nickname: string | null } }> => {
+    try {
+        const session = await getUserSessionInfo()
+        if (!session.token) {
+            return { code: 1, message: 'Unauthorized' }
+        }
+        const resp = await fetch(`${API_URL}/user/me/nickname`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${session.token}`
+            },
+            body: JSON.stringify({ nickname })
+        })
+        const respJson = await resp.json()
+        return {
+            code: respJson.code ?? 1,
+            message: respJson.msg ?? respJson.message ?? '',
+            data: respJson.data
+        }
+    } catch (err) {
+        console.log(err)
+        return { code: 1, message: 'Network error' }
     }
 }
 

@@ -145,6 +145,7 @@ export default function Header(props: HeaderProps) {
                                                     </button>
                                                 </label>
                                                 <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-200 rounded-box w-52">
+                                                    <li><Link to="/profile" className="text-base">Profile</Link></li>
                                                     <li><Link to="/privacy" className="text-base">Privacy Policy</Link></li>
                                                     <li><Link to="/terms" className="text-base">Terms of Service</Link></li>
                                                     <li onClick={handleLogout}>
@@ -219,7 +220,12 @@ export default function Header(props: HeaderProps) {
                         </li>
                         {
                             isLogin ? (
-                                <></>
+                                <li>
+                                    <Link to="/profile" className="text-base font-bold">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-user-round"><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" /></svg>
+                                        Profile
+                                    </Link>
+                                </li>
                             ) : (
                                 <li>
                                     <Link className="text-base font-bold" to={"/signin"}>

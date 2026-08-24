@@ -5,20 +5,26 @@ import Footer from '../component/Footer'
 import Header from '../component/Header'
 import { CopyRSSLinkBtn } from '../component/Share'
 import { API_URL } from '../libs/Constants'
+import { getUserInfoFromServer } from '../libs/User'
 import Loading from '../component/Loading'
 import XMLViewer from 'react-xml-viewer'
 
 export default function ShareSubscriptionPage() {
-    const { userId, keyword } = useParams()
+    const { userName, keyword } = useParams()
+    const userRef = userName || ''
     const decodedKeyword = decodeURIComponent(keyword || '')
     const [loading, setLoading] = useState(true)
     const [nickname, setNickname] = useState('')
     const [xml, setXml] = useState('<hello>World</hello>')
-    const rssLink = `${API_URL}/rss/subscription/${userId}/${keyword}`
+    const rssLink = `${API_URL}/rss/subscription/${userRef}/${keyword}`
 
     useEffect(() => {
-        if (!userId || !keyword) return
+        if (!userRef || !keyword) return
         const fetchData = async () => {
+            const userResp = await getUserInfoFromServer(userRef)
+            if (userResp.code === 0 && userResp.data) {
+                setNickname(userResp.data.nickname || userResp.data.email?.split('@')[0] || '')
+            }
             try {
                 const xmlResp = await fetch(rssLink)
                 setXml(await xmlResp.text())
@@ -26,7 +32,7 @@ export default function ShareSubscriptionPage() {
             setLoading(false)
         }
         fetchData()
-    }, [userId, keyword])
+    }, [userRef, keyword])
 
     if (loading) return <Loading />
 

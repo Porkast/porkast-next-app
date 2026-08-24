@@ -1,6 +1,21 @@
 import { useNavigate } from "react-router-dom"
 import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
+import { getUserInfoFromServer } from "../libs/User"
+
+const NICKNAME_PATTERN = /^[A-Za-z0-9_-]{1,32}$/
+
+const resolveUserRef = async (userId: string): Promise<string> => {
+    if (!userId) return ''
+    try {
+        const resp = await getUserInfoFromServer(userId)
+        const nickname = resp?.data?.nickname
+        if (nickname && NICKNAME_PATTERN.test(nickname)) {
+            return nickname
+        }
+    } catch { /* ignore, fall back to userId */ }
+    return userId
+}
 
 export type SharePlaylistBtnProps = {
     userId: string
@@ -11,8 +26,9 @@ export const SharePlaylistBtn = (props: SharePlaylistBtnProps) => {
 
     const navigate = useNavigate()
 
-    const onShareBtnClick = () => {
-        navigate('/share/playlist/' + props.playlistId + '/' + props.userId)
+    const onShareBtnClick = async () => {
+        const userRef = await resolveUserRef(props.userId)
+        navigate('/share/playlist/' + props.playlistId + '/' + userRef)
     }
 
     return (
@@ -34,8 +50,9 @@ export const SharedListenLaterBtn = (props: SharedListenLaterBtnProps) => {
 
     const navigate = useNavigate()
 
-    const onShareBtnClick = () => {
-        navigate('/share/listenlater/' + props.creatorId)
+    const onShareBtnClick = async () => {
+        const userRef = await resolveUserRef(props.creatorId)
+        navigate('/share/listenlater/' + userRef)
     }
 
     return (
@@ -58,8 +75,9 @@ export const ShareSearchSubscriptionBtn = (props: ShareSearchSubscriptionBtnProp
 
     const navigate = useNavigate()
 
-    const onShareBtnClick = () => {
-        navigate('/share/subscription/' + props.userId + '/' + props.keyword)
+    const onShareBtnClick = async () => {
+        const userRef = await resolveUserRef(props.userId)
+        navigate('/share/subscription/' + userRef + '/' + props.keyword)
     }
 
     return (
