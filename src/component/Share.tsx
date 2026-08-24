@@ -3,7 +3,7 @@ import { useAppContext } from "./AppContext"
 import { MsgAlertType } from "./MsgAlert"
 import { getUserInfoFromServer } from "../libs/User"
 
-const NICKNAME_PATTERN = /^[A-Za-z0-9_-]{1,32}$/
+const NICKNAME_PATTERN = /^[^\s%\/?#&=+]{1,32}$/u
 
 const resolveUserRef = async (userId: string): Promise<string> => {
     if (!userId) return ''
