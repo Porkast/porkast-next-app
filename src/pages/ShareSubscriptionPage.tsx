@@ -6,6 +6,7 @@ import Header from '../component/Header'
 import { CopyRSSLinkBtn } from '../component/Share'
 import { API_URL } from '../libs/Constants'
 import { getUserInfoFromServer } from '../libs/User'
+import { createRSSShareCode, shareCodeURL } from '../libs/ShareCode'
 import Loading from '../component/Loading'
 import XMLViewer from 'react-xml-viewer'
 
@@ -16,7 +17,17 @@ export default function ShareSubscriptionPage() {
     const [loading, setLoading] = useState(true)
     const [nickname, setNickname] = useState('')
     const [xml, setXml] = useState('<hello>World</hello>')
+    const [shareLink, setShareLink] = useState<string | null>(null)
     const rssLink = `${API_URL}/rss/subscription/${userRef}/${keyword}`
+
+    useEffect(() => {
+        if (!userRef || !keyword) return
+        const fetchShareCode = async () => {
+            const code = await createRSSShareCode(userRef, 'subscription', decodedKeyword)
+            if (code) setShareLink(shareCodeURL(code))
+        }
+        fetchShareCode()
+    }, [userRef, keyword])
 
     useEffect(() => {
         if (!userRef || !keyword) return
@@ -66,7 +77,7 @@ export default function ShareSubscriptionPage() {
                                 <a className="link link-primary" href={rssLink} target="_blank" rel="noopener noreferrer">RSS Link</a>
                             </div>
                             <div className="w-full flex justify-center pl-6 pr-6 mt-4">
-                                <CopyRSSLinkBtn rssLink={rssLink} />
+                                <CopyRSSLinkBtn rssLink={shareLink ?? rssLink} />
                             </div>
                             <div className="w-full flex justify-center pl-6 pr-6 mt-4">
                                 <div className="text-xs text-gray-500 text-center">Copy the RSS link and paste it into your preferred podcast player to subscribe this playlist</div>

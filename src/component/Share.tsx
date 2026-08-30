@@ -106,7 +106,7 @@ export const CopyRSSLinkBtn = (props: { rssLink: string }) => {
 
     return (
         <div className="join w-full">
-            <input type="text" defaultValue={rssLink} className="input input-bordered join-item w-full" />
+            <input type="text" value={rssLink} readOnly className="input input-bordered join-item w-full" />
             <button className="btn btn-primary join-item rounded-r-full" onClick={onCopyBtnClick}>Copy</button>
         </div>
     )
