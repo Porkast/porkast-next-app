@@ -15,6 +15,7 @@ import ShareListenLaterPage from './pages/ShareListenLaterPage'
 import ProfilePage from './pages/ProfilePage'
 import TermsPage from './pages/TermsPage'
 import PrivacyPage from './pages/PrivacyPage'
+import ApplePodcastGuidePage from './pages/ApplePodcastGuidePage'
 import NotFound from './pages/NotFound'
 import { AppProvider } from './component/AppContext'
 
@@ -36,6 +37,8 @@ function App() {
           <Route path="/share/subscription/:userName/:keyword" element={<ShareSubscriptionPage />} />
           <Route path="/share/playlist/:playlistId/:userName" element={<SharePlaylistPage />} />
           <Route path="/share/listenlater/:userName" element={<ShareListenLaterPage />} />
+          <Route path="/guide/apple-podcast" element={<ApplePodcastGuidePage />} />
+          <Route path="/guide" element={<ApplePodcastGuidePage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
